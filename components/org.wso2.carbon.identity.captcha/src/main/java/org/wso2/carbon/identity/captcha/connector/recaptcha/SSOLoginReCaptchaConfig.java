@@ -176,12 +176,12 @@ public class SSOLoginReCaptchaConfig extends AbstractReCaptchaConnector implemen
     @Override
     public String getFriendlyName() {
 
-        return "Captcha for SSO Login";
+        return "用于SSO登录的验证码";
     }
 
     @Override
     public String getCategory() {
-        return "Login Policies";
+        return "登录策略";
     }
 
     @Override
@@ -196,18 +196,18 @@ public class SSOLoginReCaptchaConfig extends AbstractReCaptchaConnector implemen
     public Map<String, String> getPropertyNameMapping() {
 
         Map<String, String> nameMapping = new HashMap<>();
-        nameMapping.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE, "Enable");
+        nameMapping.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE, "启用");
         nameMapping.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.MAX_ATTEMPTS,
-                "Max failed attempts");
+                "最多尝试次数");
         return nameMapping;
     }
 
     @Override
     public Map<String, String> getPropertyDescriptionMapping() {
         Map<String, String> descriptionMapping = new HashMap<>();
-        descriptionMapping.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE, "Enable captcha verification during SSO login");
+        descriptionMapping.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE, "在SSO登录期间启用验证码验证");
         descriptionMapping.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.MAX_ATTEMPTS,
-                "Number of failed attempts allows without showing the captcha");
+                "不显示验证码的失败尝试允许的次数");
         return descriptionMapping;
     }
 

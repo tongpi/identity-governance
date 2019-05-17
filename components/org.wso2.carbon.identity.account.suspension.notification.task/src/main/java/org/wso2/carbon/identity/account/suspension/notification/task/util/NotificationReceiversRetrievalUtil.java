@@ -65,7 +65,7 @@ public class NotificationReceiversRetrievalUtil {
             } while (realmConfiguration != null);
 
         } catch (UserStoreException e) {
-            throw new AccountSuspensionNotificationException("Error while getting the notification enabled user stores",
+            throw new AccountSuspensionNotificationException("获取启用通知的用户存储时出错",
                     e);
         }
 
@@ -130,7 +130,7 @@ public class NotificationReceiversRetrievalUtil {
 
         } catch (UserStoreException e) {
             throw new AccountSuspensionNotificationException(
-                    "Error while listing user stores for notification functionality", e);
+                    "为通知功能列出用户存储时出错", e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }

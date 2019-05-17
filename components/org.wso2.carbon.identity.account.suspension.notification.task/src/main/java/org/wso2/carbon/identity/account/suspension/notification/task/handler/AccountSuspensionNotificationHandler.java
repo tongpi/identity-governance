@@ -83,12 +83,12 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
 
     @Override
     public String getFriendlyName() {
-        return "Lock Idle Accounts";
+        return "锁定闲置帐户";
     }
 
     @Override
     public String getCategory() {
-        return "Account Management Policies";
+        return "账户管理策略";
     }
 
     @Override
@@ -104,10 +104,10 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
     @Override
     public Map<String, String> getPropertyNameMapping() {
         Map<String, String> nameMapping = new HashMap<>();
-        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_ENABLED, "Enable");
-        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_ACCOUNT_DISABLE_DELAY, "Lock Account After (days)");
-        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_DELAYS, "Alert Users before account locking in " +
-                "days (comma-separated list)");
+        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_ENABLED, "启用");
+        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_ACCOUNT_DISABLE_DELAY, "锁定闲置多少天的帐户");
+        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_DELAYS, "帐户锁定前事先通知用户。设置提前多少天通知用户(用逗号分隔设置多次提醒)" +
+                "");
         return nameMapping;
     }
 
@@ -234,7 +234,7 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
             identityProperties = NotificationTaskDataHolder.getInstance()
                     .getIdentityGovernanceService().getConfiguration(getPropertyNames(), tenantDomain);
         } catch (IdentityGovernanceException e) {
-            throw new IdentityEventException("Error while retrieving Account Locking Handler properties.", e);
+            throw new IdentityEventException("检索帐户锁定处理程序属性时出错.", e);
         }
 
         for (Property identityProperty : identityProperties) {

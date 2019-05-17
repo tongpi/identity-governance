@@ -41,12 +41,12 @@ public class PasswordHistoryConstants {
 
     public enum ErrorMessages {
 
-        ERROR_CODE_HISTORY_VIOLATE("22001", "This password has been used in recent history. Please choose a different" +
-                " password"),
-        ERROR_CODE_LOADING_HISTORY_DATA_SOURCE("22002", "Error while loading history data source"),
-        ERROR_CODE_VALIDATING_HISTORY("22003", "Error while validating password history"),
-        ERROR_CODE_STORING_HISTORY("22004", "Error while storing password history"),
-        ERROR_CODE_DELETE_HISTORY("22005", "Error while removing password history from: '%s.'"),
+        ERROR_CODE_HISTORY_VIOLATE("22001", "此密码已在最近的历史记录中使用。请选择其他密码" +
+                " "),
+        ERROR_CODE_LOADING_HISTORY_DATA_SOURCE("22002", "加载历史数据源时出错"),
+        ERROR_CODE_VALIDATING_HISTORY("22003", "验证密码历史记录时出错"),
+        ERROR_CODE_STORING_HISTORY("22004", "存储密码历史记录时出错"),
+        ERROR_CODE_DELETE_HISTORY("22005", "从中删除密码历史记录时出错: '%s.'"),
         ;
 
         private final String code;

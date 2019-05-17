@@ -38,12 +38,12 @@ public class RecoveryConfigImpl implements IdentityConnectorConfig {
 
     @Override
     public String getFriendlyName() {
-        return "Account Recovery";
+        return "账号恢复";
     }
 
     @Override
     public String getCategory() {
-        return "Account Management Policies";
+        return "账号恢复策略";
     }
 
     @Override

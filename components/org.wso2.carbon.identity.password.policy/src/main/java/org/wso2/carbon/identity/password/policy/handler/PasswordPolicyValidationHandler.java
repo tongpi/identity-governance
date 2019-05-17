@@ -63,7 +63,7 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
             identityProperties = IdentityPasswordPolicyServiceDataHolder.getInstance()
                     .getIdentityGovernanceService().getConfiguration(getPropertyNames(), tenantDomain);
         } catch (IdentityGovernanceException e) {
-            throw new IdentityEventException("Error while retrieving password policy properties.", e);
+            throw new IdentityEventException("获取密码策略属性时发生错误.", e);
         }
 
         /*initialize to default values*/
@@ -71,8 +71,8 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
         String pwMinLength = "6";
         String pwMaxLength = "12";
         String pwPattern = "^((?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*])).{0,100}$";
-        String errorMsg = "Password pattern policy violated. Password should contain a digit[0-9], a lower case " +
-                "letter[a-z], an upper case letter[A-Z], one of !@#$%&* characters";
+        String errorMsg = "违反密码模式策略. 密码只能包含数字[0-9], 小写" +
+                "字母[a-z], 大写字母[A-Z], 以及 !@#$%&* 字符";
 
         for (Property identityProperty : identityProperties) {
 
@@ -177,12 +177,12 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
 
     @Override
     public String getFriendlyName() {
-        return "Password Patterns";
+        return "密码模式";
     }
 
     @Override
     public String getCategory() {
-        return "Password Policies";
+        return "密码策略";
     }
 
     @Override
@@ -196,20 +196,20 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
     @Override
     public Map<String, String> getPropertyNameMapping() {
         Map<String, String> nameMapping = new HashMap<>();
-        nameMapping.put(PasswordPolicyConstants.PW_POLICY_ENABLE, "Enable Password Policy Feature");
-        nameMapping.put(PasswordPolicyConstants.PW_POLICY_MIN_LENGTH, "Password Policy Min Length");
-        nameMapping.put(PasswordPolicyConstants.PW_POLICY_MAX_LENGTH, "Password Policy Max Length");
-        nameMapping.put(PasswordPolicyConstants.PW_POLICY_PATTERN, "Password Policy Pattern");
-        nameMapping.put(PasswordPolicyConstants.PW_POLICY_ERROR_MSG, "Password Policy Error Message");
+        nameMapping.put(PasswordPolicyConstants.PW_POLICY_ENABLE, "启用密码策略功能");
+        nameMapping.put(PasswordPolicyConstants.PW_POLICY_MIN_LENGTH, "密码最小长度");
+        nameMapping.put(PasswordPolicyConstants.PW_POLICY_MAX_LENGTH, "密码最大长度");
+        nameMapping.put(PasswordPolicyConstants.PW_POLICY_PATTERN, "密码策略模式");
+        nameMapping.put(PasswordPolicyConstants.PW_POLICY_ERROR_MSG, "密码策略错误消息");
         return nameMapping;
     }
 
     @Override
     public Map<String, String> getPropertyDescriptionMapping() {
         Map<String, String> descriptionMapping = new HashMap<>();
-        descriptionMapping.put(PasswordPolicyConstants.PW_POLICY_ENABLE, "Enable password pattern policy");
-        descriptionMapping.put(PasswordPolicyConstants.PW_POLICY_PATTERN, "Allowed password regex pattern");
-        descriptionMapping.put(PasswordPolicyConstants.PW_POLICY_ERROR_MSG, "Error message for invalid password patterns");
+        descriptionMapping.put(PasswordPolicyConstants.PW_POLICY_ENABLE, "启用密码模式策略");
+        descriptionMapping.put(PasswordPolicyConstants.PW_POLICY_PATTERN, "允许的密码正则表达式模式");
+        descriptionMapping.put(PasswordPolicyConstants.PW_POLICY_ERROR_MSG, "密码模式不正确时的错误提示");
         return descriptionMapping;
     }
 

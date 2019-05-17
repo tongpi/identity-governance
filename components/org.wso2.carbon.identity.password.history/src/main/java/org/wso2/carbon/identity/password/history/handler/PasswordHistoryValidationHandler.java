@@ -68,7 +68,7 @@ public class PasswordHistoryValidationHandler extends AbstractEventHandler imple
             identityProperties = IdentityPasswordHistoryServiceDataHolder.getInstance()
                     .getIdentityGovernanceService().getConfiguration(getPropertyNames(), tenantDomain);
         } catch (IdentityGovernanceException e) {
-            throw new IdentityEventException("Error while retrieving account lock handler properties.", e);
+            throw new IdentityEventException("检索帐户锁定处理程序属性时出错.", e);
         }
 
         boolean passwordHistoryValidation = false;
@@ -84,7 +84,7 @@ public class PasswordHistoryValidationHandler extends AbstractEventHandler imple
 
         if (!passwordHistoryValidation) {
             if (log.isDebugEnabled()) {
-                log.debug("Password History validation is disabled");
+                log.debug("历史密码验证已禁用");
             }
             return;
         }
@@ -154,12 +154,12 @@ public class PasswordHistoryValidationHandler extends AbstractEventHandler imple
 
     @Override
     public String getFriendlyName() {
-        return "Password History";
+        return "历史密码";
     }
 
     @Override
     public String getCategory() {
-        return "Password Policies";
+        return "密码策略";
     }
 
     @Override
@@ -173,16 +173,16 @@ public class PasswordHistoryValidationHandler extends AbstractEventHandler imple
     @Override
     public Map<String, String> getPropertyNameMapping() {
         Map<String, String> nameMapping = new HashMap<>();
-        nameMapping.put(PasswordHistoryConstants.PW_HISTORY_ENABLE, "Enable Password History Feature");
-        nameMapping.put(PasswordHistoryConstants.PW_HISTORY_COUNT, "Password History validation count");
+        nameMapping.put(PasswordHistoryConstants.PW_HISTORY_ENABLE, "启用历史密码功能");
+        nameMapping.put(PasswordHistoryConstants.PW_HISTORY_COUNT, "密码历史验证计数");
         return nameMapping;
     }
 
     @Override
     public Map<String, String> getPropertyDescriptionMapping() {
         Map<String, String> descriptionMapping = new HashMap<>();
-        descriptionMapping.put(PasswordHistoryConstants.PW_HISTORY_ENABLE, "Enable to disallow previously used passwords");
-        descriptionMapping.put(PasswordHistoryConstants.PW_HISTORY_COUNT, "Restrict reusing last x number of password during password update");
+        descriptionMapping.put(PasswordHistoryConstants.PW_HISTORY_ENABLE, "启用以禁用以前使用过的密码");
+        descriptionMapping.put(PasswordHistoryConstants.PW_HISTORY_COUNT, "限制在密码更新期间重复使用最后x个密码数");
         return descriptionMapping;
     }
 

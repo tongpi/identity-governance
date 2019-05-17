@@ -29,8 +29,8 @@ public class PasswordPolicyConstants {
 
     public enum ErrorMessages {
 
-        ERROR_CODE_LOADING_PASSWORD_POLICY_CLASSES("40001", "Error occurred while loading Password Policies"),
-        ERROR_CODE_VALIDATING_PASSWORD_POLICY("40002", "Error while validating password policy");
+        ERROR_CODE_LOADING_PASSWORD_POLICY_CLASSES("40001", "加载密码策略时发生错误"),
+        ERROR_CODE_VALIDATING_PASSWORD_POLICY("40002", "校验密码策略时发生错误");
 
 
         private final String code;

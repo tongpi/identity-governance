@@ -52,34 +52,33 @@ import static org.wso2.carbon.consent.mgt.core.constant.ConsentConstants.PIICont
 public class ConsentMgtConfigImpl implements IdentityConnectorConfig, PIIController {
 
     private static Log log = LogFactory.getLog(ConsentMgtConfigImpl.class);
-    private static final String DISPLAY_NAME_PII_CONTROLLER = "Controller Name";
-    private static final String DISPLAY_NAME_CONTACT = "Contact Name";
-    private static final String DISPLAY_NAME_EMAIL = "Email Address";
-    private static final String DISPLAY_NAME_PHONE = "Phone Number";
-    private static final String DISPLAY_NAME_ON_BEHALF = "On Behalf";
+    private static final String DISPLAY_NAME_PII_CONTROLLER = "个人身份信息控制器名称";
+    private static final String DISPLAY_NAME_CONTACT = "联系人姓名";
+    private static final String DISPLAY_NAME_EMAIL = "Email地址";
+    private static final String DISPLAY_NAME_PHONE = "理学电话";
+    private static final String DISPLAY_NAME_ON_BEHALF = "替代者";
     private static final String DISPLAY_NAME_PII_CONTROLLER_URL = "Url";
-    private static final String DISPLAY_NAME_ADDRESS_COUNTRY = "Country";
-    private static final String DISPLAY_NAME_ADDRESS_LOCALITY = "Locality";
-    private static final String DISPLAY_NAME_ADDRESS_REGION = "Region";
-    private static final String DISPLAY_NAME_POST_OFFICE_BOX_NUMBER = "Post Office Box Number";
-    private static final String DISPLAY_NAME_POSTAL_CODE = "Postal Code";
-    private static final String DISPLAY_NAME_STREET_ADDRESS = "Street Address";
+    private static final String DISPLAY_NAME_ADDRESS_COUNTRY = "国家";
+    private static final String DISPLAY_NAME_ADDRESS_LOCALITY = "城市";
+    private static final String DISPLAY_NAME_ADDRESS_REGION = "地区";
+    private static final String DISPLAY_NAME_POST_OFFICE_BOX_NUMBER = "邮政信箱号码";
+    private static final String DISPLAY_NAME_POSTAL_CODE = "邮编";
+    private static final String DISPLAY_NAME_STREET_ADDRESS = "街道地址";
 
-    private static final String DISPLAY_DESCRIPTION_PII_CONTROLLER = "Name of the first Controller who collects " +
-            "the data";
-    private static final String DISPLAY_DESCRIPTION_CONTACT = "Contact name of the Controller";
-    private static final String DISPLAY_DESCRIPTION_EMAIL = "Contact email address of the Controller";
-    private static final String DISPLAY_DESCRIPTION_PHONE = "Contact phone number of the Controller";
-    private static final String DISPLAY_DESCRIPTION_ON_BEHALF = "A user information (PII) Processor acting on behalf " +
-                                                                "of a Controller or PII Processor";
-    private static final String DISPLAY_DESCRIPTION_PII_CONTROLLER_URL = "A URL for contacting the Controller";
-    private static final String DISPLAY_DESCRIPTION_ADDRESS_COUNTRY = "Country of the Controller";
-    private static final String DISPLAY_DESCRIPTION_ADDRESS_LOCALITY = "Locality of the Controller";
-    private static final String DISPLAY_DESCRIPTION_ADDRESS_REGION = "Region of the Controller";
-    private static final String DISPLAY_DESCRIPTION_POST_OFFICE_BOX_NUMBER = "Post Office Box Number of the" +
-            " Controller";
-    private static final String DISPLAY_DESCRIPTION_POSTAL_CODE = "Postal Code of the Controller";
-    private static final String DISPLAY_DESCRIPTION_STREET_ADDRESS = "Street Address of the Controller";
+    private static final String DISPLAY_DESCRIPTION_PII_CONTROLLER = "收集数据的第一个控制器的名称 " +
+            "";
+    private static final String DISPLAY_DESCRIPTION_CONTACT = "控制器联系人姓名";
+    private static final String DISPLAY_DESCRIPTION_EMAIL = "控制器联系人Email";
+    private static final String DISPLAY_DESCRIPTION_PHONE = "控制器联系人电话";
+    private static final String DISPLAY_DESCRIPTION_ON_BEHALF = "代表控制器或PII处理器的用户信息（PII）处理器";
+    private static final String DISPLAY_DESCRIPTION_PII_CONTROLLER_URL = "用于联系控制器的URL";
+    private static final String DISPLAY_DESCRIPTION_ADDRESS_COUNTRY = "控制器国家";
+    private static final String DISPLAY_DESCRIPTION_ADDRESS_LOCALITY = "控制器城市";
+    private static final String DISPLAY_DESCRIPTION_ADDRESS_REGION = "控制器地区";
+    private static final String DISPLAY_DESCRIPTION_POST_OFFICE_BOX_NUMBER = "控制器邮政信箱号码" +
+            "";
+    private static final String DISPLAY_DESCRIPTION_POSTAL_CODE = "控制器邮编";
+    private static final String DISPLAY_DESCRIPTION_STREET_ADDRESS = "控制器街道地址";
     private static final String EMPTY = "";
     private IdentityGovernanceService identityGovernanceService;
 
