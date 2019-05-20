@@ -20,22 +20,22 @@ package org.wso2.carbon.identity.piicontroller;
  */
 public class ConsentConstants {
 
-    public static final String PII_CONTROLLER = "piiController";
-    public static final String CONTACT = "contact";
-    public static final String EMAIL = "email";
-    public static final String PHONE = "phone";
+    public static final String PII_CONTROLLER = "PII控制器";
+    public static final String CONTACT = "联系";
+    public static final String EMAIL = "邮箱";
+    public static final String PHONE = "电话";
     public static final String ON_BEHALF = "onBehalf";
-    public static final String PII_CONTROLLER_URL = "piiControllerUrl";
-    public static final String ADDRESS_COUNTRY = "addressCountry";
-    public static final String ADDRESS_LOCALITY = "addressLocality";
-    public static final String ADDRESS_REGION = "addressRegion";
-    public static final String POST_OFFICE_BOX_NUMBER = "postOfficeBoxNumber";
-    public static final String POSTAL_CODE = "postalCode";
-    public static final String STREET_ADDRESS = "streetAddress";
+    public static final String PII_CONTROLLER_URL = "PII控制器URL";
+    public static final String ADDRESS_COUNTRY = "国家";
+    public static final String ADDRESS_LOCALITY = "城市";
+    public static final String ADDRESS_REGION = "地区";
+    public static final String POST_OFFICE_BOX_NUMBER = "邮政信箱号码";
+    public static final String POSTAL_CODE = "邮政编码";
+    public static final String STREET_ADDRESS = "街道地址";
 
-    public static final String PII_CONTROLLER_CONNECTOR_NAME = "pii-controller";
-    public static final String PII_CONTROLLER_CONNECTOR_FAMILY_NAME = "Consent Information Controller";
-    public static final String PII_CONTROLLER_CONNECTOR_CATEGORY = "Consent Management";
+    public static final String PII_CONTROLLER_CONNECTOR_NAME = "PII控制器";
+    public static final String PII_CONTROLLER_CONNECTOR_FAMILY_NAME = "同意信息管理控制";
+    public static final String PII_CONTROLLER_CONNECTOR_CATEGORY = "同意管理";
     public static final String PII_CONTROLLER_CONNECTOR_SUB_CATEGORY = "DEFAULT";
 
 }
