@@ -54,7 +54,7 @@ public class SSOLoginReCaptchaConfig extends AbstractReCaptchaConnector implemen
 
     private static final String CONNECTOR_IDENTIFIER_ATTRIBUTE = "username,password";
 
-    private static final String RECAPTCHA_VERIFICATION_CLAIM = "http://wso2.org/claims/identity/failedLoginAttempts";
+    private static final String RECAPTCHA_VERIFICATION_CLAIM = "http://is.cd.mtn:9443/claims/identity/failedLoginAttempts";
 
     private static final String SECURED_DESTINATIONS = "/commonauth,/samlsso,/oauth2";
 
@@ -94,7 +94,7 @@ public class SSOLoginReCaptchaConfig extends AbstractReCaptchaConnector implemen
         } catch (Exception e) {
             // Can happen due to invalid user/ invalid tenant/ invalid configuration
             if (log.isDebugEnabled()) {
-                log.debug("Unable to load connector configuration.", e);
+                log.debug("无法加载连接器配置。", e);
             }
             return false;
         }

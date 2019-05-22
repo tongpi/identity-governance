@@ -24,12 +24,14 @@ import org.wso2.carbon.identity.event.handler.AbstractEventHandler;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.identity.password.history.handler.PasswordHistoryValidationHandler;
 
-
 /**
- * @scr.component name="org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent" immediate="true"
+ * @scr.component name="org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent"
+ *                immediate="true"
  * @scr.reference name="IdentityGovernanceService"
- * interface="org.wso2.carbon.identity.governance.IdentityGovernanceService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityGovernanceService" unbind="unsetIdentityGovernanceService"
+ *                interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityGovernanceService"
+ *                unbind="unsetIdentityGovernanceService"
  */
 public class IdentityPasswordHistoryServiceComponent {
 
@@ -40,7 +42,7 @@ public class IdentityPasswordHistoryServiceComponent {
         try {
 
             if (log.isDebugEnabled()) {
-                log.debug("Identity Management Listener is enabled");
+                log.debug("身份管理监听器已启用");
             }
             BundleContext bundleContext = context.getBundleContext();
             IdentityPasswordHistoryServiceDataHolder.getInstance().setBundleContext(bundleContext);
@@ -48,15 +50,14 @@ public class IdentityPasswordHistoryServiceComponent {
             PasswordHistoryValidationHandler handler = new PasswordHistoryValidationHandler();
             context.getBundleContext().registerService(AbstractEventHandler.class.getName(), handler, null);
 
-
         } catch (Exception e) {
-            log.error("Error while activating identity governance component.", e);
+            log.error("激活身份管理组件时出错。", e);
         }
     }
 
     protected void deactivate(ComponentContext context) {
         if (log.isDebugEnabled()) {
-            log.debug("Identity Management bundle is de-activated");
+            log.debug("身份管理包已取消激活");
         }
     }
 
@@ -67,6 +68,5 @@ public class IdentityPasswordHistoryServiceComponent {
     protected void setIdentityGovernanceService(IdentityGovernanceService idpManager) {
         IdentityPasswordHistoryServiceDataHolder.getInstance().setIdentityGovernanceService(idpManager);
     }
-
 
 }

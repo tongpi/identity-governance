@@ -45,10 +45,10 @@ public class TenantManagementListener implements TenantMgtListener {
         try {
             questionManager.setDefaultChallengeQuestions(tenantDomain);
             if (log.isDebugEnabled()) {
-                log.debug("Default Challenge Questions persisted to the " + tenantDomain + " tenant");
+                log.debug("默认挑战问题持续存在于租户：" + tenantDomain);
             }
         } catch (IdentityRecoveryException e) {
-            log.error("Error when trying to set default challenge question for tenant : " + tenantDomain, e);
+            log.error("尝试为租户：" + tenantDomain + "设置默认质询问题时出错", e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }

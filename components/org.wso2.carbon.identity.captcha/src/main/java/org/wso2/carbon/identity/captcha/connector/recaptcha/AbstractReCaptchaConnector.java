@@ -55,12 +55,12 @@ public abstract class AbstractReCaptchaConnector implements CaptchaConnector {
             throws CaptchaException {
 
         if (((HttpServletRequest) servletRequest).getMethod().equalsIgnoreCase("GET")) {
-            throw new CaptchaClientException("reCaptcha response must send in a POST request.");
+            throw new CaptchaClientException("重复验证码响应必须发送POST请求。");
         }
 
         String reCaptchaResponse = servletRequest.getParameter("g-recaptcha-response");
         if (StringUtils.isBlank(reCaptchaResponse)) {
-            throw new CaptchaClientException("reCaptcha response is not available in the request.");
+            throw new CaptchaClientException("重复验证码响应在不可用在请求中。");
         }
 
         return CaptchaUtil.isValidCaptcha(reCaptchaResponse);

@@ -45,11 +45,9 @@ import java.util.Map;
 
 /**
  * This is an implementation of UserOperationEventListener. This defines
- * additional operations
- * for some of the core user management operations
+ * additional operations for some of the core user management operations
  */
 public class IdentityMgtEventListener extends AbstractIdentityUserOperationEventListener {
-
 
     private static final Log log = LogFactory.getLog(IdentityMgtEventListener.class);
     IdentityEventService eventMgtService = IdentityMgtServiceDataHolder.getInstance().getIdentityEventService();
@@ -70,19 +68,20 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
      * returning false.
      */
     @Override
-    public boolean doPreAuthenticate(String userName, Object credential,
-                                     UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPreAuthenticate(String userName, Object credential, UserStoreManager userStoreManager)
+            throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Pre authenticator is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预认证器");
         }
         IdentityUtil.clearIdentityErrorMsg();
         IdentityUtil.threadLocalProperties.get().remove(RE_CAPTCHA_USER_DOMAIN);
 
-        // This is used set domain of the user when authentication is failed for an existing user. This is required
+        // This is used set domain of the user when authentication is failed for an
+        // existing user. This is required
         // for re-captcha feature.
         IdentityUtil.threadLocalProperties.get().put(RE_CAPTCHA_USER_DOMAIN,
                 IdentityGovernanceUtil.getUserStoreDomainName(userStoreManager));
@@ -101,13 +100,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post authenticator is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post 认证器");
         }
-        if (!isUserExistsInDomain(userStoreManager, userName, authenticated)){
+        if (!isUserExistsInDomain(userStoreManager, userName, authenticated)) {
             if (log.isDebugEnabled()) {
-                log.debug("IdentityMgtEventListener returns since user: " + userName + " not available in current " +
-                        "user store domain: " + userStoreManager.getRealmConfiguration().getUserStoreProperty
-                        (UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME) );
+                log.debug("IdentityMgtEventListener returns since user: " + userName + " not available in current "
+                        + "user store domain: " + userStoreManager.getRealmConfiguration()
+                                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME));
             }
             return true;
         }
@@ -126,13 +125,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
     }
 
     @Override
-    public boolean doPreSetUserClaimValues(String userName, Map<String, String> claims, String
-            profileName, UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPreSetUserClaimValues(String userName, Map<String, String> claims, String profileName,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Pre set claims is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预设置声明");
         }
         IdentityUtil.threadLocalProperties.get().remove(IdentityCoreConstants.USER_ACCOUNT_STATE);
         String eventName = IdentityEventConstants.Event.PRE_SET_USER_CLAIMS;
@@ -145,12 +144,12 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
 
     @Override
     public boolean doPostSetUserClaimValues(String userName, Map<String, String> claims, String profileName,
-                                            UserStoreManager userStoreManager) throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Post set claims is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用Post设置声明");
         }
         String eventName = IdentityEventConstants.Event.POST_SET_USER_CLAIMS;
         HashMap<String, Object> properties = new HashMap<>();
@@ -160,16 +159,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPreAddUser(String userName, Object credential, String[] roleList,
-                                Map<String, String> claims, String profile,
-                                UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreAddUser(String userName, Object credential, String[] roleList, Map<String, String> claims,
+            String profile, UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Pre add user is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预添加用户");
         }
         String eventName = IdentityEventConstants.Event.PRE_ADD_USER;
         HashMap<String, Object> properties = new HashMap<>();
@@ -182,16 +178,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPostAddUser(String userName, Object credential, String[] roleList,
-                                 Map<String, String> claims, String profile,
-                                 UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPostAddUser(String userName, Object credential, String[] roleList, Map<String, String> claims,
+            String profile, UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post add user is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post 添加用户");
         }
         String eventName = IdentityEventConstants.Event.POST_ADD_USER;
         HashMap<String, Object> properties = new HashMap<>();
@@ -203,16 +196,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPreUpdateCredential(String userName, Object newCredential,
-                                         Object oldCredential,
-                                         UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreUpdateCredential(String userName, Object newCredential, Object oldCredential,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre update credential is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预更新凭证");
         }
         String eventName = IdentityEventConstants.Event.PRE_UPDATE_CREDENTIAL;
         HashMap<String, Object> properties = new HashMap<>();
@@ -222,14 +212,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
     public boolean doPostUpdateCredential(String userName, Object credential, UserStoreManager userStoreManager)
             throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post update credential is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用更新post凭据");
         }
         String eventName = IdentityEventConstants.Event.POST_UPDATE_CREDENTIAL;
         HashMap<String, Object> properties = new HashMap<>();
@@ -239,13 +228,12 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
     }
 
     public boolean doPreUpdateCredentialByAdmin(String userName, Object newCredential,
-                                                UserStoreManager userStoreManager)
-            throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre update credential by admin is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用admin之前的更新凭据");
         }
         String eventName = IdentityEventConstants.Event.PRE_UPDATE_CREDENTIAL_BY_ADMIN;
         HashMap<String, Object> properties = new HashMap<>();
@@ -254,15 +242,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPostUpdateCredentialByAdmin(String userName, Object credential,
-                                                 UserStoreManager userStoreManager)
+    public boolean doPostUpdateCredentialByAdmin(String userName, Object credential, UserStoreManager userStoreManager)
             throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post update credential by admin is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用admin发布更新凭据");
         }
         String eventName = IdentityEventConstants.Event.POST_UPDATE_CREDENTIAL_BY_ADMIN;
         HashMap<String, Object> properties = new HashMap<>();
@@ -271,43 +257,37 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPreDeleteUser(String userName, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreDeleteUser(String userName, UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre delete user is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预删除用户");
         }
         String eventName = IdentityEventConstants.Event.PRE_DELETE_USER;
         handleEvent(userName, userStoreManager, eventName, new HashMap<String, Object>());
         return true;
     }
 
-
-    public boolean doPostDeleteUser(String userName, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPostDeleteUser(String userName, UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post delete user is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post 删除用户");
         }
         String eventName = IdentityEventConstants.Event.POST_DELETE_USER;
         handleEvent(userName, userStoreManager, eventName, new HashMap<String, Object>());
         return true;
     }
 
-
-    public boolean doPreSetUserClaimValue(String userName, String claimURI, String claimValue,
-                                          String profileName, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreSetUserClaimValue(String userName, String claimURI, String claimValue, String profileName,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre set user claim value is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预先设置的用户声明值");
         }
         IdentityUtil.threadLocalProperties.get().remove(IdentityCoreConstants.USER_ACCOUNT_STATE);
         String eventName = IdentityEventConstants.Event.PRE_SET_USER_CLAIM;
@@ -319,29 +299,26 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
     public boolean doPostSetUserClaimValue(String userName, UserStoreManager userStoreManager)
             throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post set user claim value is called in IdentityMgtEventListener");
+            log.debug("“在IdentityMgtEventListener中调用post设置的用户声明值");
         }
         String eventName = IdentityEventConstants.Event.POST_SET_USER_CLAIM;
         handleEvent(userName, userStoreManager, eventName, new HashMap<String, Object>());
         return true;
     }
 
-
     public boolean doPreDeleteUserClaimValues(String userName, String[] claims, String profileName,
-                                              UserStoreManager userStoreManager)
-            throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre delete user claim values is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预删除用户声明值");
         }
         String eventName = IdentityEventConstants.Event.PRE_DELETE_USER_CLAIMS;
         HashMap<String, Object> properties = new HashMap<>();
@@ -351,29 +328,26 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
     public boolean doPostDeleteUserClaimValues(String userName, UserStoreManager userStoreManager)
             throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post delete user claim values is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post删除用户声明值");
         }
         String eventName = IdentityEventConstants.Event.POST_DELETE_USER_CLAIMS;
         handleEvent(userName, userStoreManager, eventName, new HashMap<String, Object>());
         return true;
     }
 
-
     public boolean doPreDeleteUserClaimValue(String userName, String claimURI, String profileName,
-                                             UserStoreManager userStoreManager)
-            throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre delete user claim value is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预删除用户声明值");
         }
         String eventName = IdentityEventConstants.Event.PRE_DELETE_USER_CLAIM;
         HashMap<String, Object> properties = new HashMap<>();
@@ -383,14 +357,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
     public boolean doPostDeleteUserClaimValue(String userName, UserStoreManager userStoreManager)
             throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post delete user claim value is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post删除用户声明值");
         }
         String eventName = IdentityEventConstants.Event.POST_DELETE_USER_CLAIM;
         handleEvent(userName, userStoreManager, eventName, new HashMap<String, Object>());
@@ -398,12 +371,12 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
     }
 
     public boolean doPreAddRole(String roleName, String[] userList, Permission[] permissions,
-                                UserStoreManager userStoreManager) throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre add role is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预添加角色");
         }
         String eventName = IdentityEventConstants.Event.PRE_ADD_ROLE;
         HashMap<String, Object> properties = new HashMap<>();
@@ -413,14 +386,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
     public boolean doPostAddRole(String roleName, String[] userList, Permission[] permissions,
-                                 UserStoreManager userStoreManager) throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post add role is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post添加角色");
         }
         String eventName = IdentityEventConstants.Event.POST_ADD_ROLE;
         HashMap<String, Object> properties = new HashMap<>();
@@ -430,42 +402,37 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPreDeleteRole(String roleName, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreDeleteRole(String roleName, UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre delete role is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预删除角色");
         }
         String eventName = IdentityEventConstants.Event.PRE_DELETE_ROLE;
         handleEvent(null, userStoreManager, eventName, roleName, new HashMap<String, Object>());
         return true;
     }
 
-
-    public boolean doPostDeleteRole(String roleName, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPostDeleteRole(String roleName, UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post delete role is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post删除角色");
         }
         String eventName = IdentityEventConstants.Event.POST_DELETE_ROLE;
         handleEvent(null, userStoreManager, eventName, roleName, new HashMap<String, Object>());
         return true;
     }
 
-
-    public boolean doPreUpdateRoleName(String roleName, String newRoleName,
-                                       UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPreUpdateRoleName(String roleName, String newRoleName, UserStoreManager userStoreManager)
+            throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre update role name is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预更新角色名称");
         }
         String eventName = IdentityEventConstants.Event.PRE_UPDATE_ROLE;
         HashMap<String, Object> properties = new HashMap<>();
@@ -474,15 +441,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPostUpdateRoleName(String roleName, String newRoleName,
-                                        UserStoreManager userStoreManager)
+    public boolean doPostUpdateRoleName(String roleName, String newRoleName, UserStoreManager userStoreManager)
             throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post update role name is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post更新角色名称");
         }
         String eventName = IdentityEventConstants.Event.POST_UPDATE_ROLE;
         HashMap<String, Object> properties = new HashMap<>();
@@ -491,15 +456,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPreUpdateUserListOfRole(String roleName, String deletedUsers[],
-                                             String[] newUsers, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreUpdateUserListOfRole(String roleName, String deletedUsers[], String[] newUsers,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre update user list of role is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用预更新用户角色列表");
         }
         String eventName = IdentityEventConstants.Event.PRE_UPDATE_USER_LIST_OF_ROLE;
         HashMap<String, Object> properties = new HashMap<>();
@@ -509,15 +472,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPostUpdateUserListOfRole(String roleName, String deletedUsers[],
-                                              String[] newUsers, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPostUpdateUserListOfRole(String roleName, String deletedUsers[], String[] newUsers,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post update user list of role is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用更新post角色用户列表");
         }
         String eventName = IdentityEventConstants.Event.POST_UPDATE_USER_LIST_OF_ROLE;
         HashMap<String, Object> properties = new HashMap<>();
@@ -527,16 +488,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPreUpdateRoleListOfUser(String userName, String[] deletedRoles,
-                                             String[] newRoles,
-                                             UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreUpdateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("pre update role list of user is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用用户的预更新角色列表");
         }
         String eventName = IdentityEventConstants.Event.PRE_UPDATE_ROLE_LIST_OF_USER;
         HashMap<String, Object> properties = new HashMap<>();
@@ -547,15 +505,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-    public boolean doPostUpdateRoleListOfUser(String userName, String[] deletedRoles,
-                                              String[] newRoles,
-                                              UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPostUpdateRoleListOfUser(String userName, String[] deletedRoles, String[] newRoles,
+            UserStoreManager userStoreManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post update role list of user is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用用户post更新角色列表");
         }
         String eventName = IdentityEventConstants.Event.POST_UPDATE_ROLE_LIST_OF_USER;
         HashMap<String, Object> properties = new HashMap<>();
@@ -566,14 +522,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    private void handleEvent(String userName, UserStoreManager userStoreManager, String eventName, HashMap<String, Object> properties)
-            throws UserStoreException {
+    private void handleEvent(String userName, UserStoreManager userStoreManager, String eventName,
+            HashMap<String, Object> properties) throws UserStoreException {
         handleEvent(userName, userStoreManager, eventName, null, properties);
     }
 
-    private void handleEvent(String userName, UserStoreManager userStoreManager, String eventName, String roleName, HashMap<String, Object> properties)
-            throws UserStoreException {
+    private void handleEvent(String userName, UserStoreManager userStoreManager, String eventName, String roleName,
+            HashMap<String, Object> properties) throws UserStoreException {
 
         try {
             if (StringUtils.isNotBlank(userName)) {
@@ -590,12 +545,12 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
                 TenantManager tenantManager = realmService.getTenantManager();
                 userTenantDomain = tenantManager.getDomain(tenantId);
             } catch (org.wso2.carbon.user.api.UserStoreException e) {
-                    log.error("Unable to get the get the domain from realmService for tenant: " + tenantId, e);
+                log.error("不能从租户：" + tenantId + "的领域服务中获得域名", e);
             }
 
             properties.put(IdentityEventConstants.EventProperty.USER_STORE_MANAGER, userStoreManager);
-            properties.put(IdentityEventConstants.EventProperty.TENANT_ID, PrivilegedCarbonContext
-                    .getThreadLocalCarbonContext().getTenantId());
+            properties.put(IdentityEventConstants.EventProperty.TENANT_ID,
+                    PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId());
             properties.put(IdentityEventConstants.EventProperty.TENANT_DOMAIN, userTenantDomain);
 
             Event identityMgtEvent = new Event(eventName, properties);
@@ -607,8 +562,8 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
             String errorCode = e.getErrorCode();
 
             if (StringUtils.isNotEmpty(errorCode)) {
-                //This error code 22001 means user password history is violated.
-                if (StringUtils.equals(errorCode, "22001")|| StringUtils.equals(errorCode, "40001")
+                // This error code 22001 means user password history is violated.
+                if (StringUtils.equals(errorCode, "22001") || StringUtils.equals(errorCode, "40001")
                         || StringUtils.equals(errorCode, "40002")
                         || UserCoreConstants.ErrorCode.USER_IS_LOCKED.equals(errorCode)
                         || IdentityCoreConstants.USER_ACCOUNT_DISABLED_ERROR_CODE.equals(errorCode)
@@ -616,16 +571,17 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
                     throw new UserStoreException(e.getMessage(), e);
                 }
             }
-            throw new UserStoreException("Error when handling event : " + eventName, e);
+            throw new UserStoreException("处理事件" + eventName + "时出错", e);
         }
     }
 
-    public boolean doPostGetUserClaimValue(String userName, String claim, List<String> claimValue, String profileName, UserStoreManager storeManager) throws UserStoreException {
+    public boolean doPostGetUserClaimValue(String userName, String claim, List<String> claimValue, String profileName,
+            UserStoreManager storeManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post get user claim value is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post get user claim value");
         }
         String eventName = IdentityEventConstants.Event.POST_GET_USER_CLAIM;
         HashMap<String, Object> properties = new HashMap<>();
@@ -636,14 +592,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return true;
     }
 
-
-    public boolean doPostGetUserClaimValues(String userName, String[] claims, String profileName, Map<String, String>
-            claimMap, UserStoreManager storeManager) throws UserStoreException {
+    public boolean doPostGetUserClaimValues(String userName, String[] claims, String profileName,
+            Map<String, String> claimMap, UserStoreManager storeManager) throws UserStoreException {
         if (!isEnable()) {
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("post get user claim values is called in IdentityMgtEventListener");
+            log.debug("在IdentityMgtEventListener中调用post get user claim values");
         }
         String eventName = IdentityEventConstants.Event.POST_GET_USER_CLAIMS;
         HashMap<String, Object> properties = new HashMap<>();
@@ -661,13 +616,13 @@ public class IdentityMgtEventListener extends AbstractIdentityUserOperationEvent
         return isExists;
     }
 
-    private boolean isUserExistsInDomain(UserStoreManager userStoreManager, String userName,
-                                         boolean authenticated) throws UserStoreException {
+    private boolean isUserExistsInDomain(UserStoreManager userStoreManager, String userName, boolean authenticated)
+            throws UserStoreException {
         boolean isExists = false;
         if (authenticated) {
             String userDomain = UserCoreUtil.getDomainFromThreadLocal();
-            String userStoreDomain = userStoreManager.getRealmConfiguration().getUserStoreProperty(UserCoreConstants
-                    .RealmConfig.PROPERTY_DOMAIN_NAME);
+            String userStoreDomain = userStoreManager.getRealmConfiguration()
+                    .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
             if (userDomain != null) {
                 if (userDomain.equalsIgnoreCase(userStoreDomain)) {

@@ -57,7 +57,7 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
     }
 
     public String getFriendlyName() {
-        return "User Self Registration";
+        return "用户自主注册";
     }
 
     @Override
@@ -65,10 +65,12 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
 
         Map<String, Object> eventProperties = event.getEventProperties();
         String userName = (String) eventProperties.get(IdentityEventConstants.EventProperty.USER_NAME);
-        UserStoreManager userStoreManager = (UserStoreManager) eventProperties.get(IdentityEventConstants.EventProperty.USER_STORE_MANAGER);
+        UserStoreManager userStoreManager = (UserStoreManager) eventProperties
+                .get(IdentityEventConstants.EventProperty.USER_STORE_MANAGER);
 
         String tenantDomain = (String) eventProperties.get(IdentityEventConstants.EventProperty.TENANT_DOMAIN);
-        String domainName = userStoreManager.getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = userStoreManager.getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
         String[] roleList = (String[]) eventProperties.get(IdentityEventConstants.EventProperty.ROLE_LIST);
 
@@ -81,15 +83,16 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
                 IdentityRecoveryConstants.ConnectorConfig.ENABLE_SELF_SIGNUP, user.getTenantDomain()));
 
         if (!enable) {
-            //Self signup feature is disabled
+            // Self signup feature is disabled
 
             if (log.isDebugEnabled()) {
-                log.debug("Self signup feature is disabled in tenant: " + tenantDomain);
+                log.debug("租户：" + tenantDomain + "中禁用自注册功能");
             }
             return;
         }
 
-        //Check selfSignupRole is in the request. If it is not there, this handler will not do anything. just retrun
+        // Check selfSignupRole is in the request. If it is not there, this handler will
+        // not do anything. just retrun
         if (roleList == null) {
             return;
         } else {
@@ -99,11 +102,12 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
             }
         }
 
-        boolean isAccountLockOnCreation = Boolean.parseBoolean(Utils.getConnectorConfig
-                (IdentityRecoveryConstants.ConnectorConfig.ACCOUNT_LOCK_ON_CREATION, user.getTenantDomain()));
+        boolean isAccountLockOnCreation = Boolean.parseBoolean(Utils.getConnectorConfig(
+                IdentityRecoveryConstants.ConnectorConfig.ACCOUNT_LOCK_ON_CREATION, user.getTenantDomain()));
 
-        boolean isNotificationInternallyManage = Boolean.parseBoolean(Utils.getConnectorConfig
-                (IdentityRecoveryConstants.ConnectorConfig.SIGN_UP_NOTIFICATION_INTERNALLY_MANAGE, user.getTenantDomain()));
+        boolean isNotificationInternallyManage = Boolean.parseBoolean(Utils.getConnectorConfig(
+                IdentityRecoveryConstants.ConnectorConfig.SIGN_UP_NOTIFICATION_INTERNALLY_MANAGE,
+                user.getTenantDomain()));
 
         if (IdentityEventConstants.Event.POST_ADD_USER.equals(event.getEventName())) {
             UserRecoveryDataStore userRecoveryDataStore = JDBCRecoveryDataStore.getInstance();
@@ -112,27 +116,27 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
                 if (isNotificationInternallyManage && isAccountLockOnCreation) {
                     userRecoveryDataStore.invalidate(user);
                     String secretKey = UUIDGenerator.generateUUID();
-                    UserRecoveryData recoveryDataDO = new UserRecoveryData(user, secretKey, RecoveryScenarios
-                            .SELF_SIGN_UP, RecoverySteps.CONFIRM_SIGN_UP);
+                    UserRecoveryData recoveryDataDO = new UserRecoveryData(user, secretKey,
+                            RecoveryScenarios.SELF_SIGN_UP, RecoverySteps.CONFIRM_SIGN_UP);
 
                     userRecoveryDataStore.store(recoveryDataDO);
                     triggerNotification(user, IdentityRecoveryConstants.NOTIFICATION_TYPE_ACCOUNT_CONFIRM.toString(),
                             secretKey, Utils.getArbitraryProperties());
                 }
             } catch (IdentityRecoveryException e) {
-                throw new IdentityEventException("Error while sending self sign up notification ", e);
+                throw new IdentityEventException("发送自主注册通知时出错", e);
             }
             if (isAccountLockOnCreation) {
                 HashMap<String, String> userClaims = new HashMap<>();
-                //Need to lock user account
+                // Need to lock user account
                 userClaims.put(IdentityRecoveryConstants.ACCOUNT_LOCKED_CLAIM, Boolean.TRUE.toString());
                 try {
-                    userStoreManager.setUserClaimValues(user.getUserName() , userClaims, null);
+                    userStoreManager.setUserClaimValues(user.getUserName(), userClaims, null);
                     if (log.isDebugEnabled()) {
-                        log.debug("Locked user account: " + user.getUserName());
+                        log.debug("锁定用户: " + user.getUserName() + "的账号");
                     }
                 } catch (UserStoreException e) {
-                    throw new IdentityEventException("Error while lock user account :" + user.getUserName(), e);
+                    throw new IdentityEventException("锁定用户: " + user.getUserName() + "的账号时出错", e);
                 }
             }
 
@@ -149,12 +153,11 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
         return 60;
     }
 
-
-    protected void triggerNotification(User user, String type, String code, Property[] props) throws
-            IdentityRecoveryException {
+    protected void triggerNotification(User user, String type, String code, Property[] props)
+            throws IdentityRecoveryException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Sending self user registration notification user: " + user.getUserName());
+            log.debug("发送自我用户注册通知用户： " + user.getUserName());
         }
 
         String eventName = IdentityEventConstants.Event.TRIGGER_NOTIFICATION;
@@ -177,8 +180,8 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
         try {
             IdentityRecoveryServiceDataHolder.getInstance().getIdentityEventService().handleEvent(identityMgtEvent);
         } catch (IdentityEventException e) {
-            throw Utils.handleServerException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_TRIGGER_NOTIFICATION, user
-                    .getUserName(), e);
+            throw Utils.handleServerException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_TRIGGER_NOTIFICATION,
+                    user.getUserName(), e);
         }
     }
 

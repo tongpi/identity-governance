@@ -31,7 +31,8 @@ import java.util.Properties;
 import static org.testng.Assert.assertEquals;
 
 /***
- *This class does unit test coverage for AdminForcedPasswordResetConfigImpl class
+ * This class does unit test coverage for AdminForcedPasswordResetConfigImpl
+ * class
  */
 public class AdminForcedPasswordResetConfigImplTest {
 
@@ -54,7 +55,7 @@ public class AdminForcedPasswordResetConfigImplTest {
 
     @Test
     public void testGetCategory() throws IdentityGovernanceException {
-        assertEquals(adminForcedPasswordResetConfigIml.getCategory(), "Account Management Policies");
+        assertEquals(adminForcedPasswordResetConfigIml.getCategory(), "账号管理策略");
     }
 
     @Test
@@ -70,7 +71,8 @@ public class AdminForcedPasswordResetConfigImplTest {
     @Test
     public void testGetPropertyNameMapping() throws IdentityGovernanceException {
         Map<String, String> nameMappingExpected = new HashMap<>();
-        nameMappingExpected.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK,
+        nameMappingExpected.put(
+                IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK,
                 "Enable Password Reset via Recovery Email");
         nameMappingExpected.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP,
                 "Enable Password Reset via OTP");
@@ -84,7 +86,8 @@ public class AdminForcedPasswordResetConfigImplTest {
     @Test
     public void testGetPropertyDescriptionMapping() throws IdentityGovernanceException {
         Map<String, String> descriptionMappingExpected = new HashMap<>();
-        descriptionMappingExpected.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK,
+        descriptionMappingExpected.put(
+                IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK,
                 "User gets notified with a link to reset password");
         descriptionMappingExpected.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP,
                 "User gets notified with a one time password to try with SSO login");
@@ -98,7 +101,8 @@ public class AdminForcedPasswordResetConfigImplTest {
     @Test
     public void testGetPropertyNames() throws IdentityGovernanceException {
         List<String> propertiesExpected = new ArrayList<>();
-        propertiesExpected.add(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK);
+        propertiesExpected
+                .add(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK);
         propertiesExpected.add(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP);
         propertiesExpected.add(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_OFFLINE);
         String[] propertiesListExpected = propertiesExpected.toArray(new String[0]);
@@ -135,11 +139,11 @@ public class AdminForcedPasswordResetConfigImplTest {
     @Test
     public void testGetDefaultProperties() throws IdentityGovernanceException {
         String tenantDomain = "admin";
-        String[] propertyNames = new String[]{"property1", "property2", "property3"};
+        String[] propertyNames = new String[] { "property1", "property2", "property3" };
 
         // Here tenantDomain and propertyNames parameters are not used by method itself
-        Map<String, String> defaultPropertyValues =
-                adminForcedPasswordResetConfigIml.getDefaultPropertyValues(propertyNames, tenantDomain);
+        Map<String, String> defaultPropertyValues = adminForcedPasswordResetConfigIml
+                .getDefaultPropertyValues(propertyNames, tenantDomain);
         assertEquals(defaultPropertyValues, null);
     }
 

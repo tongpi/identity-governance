@@ -44,7 +44,8 @@ public class EmailUtil {
     /**
      * Send notification email to <code>receiver</code>
      *
-     * @param receiver details of the notification receiver including the email address
+     * @param receiver details of the notification receiver including the email
+     *                 address
      */
     public void sendEmail(NotificationReceiver receiver) {
 
@@ -55,16 +56,16 @@ public class EmailUtil {
                 CarbonContext.getThreadLocalCarbonContext().getTenantDomain());
         try {
             UserStoreManager userStoreManager;
-            if(IdentityUtil.getPrimaryDomainName().equals(receiver.getUserStoreDomain())) {
+            if (IdentityUtil.getPrimaryDomainName().equals(receiver.getUserStoreDomain())) {
                 userStoreManager = (UserStoreManager) CarbonContext.getThreadLocalCarbonContext().getUserRealm()
                         .getUserStoreManager();
             } else {
                 userStoreManager = ((UserStoreManager) CarbonContext.getThreadLocalCarbonContext().getUserRealm()
                         .getUserStoreManager()).getSecondaryUserStoreManager(receiver.getUserStoreDomain());
             }
-            properties.put(IdentityEventConstants.EventProperty.USER_STORE_MANAGER,userStoreManager);
+            properties.put(IdentityEventConstants.EventProperty.USER_STORE_MANAGER, userStoreManager);
         } catch (UserStoreException e) {
-            log.error("Error while getting user store manager", e);
+            log.error("获取用户存储管理器时出错", e);
             return;
         }
 
@@ -76,7 +77,7 @@ public class EmailUtil {
         try {
             NotificationTaskDataHolder.getInstance().getIdentityEventService().handleEvent(identityMgtEvent);
         } catch (IdentityEventException e) {
-            log.error("Error occurred while sending email to: " + receiver.getUsername(), e);
+            log.error("给：" + receiver.getUsername() + "发送电子邮件时发生错误", e);
         }
 
     }

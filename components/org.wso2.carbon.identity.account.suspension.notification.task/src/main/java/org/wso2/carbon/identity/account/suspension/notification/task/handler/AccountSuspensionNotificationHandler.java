@@ -56,7 +56,6 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
             return;
         }
 
-
         if (IdentityEventConstants.Event.POST_AUTHENTICATION.equals(event.getEventName())) {
             Map<String, Object> eventProperties = event.getEventProperties();
 
@@ -71,7 +70,7 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
                 userClaims.put(NotificationConstants.LAST_LOGIN_TIME, Long.toString(System.currentTimeMillis()));
                 userStoreManager.setUserClaimValues(userName, userClaims, null);
             } catch (UserStoreException e) {
-                log.error("Error occurred while updating last login claim for user: ", e);
+                log.error("更新用户：" + userName + "的上次登录声明时出错", e);
             }
         }
     }
@@ -106,8 +105,8 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
         Map<String, String> nameMapping = new HashMap<>();
         nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_ENABLED, "启用");
         nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_ACCOUNT_DISABLE_DELAY, "锁定闲置多少天的帐户");
-        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_DELAYS, "帐户锁定前事先通知用户。设置提前多少天通知用户(用逗号分隔设置多次提醒)" +
-                "");
+        nameMapping.put(NotificationConstants.SUSPENSION_NOTIFICATION_DELAYS,
+                "帐户锁定前事先通知用户。设置提前多少天通知用户(用逗号分隔设置多次提醒)" + "");
         return nameMapping;
     }
 
@@ -121,14 +120,14 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
 
         super.init(configuration);
 
-        if (StringUtils.isBlank(configs.getModuleProperties().
-                getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME))) {
-            NotificationTaskDataHolder.getInstance().setNotificationTriggerTime(configs.getModuleProperties().
-                    getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME));
+        if (StringUtils.isBlank(configs.getModuleProperties()
+                .getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME))) {
+            NotificationTaskDataHolder.getInstance().setNotificationTriggerTime(configs.getModuleProperties()
+                    .getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME));
         }
 
-        NotificationTaskDataHolder.getInstance().setNotificationTriggerTime(configs.getModuleProperties().
-                getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME));
+        NotificationTaskDataHolder.getInstance().setNotificationTriggerTime(
+                configs.getModuleProperties().getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME));
         startScheduler();
         NotificationTaskDataHolder.getInstance().getBundleContext()
                 .registerService(IdentityConnectorConfig.class.getName(), this, null);
@@ -170,14 +169,14 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
 
     private void startScheduler() {
 
-        if(!Boolean.parseBoolean(configs.getModuleProperties().getProperty(NotificationConstants.
-                SUSPENSION_NOTIFICATION_ENABLED))) {
+        if (!Boolean.parseBoolean(
+                configs.getModuleProperties().getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_ENABLED))) {
             return;
         }
 
         Date notificationTriggerTime = null;
-        String notificationTriggerTimeProperty = configs.getModuleProperties().getProperty(NotificationConstants.
-                SUSPENSION_NOTIFICATION_TRIGGER_TIME);
+        String notificationTriggerTimeProperty = configs.getModuleProperties()
+                .getProperty(NotificationConstants.SUSPENSION_NOTIFICATION_TRIGGER_TIME);
 
         DateFormat dateFormat = new SimpleDateFormat(NotificationConstants.TRIGGER_TIME_FORMAT);
 
@@ -185,7 +184,7 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
             try {
                 notificationTriggerTime = dateFormat.parse(notificationTriggerTimeProperty);
             } catch (ParseException e) {
-                log.error("Invalid Date format for Notification trigger time", e);
+                log.error("通知触发时间的日期格式无效", e);
             }
         }
 
@@ -193,7 +192,8 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
 
         Calendar currentTime = Calendar.getInstance();
         Calendar triggerTime = Calendar.getInstance();
-        // If notificationTriggerTimeProperty is not found or not in right format default to 20:00:00.
+        // If notificationTriggerTimeProperty is not found or not in right format
+        // default to 20:00:00.
         // In Calender.HOUR_OF_DAY (i.e. in 24-hour clock) it is 20.
         if (notificationTriggerTime != null) {
             triggerTime.setTime(notificationTriggerTime);
@@ -203,22 +203,19 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
             triggerTime.set(Calendar.SECOND, 0);
         }
 
-
         // Convert times into seconds
-        long currentSecond =
-                (currentTime.get(Calendar.HOUR_OF_DAY) * 3600) + currentTime.get(Calendar.MINUTE) * 60 + currentTime
-                        .get(Calendar.SECOND);
-        long triggerSecond =
-                (triggerTime.get(Calendar.HOUR_OF_DAY) * 3600) + triggerTime.get(Calendar.MINUTE) * 60 + triggerTime
-                        .get(Calendar.SECOND);
+        long currentSecond = (currentTime.get(Calendar.HOUR_OF_DAY) * 3600) + currentTime.get(Calendar.MINUTE) * 60
+                + currentTime.get(Calendar.SECOND);
+        long triggerSecond = (triggerTime.get(Calendar.HOUR_OF_DAY) * 3600) + triggerTime.get(Calendar.MINUTE) * 60
+                + triggerTime.get(Calendar.SECOND);
         long delay = triggerSecond - currentSecond;
         // If the notification time has passed, schedule the next day
         if (delay < 0) {
             delay += schedulerDelayInSeconds;
         }
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(NotificationTaskDataHolder.getInstance().
-                getNotificationSendingThreadPoolSize());
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(
+                NotificationTaskDataHolder.getInstance().getNotificationSendingThreadPoolSize());
         scheduler.scheduleAtFixedRate(new AccountValidatorThread(), delay, schedulerDelayInSeconds, TimeUnit.SECONDS);
     }
 
@@ -231,10 +228,10 @@ public class AccountSuspensionNotificationHandler extends AbstractEventHandler i
 
         Property[] identityProperties;
         try {
-            identityProperties = NotificationTaskDataHolder.getInstance()
-                    .getIdentityGovernanceService().getConfiguration(getPropertyNames(), tenantDomain);
+            identityProperties = NotificationTaskDataHolder.getInstance().getIdentityGovernanceService()
+                    .getConfiguration(getPropertyNames(), tenantDomain);
         } catch (IdentityGovernanceException e) {
-            throw new IdentityEventException("检索帐户锁定处理程序属性时出错.", e);
+            throw new IdentityEventException("检索帐户锁定处理程序属性时出错。", e);
         }
 
         for (Property identityProperty : identityProperties) {

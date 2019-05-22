@@ -52,7 +52,7 @@ public class CaptchaFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Captcha filter activated.");
+            log.debug("验证码过滤器已激活。");
         }
     }
 
@@ -66,8 +66,8 @@ public class CaptchaFilter implements Filter {
 
             CaptchaConnector selectedCaptchaConnector = null;
             for (CaptchaConnector captchaConnector : captchaConnectors) {
-                if (captchaConnector.canHandle(servletRequest, servletResponse) && (selectedCaptchaConnector == null ||
-                        captchaConnector.getPriority() > selectedCaptchaConnector.getPriority())) {
+                if (captchaConnector.canHandle(servletRequest, servletResponse) && (selectedCaptchaConnector == null
+                        || captchaConnector.getPriority() > selectedCaptchaConnector.getPriority())) {
                     selectedCaptchaConnector = captchaConnector;
                 }
             }
@@ -77,7 +77,8 @@ public class CaptchaFilter implements Filter {
                 return;
             }
 
-            // Check whether captcha is required or will reach to the max failed attempts with the current attempt.
+            // Check whether captcha is required or will reach to the max failed attempts
+            // with the current attempt.
             CaptchaPreValidationResponse captchaPreValidationResponse = selectedCaptchaConnector
                     .preValidate(servletRequest, servletResponse);
 
@@ -94,14 +95,14 @@ public class CaptchaFilter implements Filter {
                 try {
                     boolean validCaptcha = selectedCaptchaConnector.verifyCaptcha(servletRequest, servletResponse);
                     if (!validCaptcha) {
-                        log.warn("Captcha validation failed for the user.");
+                        log.warn("验证码验证失败了。");
                         httpResponse.sendRedirect(CaptchaUtil.getOnFailRedirectUrl(httpRequest.getHeader("referer"),
                                 captchaPreValidationResponse.getOnCaptchaFailRedirectUrls(),
                                 captchaPreValidationResponse.getCaptchaAttributes()));
                         return;
                     }
                 } catch (CaptchaClientException e) {
-                    log.warn("Captcha validation failed for the user. Cause : " + e.getMessage());
+                    log.warn("验证码验证失败了。 原因： " + e.getMessage());
                     httpResponse.sendRedirect(CaptchaUtil.getOnFailRedirectUrl(httpRequest.getHeader("referer"),
                             captchaPreValidationResponse.getOnCaptchaFailRedirectUrls(),
                             captchaPreValidationResponse.getCaptchaAttributes()));
@@ -122,8 +123,9 @@ public class CaptchaFilter implements Filter {
             }
 
             // Below the no. of max failed attempts, including the current attempt
-            if (!captchaPreValidationResponse.isPostValidationRequired() || (!captchaPreValidationResponse
-                    .isCaptchaValidationRequired() && !captchaPreValidationResponse.isMaxFailedLimitReached())) {
+            if (!captchaPreValidationResponse.isPostValidationRequired()
+                    || (!captchaPreValidationResponse.isCaptchaValidationRequired()
+                            && !captchaPreValidationResponse.isMaxFailedLimitReached())) {
                 doFilter(captchaPreValidationResponse, servletRequest, servletResponse, filterChain);
                 return;
             }
@@ -131,8 +133,8 @@ public class CaptchaFilter implements Filter {
             CaptchaHttpServletResponseWrapper responseWrapper = new CaptchaHttpServletResponseWrapper(httpResponse);
             doFilter(captchaPreValidationResponse, servletRequest, responseWrapper, filterChain);
 
-            CaptchaPostValidationResponse postValidationResponse = selectedCaptchaConnector
-                    .postValidate(servletRequest, responseWrapper);
+            CaptchaPostValidationResponse postValidationResponse = selectedCaptchaConnector.postValidate(servletRequest,
+                    responseWrapper);
 
             // Check whether this attempt is failed
             if (postValidationResponse == null || postValidationResponse.isSuccessfulAttempt()) {
@@ -147,9 +149,8 @@ public class CaptchaFilter implements Filter {
                         postValidationResponse.getCaptchaAttributes()));
             }
         } catch (CaptchaException e) {
-            log.error("Error occurred in processing captcha.", e);
-            ((HttpServletResponse) servletResponse).sendRedirect(CaptchaUtil.getErrorPage("Server Error", "Something " +
-                    "went wrong. Please try again"));
+            log.error("处理验证码时出错。", e);
+            ((HttpServletResponse) servletResponse).sendRedirect(CaptchaUtil.getErrorPage("服务器错误", "出了点问题。 请再试一次"));
         }
     }
 
@@ -159,9 +160,8 @@ public class CaptchaFilter implements Filter {
     }
 
     private void doFilter(CaptchaPreValidationResponse preValidationResponse, ServletRequest servletRequest,
-                          ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
-        if(preValidationResponse.getWrappedHttpServletRequest() != null) {
+            ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        if (preValidationResponse.getWrappedHttpServletRequest() != null) {
             filterChain.doFilter(preValidationResponse.getWrappedHttpServletRequest(), servletResponse);
         } else {
             filterChain.doFilter(servletRequest, servletResponse);

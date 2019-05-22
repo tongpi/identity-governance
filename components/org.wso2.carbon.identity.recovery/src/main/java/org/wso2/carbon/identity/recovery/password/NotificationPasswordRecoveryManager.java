@@ -67,32 +67,31 @@ public class NotificationPasswordRecoveryManager {
         return instance;
     }
 
-    public NotificationResponseBean sendRecoveryNotification(User user, String type, Boolean notify, Property[] properties)
-            throws IdentityRecoveryException {
+    public NotificationResponseBean sendRecoveryNotification(User user, String type, Boolean notify,
+            Property[] properties) throws IdentityRecoveryException {
 
         if (StringUtils.isBlank(user.getTenantDomain())) {
             user.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
-            log.info("SendRecoveryNotification :Tenant domain is not in the request. set to default for user : " +
-                    user.getUserName());
+            log.info("SendRecoveryNotification：租户域不在请求中。 为用户：" + user.getUserName() + "设置默认值");
         }
 
         if (StringUtils.isBlank(user.getUserStoreDomain())) {
             user.setUserStoreDomain(IdentityUtil.getPrimaryDomainName());
-            log.info("SendRecoveryNotification :User store domain is not in the request. set to default for user" +
-                    " : " + user.getUserName());
+            log.info("SendRecoveryNotification :用户存储域不在请求中。 为用户：" + user.getUserName() + "设置默认值");
         }
 
-        boolean isRecoveryEnable = Boolean.parseBoolean(Utils.getRecoveryConfigs(IdentityRecoveryConstants
-                .ConnectorConfig.NOTIFICATION_BASED_PW_RECOVERY, user.getTenantDomain()));
+        boolean isRecoveryEnable = Boolean.parseBoolean(Utils.getRecoveryConfigs(
+                IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_BASED_PW_RECOVERY, user.getTenantDomain()));
         if (!isRecoveryEnable) {
             throw Utils.handleClientException(
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NOTIFICATION_BASED_PASSWORD_RECOVERY_NOT_ENABLE, null);
+                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_NOTIFICATION_BASED_PASSWORD_RECOVERY_NOT_ENABLE,
+                    null);
         }
 
         boolean isNotificationInternallyManage;
         if (notify == null) {
-            isNotificationInternallyManage = Boolean.parseBoolean(Utils.getRecoveryConfigs
-                    (IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE, user.getTenantDomain()));
+            isNotificationInternallyManage = Boolean.parseBoolean(Utils.getRecoveryConfigs(
+                    IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE, user.getTenantDomain()));
         } else {
             isNotificationInternallyManage = notify;
         }
@@ -101,19 +100,20 @@ public class NotificationPasswordRecoveryManager {
         int tenantId = IdentityTenantUtil.getTenantId(user.getTenantDomain());
         UserStoreManager userStoreManager;
         try {
-            userStoreManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService().
-                    getTenantUserRealm(tenantId).getUserStoreManager();
-            String domainQualifiedUsername = IdentityUtil.addDomainToName(user.getUserName(), user.getUserStoreDomain());
+            userStoreManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService()
+                    .getTenantUserRealm(tenantId).getUserStoreManager();
+            String domainQualifiedUsername = IdentityUtil.addDomainToName(user.getUserName(),
+                    user.getUserStoreDomain());
             if (!userStoreManager.isExistingUser(domainQualifiedUsername)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("No user found for recovery with username: " + user.toFullQualifiedUsername());
+                    log.debug("找不到使用用户名：" + user.toFullQualifiedUsername() + "进行恢复的用户");
                 }
-                boolean notifyUserExistence = Boolean.parseBoolean(IdentityUtil.getProperty
-                        (IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE));
+                boolean notifyUserExistence = Boolean.parseBoolean(
+                        IdentityUtil.getProperty(IdentityRecoveryConstants.ConnectorConfig.NOTIFY_USER_EXISTENCE));
 
                 if (notifyUserExistence) {
-                    throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_USER, user
-                            .getUserName());
+                    throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_USER,
+                            user.getUserName());
                 }
                 return new NotificationResponseBean(user);
             }
@@ -123,24 +123,25 @@ public class NotificationPasswordRecoveryManager {
         }
 
         if (Utils.isAccountDisabled(user)) {
-            throw Utils.handleClientException(
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_DISABLED_ACCOUNT, user.getUserName());
+            throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_DISABLED_ACCOUNT,
+                    user.getUserName());
         } else if (Utils.isAccountLocked(user)) {
-            throw Utils.handleClientException(
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_LOCKED_ACCOUNT, user.getUserName());
+            throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_LOCKED_ACCOUNT,
+                    user.getUserName());
         }
 
         userRecoveryDataStore.invalidate(user);
 
         String secretKey = UUIDGenerator.generateUUID();
-        UserRecoveryData recoveryDataDO = new UserRecoveryData(user, secretKey, RecoveryScenarios
-                .NOTIFICATION_BASED_PW_RECOVERY, RecoverySteps.UPDATE_PASSWORD);
+        UserRecoveryData recoveryDataDO = new UserRecoveryData(user, secretKey,
+                RecoveryScenarios.NOTIFICATION_BASED_PW_RECOVERY, RecoverySteps.UPDATE_PASSWORD);
 
         userRecoveryDataStore.store(recoveryDataDO);
         NotificationResponseBean notificationResponseBean = new NotificationResponseBean(user);
 
         if (isNotificationInternallyManage) {
-            triggerNotification(user, IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET, secretKey, properties);
+            triggerNotification(user, IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET, secretKey,
+                    properties);
         } else {
             notificationResponseBean.setKey(secretKey);
         }
@@ -157,13 +158,13 @@ public class NotificationPasswordRecoveryManager {
         String userTenantDomain = userRecoveryData.getUser().getTenantDomain();
 
         if (!StringUtils.equals(contextTenantDomain, userTenantDomain)) {
-            throw new IdentityRecoveryClientException("invalid tenant domain: " + userTenantDomain);
+            throw new IdentityRecoveryClientException("无效的租户域: " + userTenantDomain);
         }
-        //if return data from load method, it means the code is validated. Otherwise it returns exceptions
+        // if return data from load method, it means the code is validated. Otherwise it
+        // returns exceptions
 
         if (!RecoverySteps.UPDATE_PASSWORD.equals(userRecoveryData.getRecoveryStep())) {
-            throw Utils.handleClientException(
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_CODE, null);
+            throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_CODE, null);
         }
 
         int tenantId = IdentityTenantUtil.getTenantId(userRecoveryData.getUser().getTenantDomain());
@@ -171,12 +172,13 @@ public class NotificationPasswordRecoveryManager {
                 userRecoveryData.getUser().getUserStoreDomain());
         try {
 
-            UserStoreManager userStoreManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService().
-                    getTenantUserRealm(tenantId).getUserStoreManager();
+            UserStoreManager userStoreManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService()
+                    .getTenantUserRealm(tenantId).getUserStoreManager();
             userStoreManager.updateCredentialByAdmin(domainQualifiedName, password);
-            if (RecoveryScenarios.ADMIN_FORCED_PASSWORD_RESET_VIA_EMAIL_LINK.equals
-                    (userRecoveryData.getRecoveryScenario()) || RecoveryScenarios.ADMIN_FORCED_PASSWORD_RESET_VIA_OTP.
-                    equals(userRecoveryData.getRecoveryScenario())) {
+            if (RecoveryScenarios.ADMIN_FORCED_PASSWORD_RESET_VIA_EMAIL_LINK
+                    .equals(userRecoveryData.getRecoveryScenario())
+                    || RecoveryScenarios.ADMIN_FORCED_PASSWORD_RESET_VIA_OTP
+                            .equals(userRecoveryData.getRecoveryScenario())) {
                 HashMap<String, String> userClaims = new HashMap<>();
                 userClaims.put(IdentityRecoveryConstants.ACCOUNT_LOCKED_CLAIM, Boolean.FALSE.toString());
                 userStoreManager.setUserClaimValues(domainQualifiedName, userClaims, null);
@@ -188,25 +190,24 @@ public class NotificationPasswordRecoveryManager {
 
         userRecoveryDataStore.invalidate(code);
 
-        boolean isNotificationInternallyManaged = Boolean.parseBoolean(Utils.getRecoveryConfigs
-                (IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE, userRecoveryData.getUser().
-                        getTenantDomain()));
-        boolean isNotificationSendWhenSuccess = Boolean.parseBoolean(Utils.getRecoveryConfigs
-                (IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_SEND_RECOVERY_NOTIFICATION_SUCCESS,
+        boolean isNotificationInternallyManaged = Boolean.parseBoolean(
+                Utils.getRecoveryConfigs(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE,
                         userRecoveryData.getUser().getTenantDomain()));
+        boolean isNotificationSendWhenSuccess = Boolean.parseBoolean(Utils.getRecoveryConfigs(
+                IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_SEND_RECOVERY_NOTIFICATION_SUCCESS,
+                userRecoveryData.getUser().getTenantDomain()));
 
         if (isNotificationInternallyManaged && isNotificationSendWhenSuccess) {
             try {
-                triggerNotification(userRecoveryData.getUser(), IdentityRecoveryConstants
-                        .NOTIFICATION_TYPE_PASSWORD_RESET_SUCCESS, null, properties);
+                triggerNotification(userRecoveryData.getUser(),
+                        IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET_SUCCESS, null, properties);
             } catch (Exception e) {
-                log.warn("Error while sending password reset success notification to user :" + userRecoveryData.
-                        getUser().getUserName());
+                log.warn("向用户：" + userRecoveryData.getUser().getUserName() + "发送密码重置成功通知时出错");
             }
         }
 
         if (log.isDebugEnabled()) {
-            String msg = "Password is updated for  user: " + domainQualifiedName;
+            String msg = "用户: " + domainQualifiedName + "密码已更新";
             log.debug(msg);
         }
 
@@ -219,21 +220,22 @@ public class NotificationPasswordRecoveryManager {
             if (cause instanceof IdentityEventException) {
                 String errorCode = ((IdentityEventException) cause).getErrorCode();
                 if (StringUtils.equals(errorCode, "22001")) {
-                    throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages
-                            .ERROR_CODE_HISTORY_VIOLATE, null, e);
+                    throw Utils.handleClientException(
+                            IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_HISTORY_VIOLATE, null, e);
                 }
             }
 
             if (cause instanceof PolicyViolationException) {
                 throw IdentityException.error(IdentityRecoveryClientException.class,
-                        IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_POLICY_VIOLATION.getCode(), cause.getMessage(), e);
+                        IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_POLICY_VIOLATION.getCode(),
+                        cause.getMessage(), e);
             }
             cause = cause.getCause();
         }
     }
 
-    private void triggerNotification(User user, String type, String code, Property[] metaProperties) throws
-            IdentityRecoveryException {
+    private void triggerNotification(User user, String type, String code, Property[] metaProperties)
+            throws IdentityRecoveryException {
 
         String eventName = IdentityEventConstants.Event.TRIGGER_NOTIFICATION;
 
@@ -279,7 +281,7 @@ public class NotificationPasswordRecoveryManager {
         String contextTenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
         String userTenantDomain = userRecoveryData.getUser().getTenantDomain();
         if (!StringUtils.equals(contextTenantDomain, userTenantDomain)) {
-            throw new IdentityRecoveryClientException("Invalid tenant domain: " + userTenantDomain);
+            throw new IdentityRecoveryClientException("无效的租户域: " + userTenantDomain);
         }
         if (StringUtils.isNotBlank(recoveryStep) && !recoveryStep.equals(userRecoveryData.getRecoveryStep().name())) {
             throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_INVALID_CODE, null);
@@ -287,7 +289,7 @@ public class NotificationPasswordRecoveryManager {
         String domainQualifiedName = IdentityUtil.addDomainToName(userRecoveryData.getUser().getUserName(),
                 userRecoveryData.getUser().getUserStoreDomain());
         if (log.isDebugEnabled()) {
-            log.debug("Valid confirmation code for user: " + domainQualifiedName);
+            log.debug("用户：" + domainQualifiedName + "的有效确认码");
         }
 
     }

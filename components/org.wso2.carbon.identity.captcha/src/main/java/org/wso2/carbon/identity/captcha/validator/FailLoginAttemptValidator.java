@@ -84,7 +84,7 @@ public class FailLoginAttemptValidator extends AbstractIdentityMessageHandler im
                         CaptchaConstants.setEnableSecurityMechanism("enable");
                     }
                 } catch (CaptchaException e) {
-                    log.error("Failed to evaluate max failed attempts of the user.", e);
+                    log.error("无法评估用户的最大失败尝试次数。", e);
                 }
             }
         }

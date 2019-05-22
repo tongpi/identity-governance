@@ -51,36 +51,44 @@ import org.wso2.carbon.stratos.common.listeners.TenantMgtListener;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
-
 /**
- * @scr.component name="org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent" immediate="true"
+ * @scr.component name="org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent"
+ *                immediate="true"
  * @scr.reference name="registry.service"
- * interface="org.wso2.carbon.registry.core.service.RegistryService" cardinality="1..1"
- * policy="dynamic" bind="setRegistryService" unbind="unsetRegistryService"
+ *                interface="org.wso2.carbon.registry.core.service.RegistryService"
+ *                cardinality="1..1" policy="dynamic" bind="setRegistryService"
+ *                unbind="unsetRegistryService"
  * @scr.reference name="realm.service"
- * interface="org.wso2.carbon.user.core.service.RealmService"cardinality="1..1"
- * policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
+ *                interface="org.wso2.carbon.user.core.service.RealmService"cardinality="1..1"
+ *                policy="dynamic" bind="setRealmService"
+ *                unbind="unsetRealmService"
  * @scr.reference name="IdentityGovernanceService"
- * interface="org.wso2.carbon.identity.governance.IdentityGovernanceService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityGovernanceService" unbind="unsetIdentityGovernanceService"
+ *                interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityGovernanceService"
+ *                unbind="unsetIdentityGovernanceService"
  * @scr.reference name="RegistryResourceMgtService"
- * interface="org.wso2.carbon.identity.core.persistence.registry.RegistryResourceMgtService" cardinality="1..1"
- * policy="dynamic" bind="setResourceMgtService" unbind="unsetResourceMgtService"
+ *                interface="org.wso2.carbon.identity.core.persistence.registry.RegistryResourceMgtService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setResourceMgtService" unbind="unsetResourceMgtService"
  * @scr.reference name="IdentityEventService"
- * interface="org.wso2.carbon.identity.event.services.IdentityEventService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityEventService" unbind="unsetIdentityEventService"
+ *                interface="org.wso2.carbon.identity.event.services.IdentityEventService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityEventService"
+ *                unbind="unsetIdentityEventService"
  * @scr.reference name="AccountLockService"
- * interface="org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService"
- * cardinality="1..1" policy="dynamic" bind="setAccountLockService"
- * unbind="unsetAccountLockService"
+ *                interface="org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setAccountLockService" unbind="unsetAccountLockService"
  * @scr.reference name="ConsentManager"
- * interface="org.wso2.carbon.consent.mgt.core.ConsentManager"
- * cardinality="1..1" policy="dynamic" bind="setConsentMgtService"
- * unbind="unsetConsentMgtService"
+ *                interface="org.wso2.carbon.consent.mgt.core.ConsentManager"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setConsentMgtService" unbind="unsetConsentMgtService"
  * @scr.reference name="ConsentUtilityService"
- * interface="org.wso2.carbon.identity.consent.mgt.services.ConsentUtilityService"
- * cardinality="1..1" policy="dynamic" bind="setConsentUtilityService"
- * unbind="unsetConsentUtilityService"
+ *                interface="org.wso2.carbon.identity.consent.mgt.services.ConsentUtilityService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setConsentUtilityService"
+ *                unbind="unsetConsentUtilityService"
  */
 public class IdentityRecoveryServiceComponent {
 
@@ -105,29 +113,27 @@ public class IdentityRecoveryServiceComponent {
                     ResendConfirmationManager.getInstance(), null);
             bundleContext.registerService(AbstractEventHandler.class.getName(),
                     new AccountConfirmationValidationHandler(), null);
-            bundleContext.registerService(AbstractEventHandler.class.getName(),
-                    new UserSelfRegistrationHandler(), null);
-            bundleContext.registerService(AbstractEventHandler.class.getName(),
-                    new UserEmailVerificationHandler(), null);
-            bundleContext.registerService(AbstractEventHandler.class.getName(),
-                    new AdminForcedPasswordResetHandler(), null);
-            bundleContext.registerService(IdentityConnectorConfig.class.getName(),
-                    new RecoveryConfigImpl(), null);
-            bundleContext.registerService(IdentityConnectorConfig.class.getName(),
-                    new SelfRegistrationConfigImpl(), null);
+            bundleContext.registerService(AbstractEventHandler.class.getName(), new UserSelfRegistrationHandler(),
+                    null);
+            bundleContext.registerService(AbstractEventHandler.class.getName(), new UserEmailVerificationHandler(),
+                    null);
+            bundleContext.registerService(AbstractEventHandler.class.getName(), new AdminForcedPasswordResetHandler(),
+                    null);
+            bundleContext.registerService(IdentityConnectorConfig.class.getName(), new RecoveryConfigImpl(), null);
+            bundleContext.registerService(IdentityConnectorConfig.class.getName(), new SelfRegistrationConfigImpl(),
+                    null);
             bundleContext.registerService(IdentityConnectorConfig.class.getName(),
                     new UserEmailVerificationConfigImpl(), null);
             bundleContext.registerService(IdentityConnectorConfig.class.getName(),
                     new AdminForcedPasswordResetConfigImpl(), null);
             // Registering missing challenge question handler as a post authn handler
-            PostAuthenticationHandler postAuthnMissingChallengeQuestions =
-                    PostAuthnMissingChallengeQuestionsHandler.getInstance();
-            bundleContext.registerService(PostAuthenticationHandler.class.getName(),
-                    postAuthnMissingChallengeQuestions, null);
-
+            PostAuthenticationHandler postAuthnMissingChallengeQuestions = PostAuthnMissingChallengeQuestionsHandler
+                    .getInstance();
+            bundleContext.registerService(PostAuthenticationHandler.class.getName(), postAuthnMissingChallengeQuestions,
+                    null);
 
         } catch (Exception e) {
-            log.error("Error while activating identity governance component.", e);
+            log.error("激活身份管理组件时出错。", e);
         }
 
         // register the tenant management listener
@@ -137,42 +143,43 @@ public class IdentityRecoveryServiceComponent {
         // register default challenge questions
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Loading default challenge questions for super tenant.");
+                log.debug("为超级租户加载默认挑战问题。");
             }
             loadDefaultChallengeQuestions();
-            //   new ChallengeQuestionManager().getAllChallengeQuestions("carbon.super", "lk_LK");
+            // new ChallengeQuestionManager().getAllChallengeQuestions("carbon.super",
+            // "lk_LK");
         } catch (IdentityRecoveryException e) {
-            log.error("Error persisting challenge question for super tenant.", e);
+            log.error("超级租户持续挑战问题的错误。", e);
         }
     }
 
     protected void deactivate(ComponentContext context) {
         if (log.isDebugEnabled()) {
-            log.debug("Identity Management bundle is de-activated");
+            log.debug("身份管理包已取消激活");
         }
     }
 
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
-            log.debug("Setting the Realm Service");
+            log.debug("设置领域服务");
         }
         dataHolder.setRealmService(realmService);
     }
 
     protected void setRegistryService(RegistryService registryService) {
         if (log.isDebugEnabled()) {
-            log.debug("Setting the Registry Service");
+            log.debug("设置注册服务");
         }
         dataHolder.setRegistryService(registryService);
     }
 
     protected void unsetRealmService(RealmService realmService) {
-        log.debug("UnSetting the Realm Service");
+        log.debug("未设置领域服务");
         dataHolder.setRealmService(null);
     }
 
     protected void unsetRegistryService(RegistryService registryService) {
-        log.debug("UnSetting the Registry Service");
+        log.debug("未设置注册服务");
         dataHolder.setRegistryService(null);
     }
 
@@ -195,14 +202,14 @@ public class IdentityRecoveryServiceComponent {
     protected void unsetResourceMgtService(RegistryResourceMgtService registryResourceMgtService) {
         dataHolder.setResourceMgtService(null);
         if (log.isDebugEnabled()) {
-            log.debug("Setting Identity Resource Mgt service.");
+            log.debug("设置身份资源管理服务。");
         }
     }
 
     protected void setResourceMgtService(RegistryResourceMgtService registryResourceMgtService) {
         dataHolder.setResourceMgtService(registryResourceMgtService);
         if (log.isDebugEnabled()) {
-            log.debug("Unsetting Identity Resource Mgt service.");
+            log.debug("未设置身份资源管理服务。");
         }
     }
 
@@ -258,6 +265,5 @@ public class IdentityRecoveryServiceComponent {
         String tenantDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
         ChallengeQuestionManager.getInstance().setDefaultChallengeQuestions(tenantDomain);
     }
-
 
 }

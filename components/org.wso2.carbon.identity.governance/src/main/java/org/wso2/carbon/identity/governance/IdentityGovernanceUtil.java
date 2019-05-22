@@ -41,8 +41,8 @@ public class IdentityGovernanceUtil {
 
     private static final Log log = LogFactory.getLog(IdentityGovernanceUtil.class);
 
-    public static void saveConnectorDefaultProperties (IdentityConnectorConfig identityConnectorConfig,
-                                                       String tenantDomain) throws IdentityGovernanceException{
+    public static void saveConnectorDefaultProperties(IdentityConnectorConfig identityConnectorConfig,
+            String tenantDomain) throws IdentityGovernanceException {
 
         Properties connectorProperties = identityConnectorConfig.getDefaultPropertyValues(tenantDomain);
         IdpManager identityProviderManager = IdentityMgtServiceDataHolder.getInstance().getIdpManager();
@@ -55,9 +55,10 @@ public class IdentityGovernanceUtil {
             List<IdentityProviderProperty> propertyList = new ArrayList<>();
             for (IdentityProviderProperty idpProperty : idpProperties) {
                 String propertyName = idpProperty.getName();
-                if ((identityConnectorConfig.getName() + "." + IdentityEventConstants.PropertyConfig.ALREADY_WRITTEN_PROPERTY_KEY).equals(propertyName)) {
+                if ((identityConnectorConfig.getName() + "."
+                        + IdentityEventConstants.PropertyConfig.ALREADY_WRITTEN_PROPERTY_KEY).equals(propertyName)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Identity management property saving skipped for tenant : " + tenantDomain);
+                        log.debug("为租户" + tenantDomain + "跳过身份管理属性保存");
                     }
                     return;
                 }
@@ -73,42 +74,41 @@ public class IdentityGovernanceUtil {
                 propertyList.add(property);
             }
             IdentityProviderProperty property = new IdentityProviderProperty();
-            property.setName(identityConnectorConfig.getName() + "." + IdentityEventConstants.PropertyConfig
-                    .ALREADY_WRITTEN_PROPERTY_KEY);
+            property.setName(identityConnectorConfig.getName() + "."
+                    + IdentityEventConstants.PropertyConfig.ALREADY_WRITTEN_PROPERTY_KEY);
             property.setValue(IdentityEventConstants.PropertyConfig.ALREADY_WRITTEN_PROPERTY_VALUE);
             propertyList.add(property);
             residentIdp.setIdpProperties(propertyList.toArray(new IdentityProviderProperty[propertyList.size()]));
             FederatedAuthenticatorConfig[] authenticatorConfigs = residentIdp.getFederatedAuthenticatorConfigs();
             List<FederatedAuthenticatorConfig> configsToSave = new ArrayList<>();
             for (FederatedAuthenticatorConfig authenticatorConfig : authenticatorConfigs) {
-                if (IdentityApplicationConstants.Authenticator.PassiveSTS.NAME.equals(authenticatorConfig.getName
-                        ()) || IdentityApplicationConstants.NAME.equals(authenticatorConfig.getName()) ||
-                        IdentityApplicationConstants.Authenticator.SAML2SSO.NAME.equals(authenticatorConfig
-                                .getName())) {
+                if (IdentityApplicationConstants.Authenticator.PassiveSTS.NAME.equals(authenticatorConfig.getName())
+                        || IdentityApplicationConstants.NAME.equals(authenticatorConfig.getName())
+                        || IdentityApplicationConstants.Authenticator.SAML2SSO.NAME
+                                .equals(authenticatorConfig.getName())) {
                     configsToSave.add(authenticatorConfig);
                 }
             }
-            residentIdp.setFederatedAuthenticatorConfigs(configsToSave.toArray(new
-                    FederatedAuthenticatorConfig[configsToSave.size()]));
+            residentIdp.setFederatedAuthenticatorConfigs(
+                    configsToSave.toArray(new FederatedAuthenticatorConfig[configsToSave.size()]));
 
             identityProviderManager.updateResidentIdP(residentIdp, tenantDomain);
             if (log.isDebugEnabled()) {
-                log.debug("New resident IDP properties for tenant : " + tenantDomain + " written to database");
+                log.debug("租户：" + tenantDomain + "的新驻留IDP属性写入数据库");
             }
 
         } catch (IdentityProviderManagementException e) {
-            log.error("Error while adding identity management properties to resident Idp.", e);
+            log.error("向常驻Idp添加身份管理属性时出错。", e);
         }
 
     }
 
     public static String getUserStoreDomainName(UserStoreManager userStoreManager) {
         String domainNameProperty = null;
-        if(userStoreManager instanceof org.wso2.carbon.user.core.UserStoreManager) {
-            domainNameProperty = ((org.wso2.carbon.user.core.UserStoreManager)
-                    userStoreManager).getRealmConfiguration()
+        if (userStoreManager instanceof org.wso2.carbon.user.core.UserStoreManager) {
+            domainNameProperty = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getRealmConfiguration()
                     .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
-            if(StringUtils.isBlank(domainNameProperty)) {
+            if (StringUtils.isBlank(domainNameProperty)) {
                 domainNameProperty = IdentityUtil.getPrimaryDomainName();
             }
         }

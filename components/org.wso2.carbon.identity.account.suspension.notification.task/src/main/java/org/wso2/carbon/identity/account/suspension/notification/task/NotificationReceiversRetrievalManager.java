@@ -39,26 +39,25 @@ public class NotificationReceiversRetrievalManager {
     public static List<NotificationReceiver> getReceivers(long delay, String tenantDomain, long delayForSuspension)
             throws AccountSuspensionNotificationException {
 
-        Set<String> userStoreDomains = NotificationReceiversRetrievalUtil.
-                getSuspensionNotificationEnabledUserStores(tenantDomain);
+        Set<String> userStoreDomains = NotificationReceiversRetrievalUtil
+                .getSuspensionNotificationEnabledUserStores(tenantDomain);
 
         List<NotificationReceiver> receivers = new ArrayList<>();
 
         for (String userStoreDomain : userStoreDomains) {
             if (log.isDebugEnabled()) {
-                log.debug("Idle account suspension task enabled for user store: " + userStoreDomain + " in tenant: "
-                        + tenantDomain);
+                log.debug("为租户：" + tenantDomain + "的用户存储：" + userStoreDomain + "启用了空闲帐户暂停任务");
             }
             NotificationReceiversRetrieval notificationReceiversRetrieval = NotificationReceiversRetrievalUtil
                     .getNotificationReceiversRetrievalForDomain(userStoreDomain, tenantDomain);
             if (notificationReceiversRetrieval != null) {
                 long lookupMin;
                 try {
-                    lookupMin = getCurrentExecutionTime(NotificationTaskDataHolder.getInstance().
-                            getNotificationTriggerTime()).getTimeInMillis() - TimeUnit.DAYS.toMillis(delay+1);
+                    lookupMin = getCurrentExecutionTime(
+                            NotificationTaskDataHolder.getInstance().getNotificationTriggerTime()).getTimeInMillis()
+                            - TimeUnit.DAYS.toMillis(delay + 1);
                 } catch (ParseException e) {
-                    throw new AccountSuspensionNotificationException("Error occurred while reading notification "
-                            + "trigger time", e);
+                    throw new AccountSuspensionNotificationException("读取通知触发时间时发生错误", e);
                 }
                 long lookupMax = lookupMin + TimeUnit.DAYS.toMillis(1);
                 List<NotificationReceiver> newReceivers = notificationReceiversRetrieval

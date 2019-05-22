@@ -50,10 +50,9 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
     }
 
     @Override
-    public void store(User user, Object credential) throws
-            IdentityPasswordHistoryException {
+    public void store(User user, Object credential) throws IdentityPasswordHistoryException {
 
-        //History not validate if password is empty
+        // History not validate if password is empty
         if (credential == null) {
             return;
         }
@@ -85,8 +84,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
 
             if (recordsToDelete.size() > 0) {
                 for (int i = 0; i < recordsToDelete.size(); i++) {
-                    prepStmt2 = connection.prepareStatement(
-                            PasswordHistoryConstants.SQLQueries.DELETE_HISTORY_RECORD);
+                    prepStmt2 = connection.prepareStatement(PasswordHistoryConstants.SQLQueries.DELETE_HISTORY_RECORD);
                     prepStmt2.setInt(1, recordsToDelete.get(i));
                     prepStmt2.execute();
                 }
@@ -106,9 +104,9 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
             try {
                 connection.rollback();
             } catch (SQLException e1) {
-                throw new IdentityPasswordHistoryException("Error while rollback password history storing", e1);
+                throw new IdentityPasswordHistoryException("回滚密码历史存储时出错", e1);
             }
-            throw new IdentityPasswordHistoryException("Error while storing password history", e);
+            throw new IdentityPasswordHistoryException("存储密码历史记录时出错", e);
         } finally {
             IdentityDatabaseUtil.closeStatement(prepStmt1);
             IdentityDatabaseUtil.closeStatement(prepStmt2);
@@ -124,8 +122,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
         PreparedStatement prepStmt = null;
         try {
             connection.setAutoCommit(false);
-            prepStmt = connection.prepareStatement(PasswordHistoryConstants.SQLQueries
-                    .DELETE_USER_HISTORY);
+            prepStmt = connection.prepareStatement(PasswordHistoryConstants.SQLQueries.DELETE_USER_HISTORY);
             prepStmt.setString(1, user.getUserName());
             prepStmt.setString(2, user.getUserStoreDomain());
             prepStmt.setInt(3, IdentityTenantUtil.getTenantId(user.getTenantDomain()));
@@ -133,8 +130,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
             connection.commit();
 
         } catch (SQLException e) {
-            throw new IdentityPasswordHistoryException("Error while removing password history date from user :" +
-                    user.getUserName(), e);
+            throw new IdentityPasswordHistoryException("从用户：" + user.getUserName() + "删除密码历史记录日期时出错", e);
         } finally {
             IdentityDatabaseUtil.closeStatement(prepStmt);
             IdentityDatabaseUtil.closeConnection(connection);
@@ -144,7 +140,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
 
     @Override
     public boolean validate(User user, Object credential) throws IdentityPasswordHistoryException {
-        //History not validate if password is empty
+        // History not validate if password is empty
         if (credential == null) {
             return true;
         }
@@ -155,8 +151,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
         ResultSet resultSet = null;
         try {
             connection.setAutoCommit(false);
-            prepStmt = connection.prepareStatement(PasswordHistoryConstants.SQLQueries
-                    .LOAD_HISTORY_DATA);
+            prepStmt = connection.prepareStatement(PasswordHistoryConstants.SQLQueries.LOAD_HISTORY_DATA);
             prepStmt.setString(1, user.getUserName());
             prepStmt.setString(2, user.getUserStoreDomain());
             prepStmt.setInt(3, IdentityTenantUtil.getTenantId(user.getTenantDomain()));
@@ -173,7 +168,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
             }
 
         } catch (SQLException e) {
-            throw new IdentityPasswordHistoryException("Error while validating password history", e);
+            throw new IdentityPasswordHistoryException("验证密码历史记录时出错", e);
         } finally {
             IdentityDatabaseUtil.closeStatement(prepStmt);
             IdentityDatabaseUtil.closeResultSet(resultSet);
@@ -182,8 +177,8 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
         return true;
     }
 
-    private boolean isHistoryExists(String saltValue, String storedPassword, Object credential) throws
-            IdentityPasswordHistoryException {
+    private boolean isHistoryExists(String saltValue, String storedPassword, Object credential)
+            throws IdentityPasswordHistoryException {
 
         String password;
         password = this.preparePassword(credential.toString(), saltValue);
@@ -203,11 +198,11 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
         try {
             SecureRandom secureRandom = SecureRandom.getInstance(SHA_1_PRNG);
             byte[] bytes = new byte[16];
-            //secureRandom is automatically seeded by calling nextBytes
+            // secureRandom is automatically seeded by calling nextBytes
             secureRandom.nextBytes(bytes);
             saltValue = Base64.encode(bytes);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA1PRNG algorithm could not be found.");
+            throw new RuntimeException("找不到SHA1PRNG算法。");
         }
         return saltValue;
     }
@@ -218,8 +213,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
      * @return
      * @throws UserStoreException
      */
-    private String preparePassword(String password, String saltValue) throws
-            IdentityPasswordHistoryException {
+    private String preparePassword(String password, String saltValue) throws IdentityPasswordHistoryException {
         try {
             String digestInput = password;
             if (saltValue != null) {
@@ -238,7 +232,7 @@ public class DefaultPasswordHistoryDataStore implements PasswordHistoryDataStore
             }
             return password;
         } catch (NoSuchAlgorithmException e) {
-            String msg = "Error occurred while preparing password.";
+            String msg = "准备密码时出错。";
             if (log.isDebugEnabled()) {
                 log.debug(msg, e);
             }
