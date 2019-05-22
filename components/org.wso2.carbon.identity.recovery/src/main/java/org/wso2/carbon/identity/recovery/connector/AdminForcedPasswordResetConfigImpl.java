@@ -38,12 +38,12 @@ public class AdminForcedPasswordResetConfigImpl implements IdentityConnectorConf
 
     @Override
     public String getFriendlyName() {
-        return "Password Reset";
+        return "密码重置";
     }
 
     @Override
     public String getCategory() {
-        return "Account Management Policies";
+        return "账号管理策略";
     }
 
     @Override
@@ -60,11 +60,9 @@ public class AdminForcedPasswordResetConfigImpl implements IdentityConnectorConf
     public Map<String, String> getPropertyNameMapping() {
         Map<String, String> nameMapping = new HashMap<>();
         nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK,
-                "Enable Password Reset via Recovery Email");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP,
-                "Enable Password Reset via OTP");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_OFFLINE,
-                "Enable Password Reset Offline");
+                "通过恢复电子邮件启用密码重设");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP, "通过OTP启用密码重置");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_OFFLINE, "启用密码重置离线");
         return nameMapping;
     }
 
@@ -72,11 +70,11 @@ public class AdminForcedPasswordResetConfigImpl implements IdentityConnectorConf
     public Map<String, String> getPropertyDescriptionMapping() {
         Map<String, String> descriptionMapping = new HashMap<>();
         descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK,
-                "User gets notified with a link to reset password");
+                "用户会收到重置密码的链接");
         descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP,
-                "User gets notified with a one time password to try with SSO login");
+                "用户通过一次性密码通知用户尝试SSO登录");
         descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_OFFLINE,
-                "An OTP generated and stored in users claims");
+                "OTP生成并存储在用户声明中");
         return descriptionMapping;
     }
 
@@ -98,12 +96,12 @@ public class AdminForcedPasswordResetConfigImpl implements IdentityConnectorConf
         String enableAdminPasswordResetWithOTP = "false";
         String enableAdminPasswordResetOffline = "false";
 
-        String adminPasswordRecoveryWithLinkProperty = IdentityUtil.getProperty(
-                IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK);
-        String adminPasswordResetWithOTPProperty = IdentityUtil.getProperty(
-                IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP);
-        String adminPasswordResetOfflineProperty = IdentityUtil.getProperty(
-                IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_OFFLINE);
+        String adminPasswordRecoveryWithLinkProperty = IdentityUtil
+                .getProperty(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_RECOVERY_LINK);
+        String adminPasswordResetWithOTPProperty = IdentityUtil
+                .getProperty(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_WITH_OTP);
+        String adminPasswordResetOfflineProperty = IdentityUtil
+                .getProperty(IdentityRecoveryConstants.ConnectorConfig.ENABLE_ADMIN_PASSWORD_RESET_OFFLINE);
 
         if (StringUtils.isNotEmpty(adminPasswordRecoveryWithLinkProperty)) {
             enableAdminPasswordResetWithRecoveryLink = adminPasswordRecoveryWithLinkProperty;
@@ -129,7 +127,8 @@ public class AdminForcedPasswordResetConfigImpl implements IdentityConnectorConf
     }
 
     @Override
-    public Map<String, String> getDefaultPropertyValues(String[] propertyNames, String tenantDomain) throws IdentityGovernanceException {
+    public Map<String, String> getDefaultPropertyValues(String[] propertyNames, String tenantDomain)
+            throws IdentityGovernanceException {
         return null;
     }
 

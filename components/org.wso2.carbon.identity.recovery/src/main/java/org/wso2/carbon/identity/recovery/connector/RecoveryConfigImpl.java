@@ -59,28 +59,23 @@ public class RecoveryConfigImpl implements IdentityConnectorConfig {
     @Override
     public Map<String, String> getPropertyNameMapping() {
         Map<String, String> nameMapping = new HashMap<>();
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_BASED_PW_RECOVERY, "Enable " +
-                "Notification Based Password Recovery");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE, "Enable " +
-                "Internal Notification Management");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.QUESTION_BASED_PW_RECOVERY, "Enable Security " +
-                "Question Based Password Recovery");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.QUESTION_MIN_NO_ANSWER, "Number Of Questions " +
-                "Required For Password Recovery");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.USERNAME_RECOVERY_ENABLE, "Enable Username Recovery");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.EXPIRY_TIME, "Notification Expiry Time");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_BASED_PW_RECOVERY, "启用基于通知的密码恢复");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE, "启用内部通知管理");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.QUESTION_BASED_PW_RECOVERY, "启用基于安全问题的密码恢复");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.QUESTION_MIN_NO_ANSWER, "密码恢复所需的问题数量");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.USERNAME_RECOVERY_ENABLE, "启用用户名恢复");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.EXPIRY_TIME, "通知到期时间");
 
         nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_SEND_RECOVERY_NOTIFICATION_SUCCESS,
-                "Notify when Recovery Success");
+                "恢复成功时通知");
         nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_SEND_RECOVERY_SECURITY_START,
-                "Notify when Questions Based Recovery Starts");
+                "基于问题的恢复启动时通知");
 
         nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE,
-                "Enable reCaptcha for Security Questions Based Password Recovery");
+                "为基于安全问题的密码恢复启用验证码服务");
         nameMapping.put(IdentityRecoveryConstants.ConnectorConfig
-                .RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS, "Max Failed Attempts for ReCaptcha");
-        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.FORCE_ADD_PW_RECOVERY_QUESTION, "Enable forced " +
-                "challenge questions");
+                .RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS, "验证码服务的最大失败尝试次数");
+        nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.FORCE_ADD_PW_RECOVERY_QUESTION, "启用强制质疑问题");
         return nameMapping;
     }
 
@@ -88,11 +83,11 @@ public class RecoveryConfigImpl implements IdentityConnectorConfig {
     public Map<String, String> getPropertyDescriptionMapping() {
         Map<String, String> descriptionMapping = new HashMap<>();
         descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.NOTIFICATION_INTERNALLY_MANAGE,
-                "Set false if the client application handles notification sending");
+                "如果客户端应用程序处理通知发送设置为false");
         descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE,
-                "Show captcha for challenge question based password recovery");
+                "显示基于挑战问题的密码恢复的验证码");
         descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.FORCE_ADD_PW_RECOVERY_QUESTION,
-                "Force users to provide answers to challenge questions during sign in");
+                "强制用户在登录期间提供挑战问题的答案");
         return descriptionMapping;
     }
 

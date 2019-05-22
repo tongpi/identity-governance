@@ -75,26 +75,24 @@ public class CaptchaUtil {
 
     public static void buildReCaptchaFilterProperties() {
 
-        Path path = Paths.get(getCarbonHomeDirectory().toString(), "repository",
-                "conf", "identity", CaptchaConstants.CAPTCHA_CONFIG_FILE_NAME);
+        Path path = Paths.get(getCarbonHomeDirectory().toString(), "repository", "conf", "identity",
+                CaptchaConstants.CAPTCHA_CONFIG_FILE_NAME);
 
         if (Files.exists(path)) {
             Properties properties = new Properties();
             try (Reader in = new InputStreamReader(Files.newInputStream(path), StandardCharsets.UTF_8)) {
                 properties.load(in);
             } catch (IOException e) {
-                throw new RuntimeException("Error while loading '" + CaptchaConstants
-                        .CAPTCHA_CONFIG_FILE_NAME + "' configuration file", e);
+                throw new RuntimeException("加载 '" + CaptchaConstants.CAPTCHA_CONFIG_FILE_NAME + "' 配置文件时失败", e);
             }
 
-            boolean reCaptchaEnabled = Boolean.valueOf(properties.getProperty(CaptchaConstants
-                    .RE_CAPTCHA_ENABLED));
+            boolean reCaptchaEnabled = Boolean.valueOf(properties.getProperty(CaptchaConstants.RE_CAPTCHA_ENABLED));
 
             if (reCaptchaEnabled) {
                 CaptchaDataHolder.getInstance().setReCaptchaEnabled(true);
                 setReCaptchaConfigs(properties);
-                //setSSOLoginConnectorConfigs(properties);
-                //setPathBasedConnectorConfigs(properties);
+                // setSSOLoginConnectorConfigs(properties);
+                // setPathBasedConnectorConfigs(properties);
             } else {
                 CaptchaDataHolder.getInstance().setReCaptchaEnabled(false);
 
@@ -131,24 +129,24 @@ public class CaptchaUtil {
             return uriBuilder.build().toString();
         } catch (URISyntaxException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error occurred while building URL.", e);
+                log.debug("构建URL时出错。", e);
             }
             return url;
         }
     }
 
     public static String getOnFailRedirectUrl(String referrerUrl, List<String> onFailRedirectUrls,
-                                              Map<String, String> attributes) {
+            Map<String, String> attributes) {
 
         if (StringUtils.isBlank(referrerUrl) || onFailRedirectUrls.isEmpty()) {
-            return getErrorPage("Human Verification Failed.", "Something went wrong. Please try again.");
+            return getErrorPage("人工验证失败。", "出了点问题。 请再试一次。");
         }
 
         URIBuilder uriBuilder;
         try {
             uriBuilder = new URIBuilder(referrerUrl);
         } catch (URISyntaxException e) {
-            return getErrorPage("Human Verification Failed.", "Something went wrong. Please try again.");
+            return getErrorPage("人工验证失败。", "出了点问题。 请再试一次。");
         }
 
         for (String url : onFailRedirectUrls) {
@@ -160,7 +158,7 @@ public class CaptchaUtil {
             }
         }
 
-        return getErrorPage("Human Verification Failed.", "Something went wrong. Please try again.");
+        return getErrorPage("人工验证失败。", "出了点问题。 请再试一次。");
     }
 
     public static String getErrorPage(String status, String statusMsg) {
@@ -172,14 +170,14 @@ public class CaptchaUtil {
             return uriBuilder.build().toString();
         } catch (URISyntaxException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error occurred while building URL.", e);
+                log.debug("构建URL时出错。", e);
             }
             return CaptchaConstants.ERROR_PAGE;
         }
     }
 
-    public static Map<String, String> getClaimValues(User user, int tenantId,
-                                                     String[] claimUris) throws CaptchaServerException {
+    public static Map<String, String> getClaimValues(User user, int tenantId, String[] claimUris)
+            throws CaptchaServerException {
 
         String username = user.getUserName();
         if (!StringUtils.isBlank(user.getUserStoreDomain()) && !"PRIMARY".equals(user.getUserStoreDomain())) {
@@ -191,14 +189,14 @@ public class CaptchaUtil {
         try {
             userRealm = (UserRealm) realmService.getTenantUserRealm(tenantId);
         } catch (UserStoreException e) {
-            throw new CaptchaServerException("Failed to retrieve user realm from tenant id : " + tenantId, e);
+            throw new CaptchaServerException("无法从租户ID" + tenantId + "检索用户域", e);
         }
 
         UserStoreManager userStoreManager;
         try {
             userStoreManager = userRealm.getUserStoreManager();
         } catch (UserStoreException e) {
-            throw new CaptchaServerException("Failed to retrieve user store manager.", e);
+            throw new CaptchaServerException("无法检索用户存储管理器。", e);
         }
 
         Map<String, String> claimValues = null;
@@ -206,7 +204,7 @@ public class CaptchaUtil {
             claimValues = userStoreManager.getUserClaimValues(username, claimUris, UserCoreConstants.DEFAULT_PROFILE);
         } catch (org.wso2.carbon.user.core.UserStoreException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error occurred while retrieving user claims.", e);
+                log.debug("检索用户声明时出错。", e);
             }
         }
 
@@ -218,51 +216,52 @@ public class CaptchaUtil {
         CloseableHttpClient httpclient = HttpClientBuilder.create().useSystemProperties().build();
         HttpPost httppost = new HttpPost(CaptchaDataHolder.getInstance().getReCaptchaVerifyUrl());
 
-        List<BasicNameValuePair> params = Arrays.asList(new BasicNameValuePair("secret", CaptchaDataHolder
-                .getInstance().getReCaptchaSecretKey()), new BasicNameValuePair("response", reCaptchaResponse));
+        List<BasicNameValuePair> params = Arrays.asList(
+                new BasicNameValuePair("secret", CaptchaDataHolder.getInstance().getReCaptchaSecretKey()),
+                new BasicNameValuePair("response", reCaptchaResponse));
         httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
 
         HttpResponse response;
         try {
             response = httpclient.execute(httppost);
         } catch (IOException e) {
-            throw new CaptchaServerException("Unable to get the verification response.", e);
+            throw new CaptchaServerException("无法获得验证回复。", e);
         }
 
         HttpEntity entity = response.getEntity();
         if (entity == null) {
-            throw new CaptchaServerException("reCaptcha verification response is not received.");
+            throw new CaptchaServerException("未收到reCaptcha验证回复。");
         }
 
         try {
             try (InputStream in = entity.getContent()) {
                 JsonObject verificationResponse = new JsonParser().parse(IOUtils.toString(in)).getAsJsonObject();
-                if (verificationResponse == null || verificationResponse.get("success") == null ||
-                        !verificationResponse.get("success").getAsBoolean()) {
-                    throw new CaptchaClientException("reCaptcha verification failed. Please try again.");
+                if (verificationResponse == null || verificationResponse.get("success") == null
+                        || !verificationResponse.get("success").getAsBoolean()) {
+                    throw new CaptchaClientException("验证码验证失败。 请再试一次。");
                 }
             }
         } catch (IOException e) {
-            throw new CaptchaServerException("Unable to read the verification response.", e);
+            throw new CaptchaServerException("无法读取验证回复。", e);
         }
 
         return true;
     }
 
-    public static boolean isMaximumFailedLoginAttemptsReached(String usernameWithDomain, String tenantDomain) throws
-            CaptchaException {
+    public static boolean isMaximumFailedLoginAttemptsReached(String usernameWithDomain, String tenantDomain)
+            throws CaptchaException {
 
         String CONNECTOR_NAME = "sso.login.recaptcha";
         String RECAPTCHA_VERIFICATION_CLAIM = "http://wso2.org/claims/identity/failedLoginAttempts";
         Property[] connectorConfigs;
         try {
             connectorConfigs = CaptchaDataHolder.getInstance().getIdentityGovernanceService()
-                    .getConfiguration(new String[]{CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE,
-                            CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.MAX_ATTEMPTS}, tenantDomain);
+                    .getConfiguration(new String[] { CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE,
+                            CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.MAX_ATTEMPTS }, tenantDomain);
         } catch (Exception e) {
             // Can happen due to invalid user/ invalid tenant/ invalid configuration
             if (log.isDebugEnabled()) {
-                log.debug("Unable to load connector configuration.", e);
+                log.debug("无法加载连接器配置。", e);
             }
             return false;
         }
@@ -282,7 +281,7 @@ public class CaptchaUtil {
         }
 
         if (StringUtils.isBlank(maxAttemptsStr) || !NumberUtils.isNumber(maxAttemptsStr)) {
-            throw new CaptchaServerException("Invalid reCaptcha configuration.");
+            throw new CaptchaServerException("无效的验证码配置。");
         }
 
         int maxAttempts = Integer.parseInt(maxAttemptsStr);
@@ -292,36 +291,36 @@ public class CaptchaUtil {
         try {
             tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
         } catch (UserStoreException e) {
-            //Tenant is already validated in the canHandle section.
-            throw new CaptchaServerException("Failed to retrieve tenant id from tenant domain : " + tenantDomain, e);
+            // Tenant is already validated in the canHandle section.
+            throw new CaptchaServerException("无法从租户域：" + tenantDomain + "中检索租户ID" + tenantDomain, e);
         }
 
         if (MultitenantConstants.INVALID_TENANT_ID == tenantId) {
-            throw new CaptchaServerException("Invalid tenant domain : " + tenantDomain);
+            throw new CaptchaServerException("无效的租户域 : " + tenantDomain);
         }
 
         UserRealm userRealm;
         try {
             userRealm = (UserRealm) realmService.getTenantUserRealm(tenantId);
         } catch (UserStoreException e) {
-            throw new CaptchaServerException("Failed to retrieve user realm from tenant id : " + tenantId, e);
+            throw new CaptchaServerException("“无法从租户ID：" + tenantId + "检索用户域", e);
         }
 
         UserStoreManager userStoreManager;
         try {
             userStoreManager = userRealm.getUserStoreManager();
         } catch (UserStoreException e) {
-            throw new CaptchaServerException("Failed to retrieve user store manager.", e);
+            throw new CaptchaServerException("无法检索用户存储管理器。", e);
         }
 
         Map<String, String> claimValues;
         try {
-            claimValues = userStoreManager.getUserClaimValues(MultitenantUtils
-                    .getTenantAwareUsername(usernameWithDomain),
-                    new String[]{RECAPTCHA_VERIFICATION_CLAIM}, UserCoreConstants.DEFAULT_PROFILE);
+            claimValues = userStoreManager.getUserClaimValues(
+                    MultitenantUtils.getTenantAwareUsername(usernameWithDomain),
+                    new String[] { RECAPTCHA_VERIFICATION_CLAIM }, UserCoreConstants.DEFAULT_PROFILE);
         } catch (org.wso2.carbon.user.core.UserStoreException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error occurred while retrieving user claims.", e);
+                log.debug("检索用户声明时出错。", e);
             }
             // Invalid user
             return false;
@@ -367,17 +366,16 @@ public class CaptchaUtil {
         Map<String, String> connectorPropertyMap = new HashMap<>();
 
         final String CONNECTOR_NAME = "sso.login";
-        connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE, properties
-                .getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE));
+        connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE,
+                properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE));
         connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.CONNECTOR_IDENTIFIER_ATTRIBUTE,
-                properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes
-                        .CONNECTOR_IDENTIFIER_ATTRIBUTE));
+                properties.getProperty(
+                        CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.CONNECTOR_IDENTIFIER_ATTRIBUTE));
         connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.USER_IDENTIFIER_ATTRIBUTE,
-                properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes
-                        .USER_IDENTIFIER_ATTRIBUTE));
+                properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.USER_IDENTIFIER_ATTRIBUTE));
         connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.RECAPTCHA_VERIFICATION_CLAIM,
-                properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes
-                        .RECAPTCHA_VERIFICATION_CLAIM));
+                properties
+                        .getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.RECAPTCHA_VERIFICATION_CLAIM));
         connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.MAX_ATTEMPTS,
                 properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.MAX_ATTEMPTS));
 
@@ -389,8 +387,8 @@ public class CaptchaUtil {
         Map<String, String> connectorPropertyMap = new HashMap<>();
 
         final String CONNECTOR_NAME = "path.based";
-        connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE, properties
-                .getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE));
+        connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE,
+                properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.ENABLE));
         connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.SECURED_PAGES,
                 properties.getProperty(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.SECURED_PAGES));
         connectorPropertyMap.put(CONNECTOR_NAME + ReCaptchaConnectorPropertySuffixes.SECURED_DESTINATIONS,
@@ -401,8 +399,7 @@ public class CaptchaUtil {
 
     private static String getValidationErrorMessage(String property) {
 
-        return "Invalid value for " + property + " in the " + CaptchaConstants
-                .CAPTCHA_CONFIG_FILE_NAME + " file.";
+        return "Invalid value for " + property + " in the " + CaptchaConstants.CAPTCHA_CONFIG_FILE_NAME + " file.";
     }
 
 }

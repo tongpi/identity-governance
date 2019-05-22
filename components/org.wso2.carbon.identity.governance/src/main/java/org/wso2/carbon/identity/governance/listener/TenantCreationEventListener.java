@@ -34,11 +34,10 @@ public class TenantCreationEventListener implements TenantMgtListener {
                 .getIdentityGovernanceConnectorList();
         for (IdentityConnectorConfig identityConnectorConfig : connectorList) {
             try {
-                IdentityGovernanceUtil.saveConnectorDefaultProperties(identityConnectorConfig, tenantInfoBean
-                        .getTenantDomain());
+                IdentityGovernanceUtil.saveConnectorDefaultProperties(identityConnectorConfig,
+                        tenantInfoBean.getTenantDomain());
             } catch (IdentityGovernanceException e) {
-                throw new StratosException("Error while saving tenant configurations for " + identityConnectorConfig.getName() +
-                        ".", e);
+                throw new StratosException("为" + identityConnectorConfig.getName() + "保存租户配置时出错", e);
             }
         }
 
@@ -89,4 +88,3 @@ public class TenantCreationEventListener implements TenantMgtListener {
 
     }
 }
-

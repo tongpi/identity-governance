@@ -40,10 +40,11 @@ public class IdentityGovernanceServiceImpl implements IdentityGovernanceService 
     /**
      * Store the configurations of a tenant in cache and database
      *
-     * @param tenantDomain             Domain name of the tenant
+     * @param tenantDomain         Domain name of the tenant
      * @param configurationDetails Configurations belong to the tenant
      */
-    public void updateConfiguration(String tenantDomain, Map<String, String> configurationDetails) throws IdentityGovernanceException {
+    public void updateConfiguration(String tenantDomain, Map<String, String> configurationDetails)
+            throws IdentityGovernanceException {
 
         try {
             IdpManager identityProviderManager = IdentityMgtServiceDataHolder.getInstance().getIdpManager();
@@ -74,18 +75,18 @@ public class IdentityGovernanceServiceImpl implements IdentityGovernanceService 
             FederatedAuthenticatorConfig[] authenticatorConfigs = residentIdp.getFederatedAuthenticatorConfigs();
             List<FederatedAuthenticatorConfig> configsToSave = new ArrayList<>();
             for (FederatedAuthenticatorConfig authenticatorConfig : authenticatorConfigs) {
-                if (IdentityApplicationConstants.Authenticator.PassiveSTS.NAME.equals(authenticatorConfig.getName
-                        ()) || IdentityApplicationConstants.NAME.equals(authenticatorConfig.getName()) ||
-                        IdentityApplicationConstants.Authenticator.SAML2SSO.NAME.equals(authenticatorConfig
-                                .getName())) {
+                if (IdentityApplicationConstants.Authenticator.PassiveSTS.NAME.equals(authenticatorConfig.getName())
+                        || IdentityApplicationConstants.NAME.equals(authenticatorConfig.getName())
+                        || IdentityApplicationConstants.Authenticator.SAML2SSO.NAME
+                                .equals(authenticatorConfig.getName())) {
                     configsToSave.add(authenticatorConfig);
                 }
             }
-            residentIdp.setFederatedAuthenticatorConfigs(configsToSave.toArray(new
-                    FederatedAuthenticatorConfig[configsToSave.size()]));
+            residentIdp.setFederatedAuthenticatorConfigs(
+                    configsToSave.toArray(new FederatedAuthenticatorConfig[configsToSave.size()]));
             identityProviderManager.updateResidentIdP(residentIdp, tenantDomain);
         } catch (IdentityProviderManagementException e) {
-            log.error("Error while updating identityManagement Properties of Resident Idp.", e);
+            log.error("更新常驻Idp的身份管理属性时出错。", e);
         }
 
     }
@@ -104,14 +105,15 @@ public class IdentityGovernanceServiceImpl implements IdentityGovernanceService 
         try {
             residentIdp = identityProviderManager.getResidentIdP(tenantDomain);
         } catch (IdentityProviderManagementException e) {
-            String errorMsg = String.format("Error while retrieving resident Idp for %s tenant.", tenantDomain);
+            String errorMsg = String.format("检索%s租户的常驻Idp时出错。", tenantDomain);
             throw new IdentityGovernanceException(errorMsg, e);
         }
         IdentityProviderProperty[] identityMgtProperties = residentIdp.getIdpProperties();
         Property[] configMap = new Property[identityMgtProperties.length];
         int index = 0;
         for (IdentityProviderProperty identityMgtProperty : identityMgtProperties) {
-            if (IdentityEventConstants.PropertyConfig.ALREADY_WRITTEN_PROPERTY_KEY.equals(identityMgtProperty.getName())) {
+            if (IdentityEventConstants.PropertyConfig.ALREADY_WRITTEN_PROPERTY_KEY
+                    .equals(identityMgtProperty.getName())) {
                 continue;
             }
             Property property = new Property();
@@ -124,8 +126,7 @@ public class IdentityGovernanceServiceImpl implements IdentityGovernanceService 
     }
 
     @Override
-    public Property[] getConfiguration(String[] propertyNames, String tenantDomain) throws
-            IdentityGovernanceException {
+    public Property[] getConfiguration(String[] propertyNames, String tenantDomain) throws IdentityGovernanceException {
 
         List<Property> requestedProperties = new ArrayList<>();
         Property[] allProperties = getConfiguration(tenantDomain);

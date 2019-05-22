@@ -50,19 +50,19 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
     private static final char SQL_FILTER_CHAR_ESCAPE = '\\';
 
     @Override
-    public void store(UserIdentityClaim userIdentityDTO, UserStoreManager userStoreManager)
-            throws IdentityException {
+    public void store(UserIdentityClaim userIdentityDTO, UserStoreManager userStoreManager) throws IdentityException {
 
         if (userIdentityDTO == null || userIdentityDTO.getUserIdentityDataMap().isEmpty()) {
             return;
         }
 
-        // Before putting to cache, has to check this whether this available in the database
+        // Before putting to cache, has to check this whether this available in the
+        // database
         // Putting into cache
 
         String userName = userIdentityDTO.getUserName();
-        String domainName = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getRealmConfiguration().
-                getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
         userName = UserCoreUtil.addDomainToName(userName, domainName);
         userIdentityDTO.setUserName(userName);
 
@@ -72,9 +72,8 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
         try {
             tenantId = userStoreManager.getTenantId();
         } catch (UserStoreException e) {
-            log.error("Error while getting tenant Id.", e);
+            log.error("获取租户ID时出错。", e);
         }
-
 
         Map<String, String> data = userIdentityDTO.getUserIdentityDataMap();
 
@@ -85,24 +84,24 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
             try {
                 isUserExists = isExistingUserDataValue(userName, tenantId, key);
             } catch (SQLException e) {
-                throw IdentityException.error("Error occurred while checking if user existing", e);
+                throw IdentityException.error("检查用户是否存在时发生错误", e);
             }
             try {
                 if (isUserExists) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Key:" + key + ", Value:" + value + " updated for user:" + userName + " in " +
-                                "JDBCIdentityDataStore");
+                        log.debug("Key:" + key + ", Value:" + value + " updated for user:" + userName + " in "
+                                + "JDBCIdentityDataStore");
                     }
                     updateUserDataValue(userName, tenantId, key, value);
                 } else {
                     if (log.isDebugEnabled()) {
-                        log.debug("Key:" + key + ", Value:" + value + " added for user:" + userName + " in " +
-                                "JDBCIdentityDataStore");
+                        log.debug("Key:" + key + ", Value:" + value + " added for user:" + userName + " in "
+                                + "JDBCIdentityDataStore");
                     }
                     addUserDataValue(userName, tenantId, key, value);
                 }
             } catch (SQLException e) {
-                throw IdentityException.error("Error occurred while persisting user data", e);
+                throw IdentityException.error("持久保存用户数据时出错", e);
             }
         }
     }
@@ -136,7 +135,6 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
         return false;
     }
 
-
     private void addUserDataValue(String userName, int tenantId, String key, String value) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
@@ -155,7 +153,6 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
             IdentityDatabaseUtil.closeConnection(connection);
         }
     }
-
 
     private void updateUserDataValue(String userName, int tenantId, String key, String value) throws SQLException {
 
@@ -186,8 +183,8 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
     @Override
     public UserIdentityClaim load(String userName, UserStoreManager userStoreManager) {
 
-        String domainName = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getRealmConfiguration().
-                getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
         userName = UserCoreUtil.addDomainToName(userName, domainName);
 
         // Getting from cache
@@ -228,11 +225,11 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
             try {
                 super.store(dto, userStoreManager);
             } catch (IdentityException e) {
-                log.error("Error while reading user identity data", e);
+                log.error("读取用户身份数据时出错", e);
             }
             return dto;
         } catch (SQLException | UserStoreException e) {
-            log.error("Error while reading user identity data", e);
+            log.error("读取用户身份数据时出错", e);
         } finally {
             IdentityDatabaseUtil.closeResultSet(results);
             IdentityDatabaseUtil.closeStatement(prepStmt);
@@ -246,8 +243,8 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
     public void remove(String userName, UserStoreManager userStoreManager) throws IdentityException {
 
         super.remove(userName, userStoreManager);
-        String domainName = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).
-                getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = ((org.wso2.carbon.user.core.UserStoreManager) userStoreManager).getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
         userName = UserCoreUtil.addDomainToName(userName, domainName);
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement prepStmt = null;
@@ -266,7 +263,7 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
             prepStmt.execute();
             connection.commit();
         } catch (SQLException | UserStoreException e) {
-            throw IdentityException.error("Error while reading user identity data", e);
+            throw IdentityException.error("读取用户身份数据时出错", e);
         } finally {
             IdentityDatabaseUtil.closeStatement(prepStmt);
             IdentityDatabaseUtil.closeConnection(connection);
@@ -275,12 +272,13 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
 
     @Override
     public List<String> list(String claimUri, String claimValue,
-                             org.wso2.carbon.user.core.UserStoreManager userStoreManager) throws IdentityException {
+            org.wso2.carbon.user.core.UserStoreManager userStoreManager) throws IdentityException {
 
         List<String> userNames = new ArrayList<>();
 
         if (claimValue.contains(QUERY_FILTER_STRING_ANY)) {
-            // This is to support LDAP like queries. Value having only * is restricted except one *.
+            // This is to support LDAP like queries. Value having only * is restricted
+            // except one *.
             if (!claimValue.matches("(\\*)\\1+")) {
                 // Convert all the * to % except \*.
                 claimValue = claimValue.replaceAll("(?<!\\\\)\\*", SQL_FILTER_STRING_ANY);
@@ -301,8 +299,10 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
                 preparedStatement.setString(2, claimValue);
                 preparedStatement.setInt(3, tenantId);
 
-                // If the user has a domain, domain name is appended to the user name in the user name column. If
-                // we need to select user names only for current domain, we have to do a SQL like.
+                // If the user has a domain, domain name is appended to the user name in the
+                // user name column. If
+                // we need to select user names only for current domain, we have to do a SQL
+                // like.
                 String userNameWithDomain;
                 if (StringUtils.equalsIgnoreCase(userStoreDomain, UserCoreConstants.PRIMARY_DEFAULT_DOMAIN_NAME)) {
                     userNameWithDomain = SQL_FILTER_STRING_ANY;
@@ -313,8 +313,8 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
                 preparedStatement.setString(4, userNameWithDomain);
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Listing users with claim URI: " + claimUri + " with value: " + claimValue +
-                            " having username pattern: " + userNameWithDomain + " in tenant: " + tenantId);
+                    log.debug("Listing users with claim URI: " + claimUri + " with value: " + claimValue
+                            + " having username pattern: " + userNameWithDomain + " in tenant: " + tenantId);
                 }
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -324,46 +324,43 @@ public class JDBCIdentityDataStore extends InMemoryIdentityDataStore {
                 }
             }
         } catch (SQLException | UserStoreException e) {
-            throw new IdentityException("Error occurred while retrieving users from claim URI: " + claimUri, e);
+            throw new IdentityException("从声明URI：" + claimUri + "检索用户时出错", e);
         }
 
         return userNames;
     }
 
     /**
-     * This class contains the SQL queries.
-     * Schem:
-     * ||TENANT_ID || USERR_NAME || DATA_KEY || DATA_VALUE ||
-     * The primary key is tenantId, userName, DatKey combination
+     * This class contains the SQL queries. Schem: ||TENANT_ID || USERR_NAME ||
+     * DATA_KEY || DATA_VALUE || The primary key is tenantId, userName, DatKey
+     * combination
      */
     private static class SQLQuery {
-        public static final String CHECK_EXIST_USER_DATA = "SELECT DATA_VALUE FROM IDN_IDENTITY_USER_DATA WHERE " +
-                "TENANT_ID = ? AND USER_NAME = ? AND DATA_KEY = ?";
-        public static final String CHECK_EXIST_USER_DATA_CASE_INSENSITIVE = "SELECT DATA_VALUE FROM " +
-                "IDN_IDENTITY_USER_DATA WHERE TENANT_ID = ? AND LOWER(USER_NAME) = LOWER(?) AND DATA_KEY = ?";
+        public static final String CHECK_EXIST_USER_DATA = "SELECT DATA_VALUE FROM IDN_IDENTITY_USER_DATA WHERE "
+                + "TENANT_ID = ? AND USER_NAME = ? AND DATA_KEY = ?";
+        public static final String CHECK_EXIST_USER_DATA_CASE_INSENSITIVE = "SELECT DATA_VALUE FROM "
+                + "IDN_IDENTITY_USER_DATA WHERE TENANT_ID = ? AND LOWER(USER_NAME) = LOWER(?) AND DATA_KEY = ?";
 
-        public static final String STORE_USER_DATA = "INSERT INTO IDN_IDENTITY_USER_DATA (TENANT_ID, USER_NAME, " +
-                "DATA_KEY, DATA_VALUE) VALUES (?,?,?,?)";
+        public static final String STORE_USER_DATA = "INSERT INTO IDN_IDENTITY_USER_DATA (TENANT_ID, USER_NAME, "
+                + "DATA_KEY, DATA_VALUE) VALUES (?,?,?,?)";
 
-        public static final String UPDATE_USER_DATA = "UPDATE IDN_IDENTITY_USER_DATA SET DATA_VALUE=? WHERE " +
-                "TENANT_ID=? AND USER_NAME=? AND DATA_KEY=?";
-        public static final String UPDATE_USER_DATA_CASE_INSENSITIVE = "UPDATE IDN_IDENTITY_USER_DATA SET " +
-                "DATA_VALUE=? WHERE TENANT_ID=? AND LOWER(USER_NAME)=LOWER(?) AND DATA_KEY=?";
+        public static final String UPDATE_USER_DATA = "UPDATE IDN_IDENTITY_USER_DATA SET DATA_VALUE=? WHERE "
+                + "TENANT_ID=? AND USER_NAME=? AND DATA_KEY=?";
+        public static final String UPDATE_USER_DATA_CASE_INSENSITIVE = "UPDATE IDN_IDENTITY_USER_DATA SET "
+                + "DATA_VALUE=? WHERE TENANT_ID=? AND LOWER(USER_NAME)=LOWER(?) AND DATA_KEY=?";
 
-        public static final String LOAD_USER_DATA = "SELECT DATA_KEY, DATA_VALUE FROM IDN_IDENTITY_USER_DATA WHERE " +
-                "TENANT_ID = ? AND USER_NAME = ?";
-        public static final String LOAD_USER_DATA_CASE_INSENSITIVE = "SELECT " + "DATA_KEY, DATA_VALUE FROM " +
-                "IDN_IDENTITY_USER_DATA WHERE TENANT_ID = ? AND LOWER(USER_NAME) = LOWER(?)";
+        public static final String LOAD_USER_DATA = "SELECT DATA_KEY, DATA_VALUE FROM IDN_IDENTITY_USER_DATA WHERE "
+                + "TENANT_ID = ? AND USER_NAME = ?";
+        public static final String LOAD_USER_DATA_CASE_INSENSITIVE = "SELECT " + "DATA_KEY, DATA_VALUE FROM "
+                + "IDN_IDENTITY_USER_DATA WHERE TENANT_ID = ? AND LOWER(USER_NAME) = LOWER(?)";
 
-        public static final String DELETE_USER_DATA = "DELETE FROM IDN_IDENTITY_USER_DATA WHERE " +
-                "TENANT_ID = ? AND USER_NAME = ?";
-        public static final String DELETE_USER_DATA_CASE_INSENSITIVE = "DELETE FROM IDN_IDENTITY_USER_DATA WHERE " +
-                "TENANT_ID = ? AND LOWER(USER_NAME) = LOWER(?)";
+        public static final String DELETE_USER_DATA = "DELETE FROM IDN_IDENTITY_USER_DATA WHERE "
+                + "TENANT_ID = ? AND USER_NAME = ?";
+        public static final String DELETE_USER_DATA_CASE_INSENSITIVE = "DELETE FROM IDN_IDENTITY_USER_DATA WHERE "
+                + "TENANT_ID = ? AND LOWER(USER_NAME) = LOWER(?)";
 
-        static final String LIST_USERS_FROM_CLAIM =
-                "SELECT DISTINCT USER_NAME " +
-                "FROM IDN_IDENTITY_USER_DATA " +
-                "WHERE DATA_KEY = ? AND DATA_VALUE LIKE ? AND TENANT_ID = ? AND USER_NAME LIKE ?";
+        static final String LIST_USERS_FROM_CLAIM = "SELECT DISTINCT USER_NAME " + "FROM IDN_IDENTITY_USER_DATA "
+                + "WHERE DATA_KEY = ? AND DATA_VALUE LIKE ? AND TENANT_ID = ? AND USER_NAME LIKE ?";
 
         private SQLQuery() {
         }

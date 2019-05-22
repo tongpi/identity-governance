@@ -59,8 +59,8 @@ public class JDBCNotificationReceiversRetrieval implements NotificationReceivers
     }
 
     @Override
-    public List<NotificationReceiver> getNotificationReceivers(long lookupMin, long lookupMax,
-            long delayForSuspension, String tenantDomain) throws AccountSuspensionNotificationException {
+    public List<NotificationReceiver> getNotificationReceivers(long lookupMin, long lookupMax, long delayForSuspension,
+            String tenantDomain) throws AccountSuspensionNotificationException {
 
         List<NotificationReceiver> users = new ArrayList<NotificationReceiver>();
         RealmService realmService = NotificationTaskDataHolder.getInstance().getRealmService();
@@ -71,17 +71,17 @@ public class JDBCNotificationReceiversRetrieval implements NotificationReceivers
         ResultSet resultSet = null;
 
         try {
-            ClaimManager claimManager = (ClaimManager) realmService.getTenantUserRealm(IdentityTenantUtil.
-                    getTenantId(tenantDomain)).getClaimManager();
-            String userStoreDomain = realmConfiguration.getUserStoreProperty(UserCoreConstants.RealmConfig.
-                    PROPERTY_DOMAIN_NAME);
+            ClaimManager claimManager = (ClaimManager) realmService
+                    .getTenantUserRealm(IdentityTenantUtil.getTenantId(tenantDomain)).getClaimManager();
+            String userStoreDomain = realmConfiguration
+                    .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
             if (StringUtils.isBlank(userStoreDomain)) {
                 userStoreDomain = IdentityUtil.getPrimaryDomainName();
             }
 
-            String lastLoginTimeAttribute = claimManager
-                    .getAttributeName(userStoreDomain, NotificationConstants.LAST_LOGIN_TIME);
+            String lastLoginTimeAttribute = claimManager.getAttributeName(userStoreDomain,
+                    NotificationConstants.LAST_LOGIN_TIME);
 
             dbConnection = getDBConnection(realmConfiguration);
             sqlStmt = NotificationConstants.GET_USERS_FILTERED_BY_LAST_LOGIN_TIME;
@@ -105,11 +105,11 @@ public class JDBCNotificationReceiversRetrieval implements NotificationReceivers
                     claims[1] = NotificationConstants.EMAIL_CLAIM;
                     claims[2] = NotificationConstants.LAST_LOGIN_TIME;
 
-                    UserStoreManager userStoreManager = (UserStoreManager) realmService.getTenantUserRealm(IdentityTenantUtil
-                            .getTenantId(tenantDomain)).getUserStoreManager();
+                    UserStoreManager userStoreManager = (UserStoreManager) realmService
+                            .getTenantUserRealm(IdentityTenantUtil.getTenantId(tenantDomain)).getUserStoreManager();
 
-                    Map<String, String> map = userStoreManager.getUserClaimValues(IdentityUtil.addDomainToName
-                            (userName, userStoreDomain), claims, null);
+                    Map<String, String> map = userStoreManager
+                            .getUserClaimValues(IdentityUtil.addDomainToName(userName, userStoreDomain), claims, null);
 
                     NotificationReceiver receiver = new NotificationReceiver();
                     receiver.setEmail(map.get(NotificationConstants.EMAIL_CLAIM));
@@ -126,7 +126,7 @@ public class JDBCNotificationReceiversRetrieval implements NotificationReceivers
 
         } catch (SQLException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Using sql : " + sqlStmt);
+                log.debug("使用sql : " + sqlStmt);
             }
             throw new AccountSuspensionNotificationException(e.getMessage(), e);
         } catch (Exception e) {
@@ -146,12 +146,12 @@ public class JDBCNotificationReceiversRetrieval implements NotificationReceivers
             dbConnection = DatabaseUtil.getDBConnection(dataSource);
         }
 
-        //if primary user store, DB connection can be same as realm data source.
+        // if primary user store, DB connection can be same as realm data source.
         if (dbConnection == null && realmConfiguration.isPrimary()) {
             dbConnection = IdentityDatabaseUtil.getUserDBConnection();
         } else if (dbConnection == null) {
-            throw new UserStoreException("Could not create a database connection to " + realmConfiguration
-                    .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME));
+            throw new UserStoreException("无法创建数据库连接 "
+                    + realmConfiguration.getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME));
         } else {
             // db connection is present
         }

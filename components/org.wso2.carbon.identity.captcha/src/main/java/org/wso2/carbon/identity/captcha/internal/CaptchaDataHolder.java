@@ -154,7 +154,7 @@ public class CaptchaDataHolder {
 
     public RealmService getRealmService() {
         if(realmService == null) {
-            throw new RuntimeException("Realm Service is not available. Component did not start correctly.");
+            throw new RuntimeException("领域服务不可用。 组件未正确启动。");
         }
         return realmService;
     }

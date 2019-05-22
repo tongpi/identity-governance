@@ -41,7 +41,8 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import java.util.List;
 
 /**
- * Admin Service class to carry out operations related to challenge questions management.
+ * Admin Service class to carry out operations related to challenge questions
+ * management.
  */
 public class ChallengeQuestionManagementAdminService {
 
@@ -63,24 +64,24 @@ public class ChallengeQuestionManagementAdminService {
             challengeQuestionList = questionManager.getAllChallengeQuestions(tenantDomain);
             return challengeQuestionList.toArray(new ChallengeQuestion[challengeQuestionList.size()]);
         } catch (IdentityRecoveryException e) {
-            String errorMgs = "Error loading challenge questions for tenant : %s.";
+            String errorMgs = "在为租户: %s加载挑战问题时出错。";
             log.error(String.format(errorMgs, tenantDomain), e);
             throw new IdentityRecoveryException(String.format(errorMgs, tenantDomain), e);
         }
     }
 
     /**
-     * Get all challenge questions applicable for a user based on his locale. If we can't find any question in his
-     * locale we return challenge questions from the default en_US locale.
+     * Get all challenge questions applicable for a user based on his locale. If we
+     * can't find any question in his locale we return challenge questions from the
+     * default en_US locale.
      *
      * @param user
      * @return
      * @throws IdentityRecoveryServerException
      */
-    public ChallengeQuestion[] getChallengeQuestionsForUser(User user)
-            throws IdentityRecoveryException {
+    public ChallengeQuestion[] getChallengeQuestionsForUser(User user) throws IdentityRecoveryException {
         if (user == null) {
-            log.error("User object provided is null.");
+            log.error("提供的用户对象为null。");
             throw new IdentityRecoveryClientException("User object provided is null.");
         }
 
@@ -95,7 +96,6 @@ public class ChallengeQuestionManagementAdminService {
             throw new IdentityRecoveryException(String.format(errorMgs, user.getUserName(), tenantDomain), e);
         }
     }
-
 
     /**
      * Get all tenant questions of a locale in a tenant domain
@@ -121,7 +121,6 @@ public class ChallengeQuestionManagementAdminService {
         }
     }
 
-
     /**
      * Set challenge questions for a tenant domain
      *
@@ -141,7 +140,6 @@ public class ChallengeQuestionManagementAdminService {
         }
     }
 
-
     /**
      * Set challenge questions for a tenant domain
      *
@@ -160,7 +158,6 @@ public class ChallengeQuestionManagementAdminService {
             throw new IdentityRecoveryException(String.format(errorMsg, tenantDomain), e);
         }
     }
-
 
     /**
      * Set challenge question answers for a user
@@ -191,9 +188,9 @@ public class ChallengeQuestionManagementAdminService {
         if (tenantAwareUserName != null && !tenantAwareUserName.equals(loggedInName)) {
             boolean isAuthorized = isUserAuthorized(tenantAwareUserName, tenantDomain);
             if (!isAuthorized) {
-                throw new IdentityRecoveryClientException
-                        ("Unauthorized access!! Possible elevation of privilege attack. " + "User " + loggedInName +
-                                " trying to change challenge questions for user " + tenantAwareUserName);
+                throw new IdentityRecoveryClientException(
+                        "Unauthorized access!! Possible elevation of privilege attack. " + "User " + loggedInName
+                                + " trying to change challenge questions for user " + tenantAwareUserName);
             }
         } else if (tenantAwareUserName == null) {
             tenantAwareUserName = loggedInName;
@@ -231,8 +228,8 @@ public class ChallengeQuestionManagementAdminService {
             boolean isAuthorized = isUserAuthorized(tenantAwareUserName, tenantDomain);
             if (!isAuthorized) {
                 throw new IdentityRecoveryClientException(
-                        "Unauthorized access!! Possible violation of confidentiality. " + "User " + loggedInName +
-                                " trying to get challenge questions for user " + tenantAwareUserName);
+                        "Unauthorized access!! Possible violation of confidentiality. " + "User " + loggedInName
+                                + " trying to get challenge questions for user " + tenantAwareUserName);
             }
         } else if (tenantAwareUserName == null) {
             tenantAwareUserName = loggedInName;
@@ -247,23 +244,22 @@ public class ChallengeQuestionManagementAdminService {
         }
     }
 
-    private boolean isUserAuthorized(String tenantAwareUserName, String tenantDomain)
-            throws IdentityRecoveryException {
+    private boolean isUserAuthorized(String tenantAwareUserName, String tenantDomain) throws IdentityRecoveryException {
 
         int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
         AuthorizationManager authzManager = null;
         boolean isAuthorized;
 
         try {
-            authzManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService().
-                    getTenantUserRealm(tenantId).getAuthorizationManager();
+            authzManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService()
+                    .getTenantUserRealm(tenantId).getAuthorizationManager();
 
             isAuthorized = authzManager.isUserAuthorized(tenantAwareUserName, "/permission/admin/manage/identity",
                     CarbonConstants.UI_PERMISSION_ACTION);
 
         } catch (UserStoreException e) {
-            throw new IdentityRecoveryServerException("Error occurred while checking access level for " +
-                    "user " + tenantAwareUserName + " in tenant " + tenantDomain, e);
+            throw new IdentityRecoveryServerException("Error occurred while checking access level for " + "user "
+                    + tenantAwareUserName + " in tenant " + tenantDomain, e);
         }
 
         return isAuthorized;
@@ -274,8 +270,9 @@ public class ChallengeQuestionManagementAdminService {
         String loggedInTenant = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 
         if (!StringUtils.equals(loggedInTenant, tenantDomain)) {
-            String errorMsg = String.format("Unauthorized Access. User %s@%s trying to retrieve challenge questions " +
-                    "of %s tenant", loggedInUser, loggedInTenant, tenantDomain);
+            String errorMsg = String.format(
+                    "Unauthorized Access. User %s@%s trying to retrieve challenge questions " + "of %s tenant",
+                    loggedInUser, loggedInTenant, tenantDomain);
             throw new IdentityRecoveryClientException(errorMsg);
         }
 

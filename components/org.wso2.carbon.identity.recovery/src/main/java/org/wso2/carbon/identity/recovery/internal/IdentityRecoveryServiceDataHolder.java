@@ -38,6 +38,7 @@ public class IdentityRecoveryServiceDataHolder {
     private AccountLockService accountLockService;
     private ConsentManager consentManager;
     private ConsentUtilityService consentUtilityService;
+
     public static IdentityRecoveryServiceDataHolder getInstance() {
         return instance;
     }
@@ -59,8 +60,8 @@ public class IdentityRecoveryServiceDataHolder {
     }
 
     public IdentityGovernanceService getIdentityGovernanceService() {
-        if(identityGovernanceService == null) {
-            throw new RuntimeException("IdentityGovernanceService not available. Component is not started properly.");
+        if (identityGovernanceService == null) {
+            throw new RuntimeException("身份管理服务不可用。 组件未正确启动。");
         }
         return identityGovernanceService;
     }

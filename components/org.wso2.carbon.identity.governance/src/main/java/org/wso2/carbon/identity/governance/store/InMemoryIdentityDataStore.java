@@ -41,38 +41,37 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
     private static final String IDENTITY_GOVERNANCE_DATA_CACHE_MANAGER = "IDENTITY_GOVERNANCE_DATA_CACHE_MANAGER";
     private static final String IDENTITY_GOVERNANCE_DATA_CACHE = "IDENTITY_GOVERNANCE_DATA_CACHE";
 
-
     private static Log log = LogFactory.getLog(InMemoryIdentityDataStore.class);
 
     protected Cache<String, UserIdentityClaim> getCache() {
-        CacheManager manager = Caching.getCacheManagerFactory().getCacheManager(InMemoryIdentityDataStore.IDENTITY_GOVERNANCE_DATA_CACHE_MANAGER);
-        Cache<String, UserIdentityClaim> cache = manager.getCache(InMemoryIdentityDataStore.IDENTITY_GOVERNANCE_DATA_CACHE);
+        CacheManager manager = Caching.getCacheManagerFactory()
+                .getCacheManager(InMemoryIdentityDataStore.IDENTITY_GOVERNANCE_DATA_CACHE_MANAGER);
+        Cache<String, UserIdentityClaim> cache = manager
+                .getCache(InMemoryIdentityDataStore.IDENTITY_GOVERNANCE_DATA_CACHE);
         return cache;
     }
 
     @Override
-    public void store(UserIdentityClaim userIdentityDTO, UserStoreManager userStoreManager)
-            throws IdentityException {
+    public void store(UserIdentityClaim userIdentityDTO, UserStoreManager userStoreManager) throws IdentityException {
 
         try {
             PrivilegedCarbonContext.startTenantFlow();
-            PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+            PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                    .setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
             PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(MultitenantConstants.SUPER_TENANT_ID);
             if (userIdentityDTO != null && userIdentityDTO.getUserName() != null) {
                 String userName = UserCoreUtil.removeDomainFromName(userIdentityDTO.getUserName());
                 if (userStoreManager instanceof org.wso2.carbon.user.core.UserStoreManager) {
-                    if (!IdentityUtil.isUserStoreCaseSensitive((org.wso2.carbon.user.core.UserStoreManager)
-                            userStoreManager)) {
+                    if (!IdentityUtil
+                            .isUserStoreCaseSensitive((org.wso2.carbon.user.core.UserStoreManager) userStoreManager)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Case insensitive user store found. Changing username from : " + userName +
-                                    " to : " + userName.toLowerCase());
+                            log.debug("发现不区分大小写的用户存储。 更改用户名 从: " + userName + " 到 : " + userName.toLowerCase());
                         }
                         userName = userName.toLowerCase();
                     } else if (!IdentityUtil.isUseCaseSensitiveUsernameForCacheKeys(
                             (org.wso2.carbon.user.core.UserStoreManager) userStoreManager)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Case insensitive username for cache key is used. Changing username from : "
-                                    + userName + " to : " + userName.toLowerCase());
+                            log.debug("使用缓存秘钥的不区分大小写的用户名。 更改用户名 从 : " + userName + " 到 : " + userName.toLowerCase());
                         }
                         userName = userName.toLowerCase();
                     }
@@ -82,18 +81,20 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
                     StringBuilder data = new StringBuilder("{");
                     if (userIdentityDTO.getUserIdentityDataMap() != null) {
                         for (Map.Entry<String, String> entry : userIdentityDTO.getUserIdentityDataMap().entrySet()) {
-                            data.append("[").append(entry.getKey()).append(" = ").append(entry.getValue()).append("], ");
+                            data.append("[").append(entry.getKey()).append(" = ").append(entry.getValue())
+                                    .append("], ");
                         }
                     }
                     if (data.indexOf(",") >= 0) {
                         data.deleteCharAt(data.lastIndexOf(","));
                     }
                     data.append("}");
-                    log.debug("Storing UserIdentityClaimsDO to cache for user: " + userName + " with claims: " + data);
+                    log.debug("为用户：" + userName + "和声明：" + data + "将UserIdentityClaimsDO存储到缓存");
                 }
 
                 org.wso2.carbon.user.core.UserStoreManager store = (org.wso2.carbon.user.core.UserStoreManager) userStoreManager;
-                String domainName = store.getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+                String domainName = store.getRealmConfiguration()
+                        .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
                 String key = domainName + userStoreManager.getTenantId() + userName;
 
@@ -103,7 +104,7 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
                 }
             }
         } catch (UserStoreException e) {
-            log.error("Error while obtaining tenant ID from user store manager", e);
+            log.error("从用户存储管理获取租户ID时出错", e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }
@@ -114,24 +115,23 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
 
         try {
             PrivilegedCarbonContext.startTenantFlow();
-            PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+            PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                    .setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
             PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(MultitenantConstants.SUPER_TENANT_ID);
             Cache<String, UserIdentityClaim> cache = getCache();
             if (userName != null && cache != null) {
                 userName = UserCoreUtil.removeDomainFromName(userName);
                 if (userStoreManager instanceof org.wso2.carbon.user.core.UserStoreManager) {
-                    if (!IdentityUtil.isUserStoreCaseSensitive((org.wso2.carbon.user.core.UserStoreManager)
-                            userStoreManager)) {
+                    if (!IdentityUtil
+                            .isUserStoreCaseSensitive((org.wso2.carbon.user.core.UserStoreManager) userStoreManager)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Case insensitive user store found. Changing username from : " + userName +
-                                    " to : " + userName.toLowerCase());
+                            log.debug("发现不区分大小写的用户存储。 更改用户名 从: " + userName + " 到 : " + userName.toLowerCase());
                         }
                         userName = userName.toLowerCase();
                     } else if (!IdentityUtil.isUseCaseSensitiveUsernameForCacheKeys(
                             (org.wso2.carbon.user.core.UserStoreManager) userStoreManager)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Case insensitive username for cache key is used. Changing username from : "
-                                    + userName + " to : " + userName.toLowerCase());
+                            log.debug("使用缓存秘钥的不区分大小写的用户名。 更改用户名 从: " + userName + " 到: " + userName.toLowerCase());
                         }
                         userName = userName.toLowerCase();
                     }
@@ -139,10 +139,10 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
 
                 org.wso2.carbon.user.core.UserStoreManager store = (org.wso2.carbon.user.core.UserStoreManager) userStoreManager;
 
-                String domainName = store.getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+                String domainName = store.getRealmConfiguration()
+                        .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
-                UserIdentityClaim userIdentityDTO = cache.get(domainName + userStoreManager
-                        .getTenantId() + userName);
+                UserIdentityClaim userIdentityDTO = cache.get(domainName + userStoreManager.getTenantId() + userName);
 
                 if (userIdentityDTO != null && log.isDebugEnabled()) {
                     StringBuilder data = new StringBuilder("{");
@@ -155,13 +155,12 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
                         data.deleteCharAt(data.lastIndexOf(","));
                     }
                     data.append("}");
-                    log.debug("Loaded UserIdentityClaimsDO from cache for user :" + userName + " with claims: " + data);
-
+                    log.debug("为用户：" + userName + "和声明：" + data + "从缓存加载UserIdentityClaimsDO");
                 }
                 return userIdentityDTO;
             }
         } catch (UserStoreException e) {
-            log.error("Error while obtaining tenant ID from user store manager");
+            log.error("从用户存储管理获取租户ID时出错");
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }
@@ -173,7 +172,8 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
 
         try {
             PrivilegedCarbonContext.startTenantFlow();
-            PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+            PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                    .setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
             PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(MultitenantConstants.SUPER_TENANT_ID);
 
             Cache<String, UserIdentityClaim> cache = getCache();
@@ -182,30 +182,27 @@ public class InMemoryIdentityDataStore extends UserIdentityDataStore {
             }
             userName = UserCoreUtil.removeDomainFromName(userName);
             if (userStoreManager instanceof org.wso2.carbon.user.core.UserStoreManager) {
-                if (!IdentityUtil.isUserStoreCaseSensitive((org.wso2.carbon.user.core.UserStoreManager)
-                        userStoreManager)) {
+                if (!IdentityUtil
+                        .isUserStoreCaseSensitive((org.wso2.carbon.user.core.UserStoreManager) userStoreManager)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Case insensitive user store found. Changing username from : " + userName + " to : " +
-                                userName.toLowerCase());
+                        log.debug("发现不区分大小写的用户存储。 更改用户名 从: " + userName + " 到 : " + userName.toLowerCase());
                     }
                     userName = userName.toLowerCase();
                 } else if (!IdentityUtil.isUseCaseSensitiveUsernameForCacheKeys(
                         (org.wso2.carbon.user.core.UserStoreManager) userStoreManager)) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Case insensitive username for cache key is used. Changing username from : "
-                                + userName + " to : " + userName.toLowerCase());
+                        log.debug("使用缓存秘钥的不区分大小写的用户名。 更改用户名 从: " + userName + " 到 : " + userName.toLowerCase());
                     }
                     userName = userName.toLowerCase();
                 }
             }
-            org.wso2.carbon.user.core.UserStoreManager store = (org.wso2.carbon.user.core.UserStoreManager)
-                    userStoreManager;
-            String domainName = store.getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig
-                    .PROPERTY_DOMAIN_NAME);
+            org.wso2.carbon.user.core.UserStoreManager store = (org.wso2.carbon.user.core.UserStoreManager) userStoreManager;
+            String domainName = store.getRealmConfiguration()
+                    .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
             cache.remove(domainName + userStoreManager.getTenantId() + userName);
         } catch (UserStoreException e) {
-            log.error("Error while obtaining tenant ID from user store manager");
+            log.error("从用户存储管理获取租户ID时出错");
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }

@@ -24,12 +24,14 @@ import org.wso2.carbon.identity.event.handler.AbstractEventHandler;
 import org.wso2.carbon.identity.governance.IdentityGovernanceService;
 import org.wso2.carbon.identity.password.policy.handler.PasswordPolicyValidationHandler;
 
-
 /**
- * @scr.component name="org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent" immediate="true"
+ * @scr.component name="org.wso2.carbon.identity.recovery.internal.IdentityRecoveryServiceComponent"
+ *                immediate="true"
  * @scr.reference name="IdentityGovernanceService"
- * interface="org.wso2.carbon.identity.governance.IdentityGovernanceService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityGovernanceService" unbind="unsetIdentityGovernanceService"
+ *                interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityGovernanceService"
+ *                unbind="unsetIdentityGovernanceService"
  */
 public class IdentityPasswordPolicyServiceComponent {
 
@@ -40,7 +42,7 @@ public class IdentityPasswordPolicyServiceComponent {
         try {
 
             if (log.isDebugEnabled()) {
-                log.debug("Password Policy Service component is enabled");
+                log.debug("密码策略服务组件已启用");
             }
             BundleContext bundleContext = context.getBundleContext();
             IdentityPasswordPolicyServiceDataHolder.getInstance().setBundleContext(bundleContext);
@@ -48,15 +50,14 @@ public class IdentityPasswordPolicyServiceComponent {
             PasswordPolicyValidationHandler handler = new PasswordPolicyValidationHandler();
             context.getBundleContext().registerService(AbstractEventHandler.class.getName(), handler, null);
 
-
         } catch (Exception e) {
-            log.error("Error while activating password policy component.", e);
+            log.error("激活密码策略组件时出错。", e);
         }
     }
 
     protected void deactivate(ComponentContext context) {
         if (log.isDebugEnabled()) {
-            log.debug("Password Policy Service component is de-activated");
+            log.debug("密码策略服务组件已取消激活。");
         }
     }
 
@@ -67,6 +68,5 @@ public class IdentityPasswordPolicyServiceComponent {
     protected void setIdentityGovernanceService(IdentityGovernanceService idpManager) {
         IdentityPasswordPolicyServiceDataHolder.getInstance().setIdentityGovernanceService(idpManager);
     }
-
 
 }

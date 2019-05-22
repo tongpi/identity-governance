@@ -42,14 +42,14 @@ public class AccountConfirmationValidationHandler extends AbstractEventHandler {
 
     private static final Log log = LogFactory.getLog(AccountConfirmationValidationHandler.class);
 
-    public static final String ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
+    public static final String ACCOUNT_LOCKED_CLAIM = "http://is.cd.mtn:9443/claims/identity/accountLocked";
 
     public String getName() {
         return "accountConfirmationValidation";
     }
 
     public String getFriendlyName() {
-        return "Account Confirmation Validation";
+        return "帐户确认验证";
     }
 
     @Override
@@ -57,41 +57,42 @@ public class AccountConfirmationValidationHandler extends AbstractEventHandler {
 
         Map<String, Object> eventProperties = event.getEventProperties();
         String userName = (String) eventProperties.get(IdentityEventConstants.EventProperty.USER_NAME);
-        UserStoreManager userStoreManager = (UserStoreManager) eventProperties.get(IdentityEventConstants.EventProperty.USER_STORE_MANAGER);
+        UserStoreManager userStoreManager = (UserStoreManager) eventProperties
+                .get(IdentityEventConstants.EventProperty.USER_STORE_MANAGER);
 
         String tenantDomain = (String) eventProperties.get(IdentityEventConstants.EventProperty.TENANT_DOMAIN);
-        String domainName = userStoreManager.getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = userStoreManager.getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
         User user = new User();
         user.setUserName(userName);
         user.setTenantDomain(tenantDomain);
         user.setUserStoreDomain(domainName);
 
-
         if (IdentityEventConstants.Event.PRE_AUTHENTICATION.equals(event.getEventName())) {
-                if(log.isDebugEnabled()){
-                    log.debug("PreAuthenticate");
-                }
-            boolean isAccountLocked = true ;
+            if (log.isDebugEnabled()) {
+                log.debug("PreAuthenticate");
+            }
+            boolean isAccountLocked = true;
             try {
                 if (isAuthPolicyAccountExistCheck() && !isUserExistsInDomain(userStoreManager, userName)) {
-                    IdentityErrorMsgContext customErrorMessageContext = new IdentityErrorMsgContext(UserCoreConstants
-                            .ErrorCode.USER_DOES_NOT_EXIST);
+                    IdentityErrorMsgContext customErrorMessageContext = new IdentityErrorMsgContext(
+                            UserCoreConstants.ErrorCode.USER_DOES_NOT_EXIST);
                     IdentityUtil.setIdentityErrorMsg(customErrorMessageContext);
                     return;
                 }
-                Map<String, String> values = userStoreManager.getUserClaimValues(userName, new String[]{
-                        ACCOUNT_LOCKED_CLAIM}, UserCoreConstants.DEFAULT_PROFILE);
+                Map<String, String> values = userStoreManager.getUserClaimValues(userName,
+                        new String[] { ACCOUNT_LOCKED_CLAIM }, UserCoreConstants.DEFAULT_PROFILE);
                 isAccountLocked = Boolean.parseBoolean(values.get(ACCOUNT_LOCKED_CLAIM));
             } catch (UserStoreException e) {
-                throw new IdentityEventException("Error while retrieving account lock claim value", e);
+                throw new IdentityEventException("检索帐户锁定声明值时出错", e);
             }
             if (isAccountLocked && !isUserAccountConfirmed(user)) {
                 IdentityErrorMsgContext customErrorMessageContext = new IdentityErrorMsgContext(
                         IdentityCoreConstants.USER_ACCOUNT_NOT_CONFIRMED_ERROR_CODE);
                 IdentityUtil.setIdentityErrorMsg(customErrorMessageContext);
                 throw new IdentityEventException(IdentityCoreConstants.USER_ACCOUNT_NOT_CONFIRMED_ERROR_CODE,
-                        "User : " + userName + " not confirmed yet.");
+                        "用户 : " + userName + " 尚未确认。");
             }
         }
     }
@@ -103,9 +104,8 @@ public class AccountConfirmationValidationHandler extends AbstractEventHandler {
 
     @Override
     public int getPriority(MessageContext messageContext) {
-        return 50 ;
+        return 50;
     }
-
 
     /**
      * Check whether user is already confirmed or not.
@@ -115,17 +115,17 @@ public class AccountConfirmationValidationHandler extends AbstractEventHandler {
      * @throws IdentityEventException
      */
     private boolean isUserAccountConfirmed(User user) throws IdentityEventException {
-        boolean userConfirmed = false ;
+        boolean userConfirmed = false;
         try {
             userConfirmed = UserSelfRegistrationManager.getInstance().isUserConfirmed(user);
         } catch (IdentityRecoveryException e) {
-            throw new IdentityEventException("Error occurred while checking whether this user is confirmed or not, " + e.getMessage(), e);
+            throw new IdentityEventException(
+                    "检查此用户是否已确认时发生错误, " + e.getMessage(), e);
         }
-        return userConfirmed ;
+        return userConfirmed;
     }
 
-    private boolean isUserExistsInDomain(UserStoreManager userStoreManager, String userName)
-            throws UserStoreException {
+    private boolean isUserExistsInDomain(UserStoreManager userStoreManager, String userName) throws UserStoreException {
 
         boolean isExists = false;
         if (userStoreManager.isExistingUser(userName)) {

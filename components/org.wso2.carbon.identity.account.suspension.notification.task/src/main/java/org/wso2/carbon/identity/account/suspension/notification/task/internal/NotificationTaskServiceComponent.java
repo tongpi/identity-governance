@@ -31,27 +31,33 @@ import org.wso2.carbon.user.core.UserStoreException;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
- * Notification scheduler. Check for users who requires a notification for relogin
- * and send a notification as configured.
- * @scr.component name="NotificationTaskServiceComponent"
- * immediate="true"
+ * Notification scheduler. Check for users who requires a notification for
+ * relogin and send a notification as configured.
+ * 
+ * @scr.component name="NotificationTaskServiceComponent" immediate="true"
  * @scr.reference name="EventMgtService"
- * interface="org.wso2.carbon.identity.event.services.IdentityEventService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityEventService" unbind="unsetIdentityEventService"
+ *                interface="org.wso2.carbon.identity.event.services.IdentityEventService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityEventService"
+ *                unbind="unsetIdentityEventService"
  * @scr.reference name="IdentityGovernanceService"
- * interface="org.wso2.carbon.identity.governance.IdentityGovernanceService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityGovernanceService" unbind="unsetIdentityGovernanceService"
+ *                interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityGovernanceService"
+ *                unbind="unsetIdentityGovernanceService"
  * @scr.reference name="NotificationTaskServiceComponent"
- * interface="org.wso2.carbon.identity.account.suspension.notification.task.NotificationReceiversRetrievalFactory"
- * cardinality="0..n" policy="dynamic" bind="setNotificationReceiversRetrievalFactory"
- * unbind="unsetNotificationReceiversRetrievalFactory"
+ *                interface="org.wso2.carbon.identity.account.suspension.notification.task.NotificationReceiversRetrievalFactory"
+ *                cardinality="0..n" policy="dynamic"
+ *                bind="setNotificationReceiversRetrievalFactory"
+ *                unbind="unsetNotificationReceiversRetrievalFactory"
  * @scr.reference name="user.realmservice.default"
- * interface="org.wso2.carbon.user.core.service.RealmService"
- * cardinality="1..1" policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
+ *                interface="org.wso2.carbon.user.core.service.RealmService"
+ *                cardinality="1..1" policy="dynamic" bind="setRealmService"
+ *                unbind="unsetRealmService"
  */
 public class NotificationTaskServiceComponent {
     /*
-
+    
     * */
     private static final Logger log = Logger.getLogger(NotificationTaskServiceComponent.class);
 
@@ -63,13 +69,11 @@ public class NotificationTaskServiceComponent {
         AccountSuspensionNotificationHandler handler = new AccountSuspensionNotificationHandler();
         context.getBundleContext().registerService(AbstractEventHandler.class.getName(), handler, null);
 
-        LDAPNotificationReceiversRetrievalFactory ladLdapNotificationReceiversRetrievalFactory = new
-                LDAPNotificationReceiversRetrievalFactory();
+        LDAPNotificationReceiversRetrievalFactory ladLdapNotificationReceiversRetrievalFactory = new LDAPNotificationReceiversRetrievalFactory();
         bundleContext.registerService(NotificationReceiversRetrievalFactory.class.getName(),
                 ladLdapNotificationReceiversRetrievalFactory, null);
 
-        JDBCNotificationReceiversRetrievalFactory jdbcNotificationReceiversRetrievalFactory =
-                new JDBCNotificationReceiversRetrievalFactory();
+        JDBCNotificationReceiversRetrievalFactory jdbcNotificationReceiversRetrievalFactory = new JDBCNotificationReceiversRetrievalFactory();
         bundleContext.registerService(NotificationReceiversRetrievalFactory.class.getName(),
                 jdbcNotificationReceiversRetrievalFactory, null);
 
@@ -77,7 +81,7 @@ public class NotificationTaskServiceComponent {
 
     protected void deactivate(ComponentContext context) {
         if (log.isDebugEnabled()) {
-            log.debug("Notification bundle de-activated");
+            log.debug("通知包已取消激活");
         }
     }
 
@@ -103,7 +107,7 @@ public class NotificationTaskServiceComponent {
         NotificationTaskDataHolder.getInstance().getNotificationReceiversRetrievalFactories()
                 .put(notificationReceiversRetrievalFactory.getType(), notificationReceiversRetrievalFactory);
         if (log.isDebugEnabled()) {
-            log.debug("Added notification retriever : " + notificationReceiversRetrievalFactory.getType());
+            log.debug("添加了通知检索器 : " + notificationReceiversRetrievalFactory.getType());
         }
 
     }
@@ -115,7 +119,7 @@ public class NotificationTaskServiceComponent {
                 .remove(notificationReceiversRetrievalFactory.getType());
 
         if (log.isDebugEnabled()) {
-            log.debug("Removed notification retriever : " + notificationReceiversRetrievalFactory.getType());
+            log.debug("移除了通知检索器 : " + notificationReceiversRetrievalFactory.getType());
         }
     }
 
@@ -123,7 +127,7 @@ public class NotificationTaskServiceComponent {
 
         NotificationTaskDataHolder.getInstance().setRealmService(realmService);
         if (log.isDebugEnabled()) {
-            log.debug("RealmService is set in the User Store Count bundle");
+            log.debug("RealmService在User Store Count包中设置");
         }
     }
 
@@ -131,7 +135,7 @@ public class NotificationTaskServiceComponent {
 
         NotificationTaskDataHolder.getInstance().setRealmService(null);
         if (log.isDebugEnabled()) {
-            log.debug("RealmService is unset in the Application Authentication Framework bundle");
+            log.debug("RealmService未在应用认证框架包中设置");
         }
     }
 }

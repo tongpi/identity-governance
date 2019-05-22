@@ -42,20 +42,20 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
     private static final Log log = LogFactory.getLog(IdentityStoreEventListener.class);
     private static final String PRE_SET_USER_CLAIM_VALUES = "PreSetUserClaimValues";
     private static final String PRE_USER_ADD_CLAIM_VALUES = "PreAddUserClaimValues";
-    private static final String USER_OPERATION_EVENT_LISTENER_TYPE = "org.wso2.carbon.user.core.listener" +
-            ".UserOperationEventListener";
+    private static final String USER_OPERATION_EVENT_LISTENER_TYPE = "org.wso2.carbon.user.core.listener"
+            + ".UserOperationEventListener";
     private static final String DATA_STORE_PROPERTY_NAME = "Data.Store";
     private UserIdentityDataStore identityDataStore;
     private static final String INVALID_OPERATION = "InvalidOperation";
     private static final String USER_IDENTITY_CLAIMS = "UserIdentityClaims";
 
     public IdentityStoreEventListener() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        String storeClassName = IdentityUtil.readEventListenerProperty(USER_OPERATION_EVENT_LISTENER_TYPE,
-                this.getClass().getName()).getProperties().get(DATA_STORE_PROPERTY_NAME).toString();
+        String storeClassName = IdentityUtil
+                .readEventListenerProperty(USER_OPERATION_EVENT_LISTENER_TYPE, this.getClass().getName())
+                .getProperties().get(DATA_STORE_PROPERTY_NAME).toString();
         Class clazz = Class.forName(storeClassName.trim());
         identityDataStore = (UserIdentityDataStore) clazz.newInstance();
     }
-
 
     @Override
     public int getExecutionOrderId() {
@@ -67,8 +67,9 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
     }
 
     /**
-     * In this method we temporarily hold the Identity Claim data related to the user being added by storing it in a
-     * thread local. Upon successful addition of the user these claims will be persisted to the IdentityDataStore.
+     * In this method we temporarily hold the Identity Claim data related to the
+     * user being added by storing it in a thread local. Upon successful addition of
+     * the user these claims will be persisted to the IdentityDataStore.
      *
      * @param userName
      * @param credential
@@ -80,19 +81,15 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
      * @throws UserStoreException
      */
     @Override
-    public boolean doPreAddUser(String userName,
-                                Object credential,
-                                String[] roleList,
-                                Map<String, String> claims,
-                                String profile,
-                                UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPreAddUser(String userName, Object credential, String[] roleList, Map<String, String> claims,
+            String profile, UserStoreManager userStoreManager) throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("doPreAddUser executed in the IdentityStoreEventListener for user: " + userName);
+            log.debug("doPreAddUser在用户：" + userName + "的IdentityStoreEventListener中执行");
         }
 
         // clear the existing thread local
@@ -111,7 +108,7 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
                 // we remove the identity claims to prevent it from getting stored in user store
                 // before the user is successfully added
                 if (log.isDebugEnabled()) {
-                    log.debug(claim.getKey() + " claim added to thread local for user: " + userName + " in preUserAdd");
+                    log.debug("在preUserAdd中" + claim.getKey() + "声明添加到用户:" + userName + "的本地线程");
                 }
                 it.remove();
             }
@@ -119,7 +116,8 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
 
         UserIdentityClaim userIdentityClaim = new UserIdentityClaim(userName, userDataMap);
         userIdentityClaim.setTenantId(userStoreManager.getTenantId());
-        // Add the identity claims to to thread local, these claims will be stored to the identityDataStore to the
+        // Add the identity claims to to thread local, these claims will be stored to
+        // the identityDataStore to the
         // in the PostAddUser method
         IdentityUtil.threadLocalProperties.get().put(USER_IDENTITY_CLAIMS, userIdentityClaim);
         return true;
@@ -127,8 +125,8 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
     }
 
     /**
-     * Persist the Identity Claims we added to thread local in doPreAddUser() operation after the user was
-     * successfully added.
+     * Persist the Identity Claims we added to thread local in doPreAddUser()
+     * operation after the user was successfully added.
      *
      *
      * @param userName
@@ -141,25 +139,21 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
      * @throws UserStoreException
      */
     @Override
-    public boolean doPostAddUser(String userName,
-                                 Object credential,
-                                 String[] roleList,
-                                 Map<String, String> claims,
-                                 String profile,
-                                 UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPostAddUser(String userName, Object credential, String[] roleList, Map<String, String> claims,
+            String profile, UserStoreManager userStoreManager) throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("doPostAddUser executed in the IdentityStoreEventListener for user: " + userName);
+            log.debug("doPostAddUser在用户：" + userName + "的IdentityStoreEventListener中执行");
         }
 
         try {
             // read the thread local for temporarily stored Identity Claims
-            UserIdentityClaim userIdentityClaims =
-                    (UserIdentityClaim) IdentityUtil.threadLocalProperties.get().get(USER_IDENTITY_CLAIMS);
+            UserIdentityClaim userIdentityClaims = (UserIdentityClaim) IdentityUtil.threadLocalProperties.get()
+                    .get(USER_IDENTITY_CLAIMS);
 
             Map<String, String> userIdentityDataMap;
             if (userIdentityClaims == null) {
@@ -177,27 +171,26 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
     }
 
     /**
-     * As in the above method the user account lock claim, primary challenges
-     * claim will be separately handled. Identity claims will be removed from
-     * the claim set before adding claims to the user store.
+     * As in the above method the user account lock claim, primary challenges claim
+     * will be separately handled. Identity claims will be removed from the claim
+     * set before adding claims to the user store.
      */
     @Override
-    public boolean doPreSetUserClaimValues(String userName, Map<String, String> claims,
-                                           String profileName, UserStoreManager userStoreManager)
-            throws UserStoreException {
+    public boolean doPreSetUserClaimValues(String userName, Map<String, String> claims, String profileName,
+            UserStoreManager userStoreManager) throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("doPreSetUserClaimValues executed in the IdentityStoreEventListener for user: " + userName);
+            log.debug("doPreSetUserClaimValues在用户：" + userName + "的IdentityStoreEventListener中执行");
         }
 
         boolean accountLocked = Boolean.parseBoolean(claims.get(UserIdentityDataStore.ACCOUNT_LOCK));
         if (accountLocked) {
-            IdentityErrorMsgContext customErrorMessageContext = new IdentityErrorMsgContext(UserCoreConstants
-                    .ErrorCode.USER_IS_LOCKED);
+            IdentityErrorMsgContext customErrorMessageContext = new IdentityErrorMsgContext(
+                    UserCoreConstants.ErrorCode.USER_IS_LOCKED);
             IdentityUtil.setIdentityErrorMsg(customErrorMessageContext);
         }
 
@@ -206,16 +199,14 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
 
     @Override
     public boolean doPostGetUserClaimValues(String userName, String[] claims, String profileName,
-                                            Map<String, String> claimMap,
-                                            UserStoreManager storeManager) {
+            Map<String, String> claimMap, UserStoreManager storeManager) {
 
         if (!isEnable()) {
             return true;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("doPostGetUserClaimValues getting executed in the IdentityStoreEventListener for user: " +
-                    userName);
+            log.debug("doPostGetUserClaimValues在用户：" + userName + "的IdentityStoreEventListener中执行");
         }
 
         // No need to separately handle if identity `data store is user store based
@@ -254,62 +245,58 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
         return true;
     }
 
-    public boolean doPreGetUserClaimValue(String userName,
-                                          String claim,
-                                          String profileName,
-                                          UserStoreManager storeManager) throws UserStoreException {
+    public boolean doPreGetUserClaimValue(String userName, String claim, String profileName,
+            UserStoreManager storeManager) throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
 
-        //This operation is not supported for Identity Claims
+        // This operation is not supported for Identity Claims
         if (StringUtils.isNotBlank(claim) && claim.contains(UserCoreConstants.ClaimTypeURIs.IDENTITY_CLAIM_URI)) {
-            throw new UserStoreException(INVALID_OPERATION + " This operation is not supported for Identity claims");
+            throw new UserStoreException(INVALID_OPERATION + " 身份声明不支持此操作");
         }
         return true;
     }
 
-    public boolean doPreSetUserClaimValue(String userName,
-                                          String claimURI,
-                                          String claimValue,
-                                          String profileName,
-                                          UserStoreManager userStoreManager) throws UserStoreException {
+    public boolean doPreSetUserClaimValue(String userName, String claimURI, String claimValue, String profileName,
+            UserStoreManager userStoreManager) throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
-        //This operation is not supported for Identity Claims
+        // This operation is not supported for Identity Claims
         if (StringUtils.isNotBlank(claimURI) && claimURI.contains(UserCoreConstants.ClaimTypeURIs.IDENTITY_CLAIM_URI)) {
-            throw new UserStoreException(INVALID_OPERATION + " This operation is not supported for Identity claims");
+            throw new UserStoreException(INVALID_OPERATION + " 身份声明不支持此操作");
         }
         return true;
     }
 
     @Override
     public boolean doPreGetUserList(String claimUri, String claimValue, List<String> returnUserNameList,
-                                    UserStoreManager userStoreManager) throws UserStoreException {
+            UserStoreManager userStoreManager) throws UserStoreException {
 
         if (!isEnable()) {
             return true;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("doPreGetUserList executed in the IdentityStoreEventListener for claim URI: " + claimUri +
-                    " and claim value: " + claimValue);
+            log.debug("为声明URI：" + claimUri + "和声明值：" + claimValue + "在IdentityStoreEventListener中执行doPreGetUserList");
         }
 
         try {
             List<String> userIds = identityDataStore.list(claimUri, claimValue, userStoreManager);
 
-            // If this is the primary domain, all the users will be retrieved since the primary domain is not appended
-            // to the user name in the IDN table. So we have to filter users belongs to primary in Java level.
+            // If this is the primary domain, all the users will be retrieved since the
+            // primary domain is not appended
+            // to the user name in the IDN table. So we have to filter users belongs to
+            // primary in Java level.
             String userStoreDomain = UserCoreUtil.getDomainName(userStoreManager.getRealmConfiguration());
             if (StringUtils.equalsIgnoreCase(userStoreDomain, UserCoreConstants.PRIMARY_DEFAULT_DOMAIN_NAME)) {
                 for (String userId : userIds) {
-                    if (!StringUtils.contains(userId, UserCoreConstants.DOMAIN_SEPARATOR) ||
-                            StringUtils.startsWith(userId, UserCoreConstants.PRIMARY_DEFAULT_DOMAIN_NAME +
-                                    UserCoreConstants.DOMAIN_SEPARATOR)) {
+                    if (!StringUtils.contains(userId, UserCoreConstants.DOMAIN_SEPARATOR) || StringUtils.startsWith(
+                            userId,
+                            UserCoreConstants.PRIMARY_DEFAULT_DOMAIN_NAME + UserCoreConstants.DOMAIN_SEPARATOR)) {
                         returnUserNameList.add(userId);
                     }
                 }
@@ -318,16 +305,17 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Retrieved " + userIds.size() + " users for claim: " + claimUri);
+                log.debug("为声明：" + claimUri + "已检索 " + userIds.size() + " 个用户");
             }
             return true;
         } catch (IdentityException e) {
-            throw new UserStoreException("Error while listing the users for given claim: " + claimUri, e);
+            throw new UserStoreException("列出给定声明：" + claimUri + "的用户时出错", e);
         }
     }
 
     /**
-     * Remove identity claims related to the user being deleted from the IdentityDataStore.
+     * Remove identity claims related to the user being deleted from the
+     * IdentityDataStore.
      *
      * @param userName
      * @param userStoreManager
@@ -342,18 +330,18 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("doPostDeleteUser executed in the IdentityStoreEventListener for user: " + userName);
+            log.debug("doPostDeleteUser在IdentityStoreEventListener中为用户: " + userName + "执行");
         }
 
         // remove identity claims of user deleted from the identity store
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Removed Identity Claims of user: " + userName + " from IdentityDataStore.");
+                log.debug("从身份数据存储中移除用户: " + userName + "的身份声明时出错。");
             }
             identityDataStore.remove(userName, userStoreManager);
             return true;
         } catch (IdentityException e) {
-            throw new UserStoreException("Error while removing user: " + userName + " from identity data store", e);
+            throw new UserStoreException("从身份数据存储中移除用户: " + userName + "时出错", e);
         }
     }
 
@@ -367,10 +355,8 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
      * @return
      * @throws UserStoreException
      */
-    private boolean storeInIdentityDataStore(String userName,
-                                             UserStoreManager userStoreManager,
-                                             String operationType,
-                                             Map<String, String> claims) throws UserStoreException {
+    private boolean storeInIdentityDataStore(String userName, UserStoreManager userStoreManager, String operationType,
+            Map<String, String> claims) throws UserStoreException {
 
         // No need to separately handle if data identityDataStore is user store based
         if (identityDataStore instanceof UserStoreBasedIdentityDataStore) {
@@ -408,8 +394,7 @@ public class IdentityStoreEventListener extends AbstractIdentityUserOperationEve
                 try {
                     identityDataStore.store(userIdentityClaim, userStoreManager);
                 } catch (IdentityException e) {
-                    throw new UserStoreException(
-                            "Error while saving user identityDataStore data for user : " + userName, e);
+                    throw new UserStoreException("为用户" + userName + "保存用户identityDataStore数据时出错", e);
                 }
             }
             return true;

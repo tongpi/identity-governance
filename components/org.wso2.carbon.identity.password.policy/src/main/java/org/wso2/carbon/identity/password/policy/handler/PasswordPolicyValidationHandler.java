@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
 public class PasswordPolicyValidationHandler extends AbstractEventHandler implements IdentityConnectorConfig {
 
     private static final Log log = LogFactory.getLog(PasswordPolicyValidationHandler.class);
@@ -60,19 +59,18 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
 
         Property[] identityProperties;
         try {
-            identityProperties = IdentityPasswordPolicyServiceDataHolder.getInstance()
-                    .getIdentityGovernanceService().getConfiguration(getPropertyNames(), tenantDomain);
+            identityProperties = IdentityPasswordPolicyServiceDataHolder.getInstance().getIdentityGovernanceService()
+                    .getConfiguration(getPropertyNames(), tenantDomain);
         } catch (IdentityGovernanceException e) {
             throw new IdentityEventException("获取密码策略属性时发生错误.", e);
         }
 
-        /*initialize to default values*/
+        /* initialize to default values */
         boolean passwordPolicyValidation = false;
         String pwMinLength = "6";
         String pwMaxLength = "12";
         String pwPattern = "^((?=.*\\\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*])).{0,100}$";
-        String errorMsg = "违反密码模式策略. 密码只能包含数字[0-9], 小写" +
-                "字母[a-z], 大写字母[A-Z], 以及 !@#$%&* 字符";
+        String errorMsg = "违反密码模式策略. 密码只能包含数字[0-9], 小写" + "字母[a-z], 大写字母[A-Z], 以及 !@#$%&* 字符";
 
         for (Property identityProperty : identityProperties) {
 
@@ -87,7 +85,7 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
                 passwordPolicyValidation = BooleanUtils.toBoolean(propertyValue);
                 if (!passwordPolicyValidation) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Password Policy validation is disabled");
+                        log.debug("密码策略验证已禁用");
                     }
                     return;
                 }
@@ -96,28 +94,28 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
                 if (NumberUtils.isNumber(propertyValue) && Integer.parseInt(propertyValue) > 0) {
                     pwMinLength = propertyValue;
                 } else {
-                    log.warn("Password Policy MIN Length is not correct hence using default value: " + pwMinLength);
+                    log.warn("密码策略最小长度是不正确的，因此使用默认值: " + pwMinLength);
                 }
                 continue;
             } else if (PasswordPolicyConstants.PW_POLICY_MAX_LENGTH.equals(propertyName)) {
                 if (NumberUtils.isNumber(propertyValue) && Integer.parseInt(propertyValue) > 0) {
                     pwMaxLength = propertyValue;
                 } else {
-                    log.warn("Password Policy MAX Length is not correct hence using default value: " + pwMaxLength);
+                    log.warn("密码策略最大长度是不正确的，因此使用默认值: " + pwMaxLength);
                 }
                 continue;
             } else if (PasswordPolicyConstants.PW_POLICY_PATTERN.equals(propertyName)) {
                 if (StringUtils.isNotBlank(propertyValue)) {
                     pwPattern = propertyValue;
                 } else {
-                    log.warn("Password Policy Pattern is not correct hence using default value: " + pwPattern);
+                    log.warn("密码策略模式不正确因此使用默认值: " + pwPattern);
                 }
                 continue;
             } else if (PasswordPolicyConstants.PW_POLICY_ERROR_MSG.equals(propertyName)) {
                 if (StringUtils.isNotBlank(propertyValue)) {
                     errorMsg = propertyValue;
                 } else {
-                    log.warn("Password Policy Error Msg cannot be Empty hence using default Msg: " + errorMsg);
+                    log.warn("密码策略错误消息不能为空因此使用默认消息: " + errorMsg);
                 }
                 continue;
             }
@@ -125,16 +123,16 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
 
         PolicyRegistry policyRegistry = new PolicyRegistry();
 
-        String pwLengthPolicyCls = configs.getModuleProperties().
-                getProperty(PasswordPolicyConstants.PW_POLICY_LENGTH_CLASS);
-        String pwNamePolicyCls = configs.getModuleProperties().
-                getProperty(PasswordPolicyConstants.PW_POLICY_NAME_CLASS);
-        String pwPatternPolicyCls = configs.getModuleProperties().
-                getProperty(PasswordPolicyConstants.PW_POLICY_PATTERN_CLASS);
+        String pwLengthPolicyCls = configs.getModuleProperties()
+                .getProperty(PasswordPolicyConstants.PW_POLICY_LENGTH_CLASS);
+        String pwNamePolicyCls = configs.getModuleProperties()
+                .getProperty(PasswordPolicyConstants.PW_POLICY_NAME_CLASS);
+        String pwPatternPolicyCls = configs.getModuleProperties()
+                .getProperty(PasswordPolicyConstants.PW_POLICY_PATTERN_CLASS);
         try {
             if (StringUtils.isNotBlank(pwLengthPolicyCls)) {
-                DefaultPasswordLengthPolicy defaultPasswordLengthPolicy = (DefaultPasswordLengthPolicy) Class.
-                        forName(pwLengthPolicyCls).newInstance();
+                DefaultPasswordLengthPolicy defaultPasswordLengthPolicy = (DefaultPasswordLengthPolicy) Class
+                        .forName(pwLengthPolicyCls).newInstance();
                 HashMap pwPolicyLengthParams = new HashMap<String, String>();
                 pwPolicyLengthParams.put("min.length", pwMinLength);
                 pwPolicyLengthParams.put("max.length", pwMaxLength);
@@ -143,14 +141,14 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
             }
 
             if (StringUtils.isNotBlank(pwNamePolicyCls)) {
-                DefaultPasswordNamePolicy defaultPasswordNamePolicy = (DefaultPasswordNamePolicy) Class.
-                        forName(pwNamePolicyCls).newInstance();
+                DefaultPasswordNamePolicy defaultPasswordNamePolicy = (DefaultPasswordNamePolicy) Class
+                        .forName(pwNamePolicyCls).newInstance();
                 policyRegistry.addPolicy(defaultPasswordNamePolicy);
             }
 
             if (StringUtils.isNotBlank(pwPatternPolicyCls)) {
-                DefaultPasswordPatternPolicy defaultPasswordPatternPolicy = (DefaultPasswordPatternPolicy) Class.
-                        forName(pwPatternPolicyCls).newInstance();
+                DefaultPasswordPatternPolicy defaultPasswordPatternPolicy = (DefaultPasswordPatternPolicy) Class
+                        .forName(pwPatternPolicyCls).newInstance();
                 HashMap pwPolicyPatternParams = new HashMap<String, String>();
                 pwPolicyPatternParams.put("pattern", pwPattern);
                 pwPolicyPatternParams.put("errorMsg", errorMsg);
@@ -191,7 +189,9 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
     }
 
     @Override
-    public int getOrder() { return 0; }
+    public int getOrder() {
+        return 0;
+    }
 
     @Override
     public Map<String, String> getPropertyNameMapping() {
@@ -216,8 +216,8 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
     @Override
     public void init(InitConfig configuration) throws IdentityRuntimeException {
         super.init(configuration);
-        IdentityPasswordPolicyServiceDataHolder.getInstance().getBundleContext().registerService
-                (IdentityConnectorConfig.class.getName(), this, null);
+        IdentityPasswordPolicyServiceDataHolder.getInstance().getBundleContext()
+                .registerService(IdentityConnectorConfig.class.getName(), this, null);
     }
 
     public String[] getPropertyNames() {
@@ -233,24 +233,24 @@ public class PasswordPolicyValidationHandler extends AbstractEventHandler implem
 
     public Properties getDefaultPropertyValues(String tenantDomain) throws IdentityGovernanceException {
         Map<String, String> defaultProperties = new HashMap<>();
-        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_ENABLE, configs.getModuleProperties()
-                .getProperty(PasswordPolicyConstants.PW_POLICY_ENABLE));
-        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_MIN_LENGTH, configs.getModuleProperties()
-                .getProperty(PasswordPolicyConstants.PW_POLICY_MIN_LENGTH));
-        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_MAX_LENGTH, configs.getModuleProperties()
-                .getProperty(PasswordPolicyConstants.PW_POLICY_MAX_LENGTH));
-        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_PATTERN, configs.getModuleProperties()
-                .getProperty(PasswordPolicyConstants.PW_POLICY_PATTERN));
-        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_ERROR_MSG, configs.getModuleProperties()
-                .getProperty(PasswordPolicyConstants.PW_POLICY_ERROR_MSG));
+        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_ENABLE,
+                configs.getModuleProperties().getProperty(PasswordPolicyConstants.PW_POLICY_ENABLE));
+        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_MIN_LENGTH,
+                configs.getModuleProperties().getProperty(PasswordPolicyConstants.PW_POLICY_MIN_LENGTH));
+        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_MAX_LENGTH,
+                configs.getModuleProperties().getProperty(PasswordPolicyConstants.PW_POLICY_MAX_LENGTH));
+        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_PATTERN,
+                configs.getModuleProperties().getProperty(PasswordPolicyConstants.PW_POLICY_PATTERN));
+        defaultProperties.put(PasswordPolicyConstants.PW_POLICY_ERROR_MSG,
+                configs.getModuleProperties().getProperty(PasswordPolicyConstants.PW_POLICY_ERROR_MSG));
         Properties properties = new Properties();
         properties.putAll(defaultProperties);
         return properties;
     }
 
     @Override
-    public Map<String, String> getDefaultPropertyValues(String[] propertyNames, String tenantDomain) throws
-            IdentityGovernanceException {
+    public Map<String, String> getDefaultPropertyValues(String[] propertyNames, String tenantDomain)
+            throws IdentityGovernanceException {
         return null;
     }
 }

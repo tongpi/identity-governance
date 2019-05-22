@@ -43,8 +43,8 @@ import org.wso2.carbon.registry.core.utils.UUIDGenerator;
 import java.util.HashMap;
 
 /**
- * Generic Manager class which can be used to resend confirmation code for any recovery scenario and self registration
- * using a notification
+ * Generic Manager class which can be used to resend confirmation code for any
+ * recovery scenario and self registration using a notification
  */
 public class ResendConfirmationManager {
 
@@ -59,44 +59,45 @@ public class ResendConfirmationManager {
     }
 
     /**
-     * Generic method to resend confirmation email for account recovery and self registration
+     * Generic method to resend confirmation email for account recovery and self
+     * registration
      *
      * @param user             User who receives the confirmation email
-     * @param recoveryScenario name of the recovery scenario (mandatory)
-     *                         scenarios in org.wso2.carbon.identity.recovery.RecoveryScenarios
-     * @param recoveryStep     name of the recovery step (mandatory)
-     *                         steps in org.wso2.carbon.identity.recovery.RecoverySteps
-     * @param notificationType email notification type (mandatory)
-     *                         Ex: org.wso2.carbon.identity.recovery.IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET
+     * @param recoveryScenario name of the recovery scenario (mandatory) scenarios
+     *                         in
+     *                         org.wso2.carbon.identity.recovery.RecoveryScenarios
+     * @param recoveryStep     name of the recovery step (mandatory) steps in
+     *                         org.wso2.carbon.identity.recovery.RecoverySteps
+     * @param notificationType email notification type (mandatory) Ex:
+     *                         org.wso2.carbon.identity.recovery.IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET
      * @param properties       other properties
      * @return notificationResponseBean
      * @throws org.wso2.carbon.identity.recovery.IdentityRecoveryException
      */
-    public NotificationResponseBean resendConfirmationCode(User user, String recoveryScenario,
-                                                           String recoveryStep, String notificationType,
-                                                           Property[] properties) throws IdentityRecoveryException {
+    public NotificationResponseBean resendConfirmationCode(User user, String recoveryScenario, String recoveryStep,
+            String notificationType, Property[] properties) throws IdentityRecoveryException {
         return validateAndResendNotification(user, null, recoveryScenario, recoveryStep, notificationType, properties);
     }
 
     /**
-     * Generic method to resend confirmation email for account recovery and self registration with provided
-     * confirmation code validation
+     * Generic method to resend confirmation email for account recovery and self
+     * registration with provided confirmation code validation
      *
      * @param user             User who receives the confirmation email
      * @param code             Previously issued confirmation code (mandatory)
-     * @param recoveryScenario name of the recovery scenario (mandatory)
-     *                         scenarios in org.wso2.carbon.identity.recovery.RecoveryScenarios
-     * @param recoveryStep     name of the recovery step (mandatory)
-     *                         steps in org.wso2.carbon.identity.recovery.RecoverySteps
-     * @param notificationType email notification type (mandatory)
-     *                         Ex: org.wso2.carbon.identity.recovery.IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET
+     * @param recoveryScenario name of the recovery scenario (mandatory) scenarios
+     *                         in
+     *                         org.wso2.carbon.identity.recovery.RecoveryScenarios
+     * @param recoveryStep     name of the recovery step (mandatory) steps in
+     *                         org.wso2.carbon.identity.recovery.RecoverySteps
+     * @param notificationType email notification type (mandatory) Ex:
+     *                         org.wso2.carbon.identity.recovery.IdentityRecoveryConstants.NOTIFICATION_TYPE_PASSWORD_RESET
      * @param properties       other properties
      * @return notificationResponseBean
      * @throws IdentityRecoveryException
      */
     public NotificationResponseBean resendConfirmationCode(User user, String code, String recoveryScenario,
-                                                           String recoveryStep, String notificationType,
-                                                           Property[] properties) throws IdentityRecoveryException {
+            String recoveryStep, String notificationType, Property[] properties) throws IdentityRecoveryException {
         if (StringUtils.isBlank(code)) {
             throw Utils.handleClientException(
                     IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_CONFIRMATION_CODE_NOT_PROVIDED,
@@ -106,9 +107,7 @@ public class ResendConfirmationManager {
     }
 
     private NotificationResponseBean validateAndResendNotification(User user, String code, String recoveryScenario,
-                                                                   String recoveryStep, String notificationType,
-                                                                   Property[] properties)
-            throws IdentityRecoveryException {
+            String recoveryStep, String notificationType, Property[] properties) throws IdentityRecoveryException {
         validateProvidedRecoveryInfo(user, recoveryScenario, recoveryStep);
         validateProvidedNotificationInfo(user, notificationType);
         setTenantDomainForUser(user);
@@ -143,14 +142,13 @@ public class ResendConfirmationManager {
         }
         if (StringUtils.isBlank(recoveryStep)) {
             throw Utils.handleClientException(
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_RECOVERY_STEP_NOT_PROVIDED,
-                    user.getUserName());
+                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_RECOVERY_STEP_NOT_PROVIDED, user.getUserName());
         }
     }
 
     private boolean isNotificationInternallyManage(User user) throws IdentityRecoveryServerException {
-        return Boolean.parseBoolean(Utils.getSignUpConfigs
-                (IdentityRecoveryConstants.ConnectorConfig.SIGN_UP_NOTIFICATION_INTERNALLY_MANAGE,
+        return Boolean.parseBoolean(
+                Utils.getSignUpConfigs(IdentityRecoveryConstants.ConnectorConfig.SIGN_UP_NOTIFICATION_INTERNALLY_MANAGE,
                         user.getTenantDomain()));
     }
 
@@ -158,8 +156,7 @@ public class ResendConfirmationManager {
         if (StringUtils.isBlank(user.getTenantDomain())) {
             user.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
             if (log.isDebugEnabled()) {
-                log.debug("Tenant domain is not in the request. Set super tenant domain for user : " +
-                        user.getUserName());
+                log.debug("租户域不在请求中。 为用户：" + user.getUserName() + "设置超级租户域");
             }
         }
     }
@@ -168,19 +165,18 @@ public class ResendConfirmationManager {
         if (StringUtils.isBlank(user.getUserStoreDomain())) {
             user.setUserStoreDomain(IdentityUtil.getPrimaryDomainName());
             if (log.isDebugEnabled()) {
-                log.debug("User store domain is not in the request. Set primary user store domain for user : " +
-                        user.getUserName());
+                log.debug("用户存储域不在请求中。 为用户：" + user.getUserName() + "设置主用户存储域");
             }
         }
     }
 
     private void validateAndStoreRecoveryData(User user, String secretKey, String recoveryScenario, String recoveryStep,
-                                              String code) throws IdentityRecoveryException {
+            String code) throws IdentityRecoveryException {
         UserRecoveryDataStore userRecoveryDataStore = JDBCRecoveryDataStore.getInstance();
         UserRecoveryData userRecoveryData = userRecoveryDataStore.loadWithoutCodeExpiryValidation(user);
         validateWithOldConfirmationCode(code, recoveryScenario, recoveryStep, userRecoveryData);
 
-        //Invalidate the old confirmation code
+        // Invalidate the old confirmation code
         userRecoveryDataStore.invalidate(userRecoveryData.getSecret());
         UserRecoveryData recoveryDataDO = new UserRecoveryData(user, secretKey, userRecoveryData.getRecoveryScenario(),
                 userRecoveryData.getRecoveryStep());
@@ -188,24 +184,22 @@ public class ResendConfirmationManager {
     }
 
     private void validateWithOldConfirmationCode(String code, String recoveryScenario, String recoveryStep,
-                                                 UserRecoveryData userRecoveryData)
-            throws IdentityRecoveryClientException {
-        if (userRecoveryData == null || StringUtils.isBlank(userRecoveryData.getSecret()) ||
-                !recoveryScenario.equals(userRecoveryData.getRecoveryScenario().toString()) ||
-                !recoveryStep.equals(userRecoveryData.getRecoveryStep().toString())) {
+            UserRecoveryData userRecoveryData) throws IdentityRecoveryClientException {
+        if (userRecoveryData == null || StringUtils.isBlank(userRecoveryData.getSecret())
+                || !recoveryScenario.equals(userRecoveryData.getRecoveryScenario().toString())
+                || !recoveryStep.equals(userRecoveryData.getRecoveryStep().toString())) {
             throw Utils.handleClientException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_OLD_CODE_NOT_FOUND,
                     null);
         }
-        //Validate the provided confirmation code with previously issued code
+        // Validate the provided confirmation code with previously issued code
         if (code != null && !userRecoveryData.getSecret().equals(code)) {
             throw Utils.handleClientException(
-                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PROVIDED_CONFIRMATION_CODE_NOT_VALID,
-                    code);
+                    IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_PROVIDED_CONFIRMATION_CODE_NOT_VALID, code);
         }
     }
 
-    private void triggerNotification(User user, String type, String code, Property[] metaProperties) throws
-            IdentityRecoveryException {
+    private void triggerNotification(User user, String type, String code, Property[] metaProperties)
+            throws IdentityRecoveryException {
 
         String eventName = IdentityEventConstants.Event.TRIGGER_NOTIFICATION;
 

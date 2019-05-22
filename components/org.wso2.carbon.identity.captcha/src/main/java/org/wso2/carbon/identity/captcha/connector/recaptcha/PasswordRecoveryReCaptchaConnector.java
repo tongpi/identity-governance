@@ -63,9 +63,9 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
 
     private static final Log log = LogFactory.getLog(PasswordRecoveryReCaptchaConnector.class);
 
-    private static final String FAIL_ATTEMPTS_CLAIM = "http://wso2.org/claims/identity/failedPasswordRecoveryAttempts";
+    private static final String FAIL_ATTEMPTS_CLAIM = "http://is.cd.mtn:9443/claims/identity/failedPasswordRecoveryAttempts";
 
-    private static final String ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
+    private static final String ACCOUNT_LOCKED_CLAIM = "http://is.cd.mtn:9443/claims/identity/accountLocked";
 
     private static final String ACCOUNT_SECURITY_QUESTION_URL = "/api/identity/recovery/v0.9/security-question";
 
@@ -73,10 +73,10 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
 
     private static final String ACCOUNT_VALIDATE_ANSWER_URL = "/api/identity/recovery/v0.9/validate-answer";
 
-    private static final String RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE = "Recovery.Question.Password" +
-            ".ReCaptcha.Enable";
-    private static final String RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS = "Recovery.Question" +
-            ".Password.ReCaptcha.MaxFailedAttempts";
+    private static final String RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE = "Recovery.Question.Password"
+            + ".ReCaptcha.Enable";
+    private static final String RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS = "Recovery.Question"
+            + ".Password.ReCaptcha.MaxFailedAttempts";
 
     private IdentityGovernanceService identityGovernanceService;
 
@@ -100,14 +100,14 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
 
         String path = ((HttpServletRequest) servletRequest).getRequestURI();
 
-        return !StringUtils.isBlank(path) &&
-                (CaptchaUtil.isPathAvailable(path, ACCOUNT_SECURITY_QUESTION_URL) ||
-                        CaptchaUtil.isPathAvailable(path, ACCOUNT_SECURITY_QUESTIONS_URL) ||
-                        CaptchaUtil.isPathAvailable(path, ACCOUNT_VALIDATE_ANSWER_URL));
+        return !StringUtils.isBlank(path) && (CaptchaUtil.isPathAvailable(path, ACCOUNT_SECURITY_QUESTION_URL)
+                || CaptchaUtil.isPathAvailable(path, ACCOUNT_SECURITY_QUESTIONS_URL)
+                || CaptchaUtil.isPathAvailable(path, ACCOUNT_VALIDATE_ANSWER_URL));
     }
 
     @Override
-    public CaptchaPreValidationResponse preValidate(ServletRequest servletRequest, ServletResponse servletResponse) throws CaptchaException {
+    public CaptchaPreValidationResponse preValidate(ServletRequest servletRequest, ServletResponse servletResponse)
+            throws CaptchaException {
 
         CaptchaPreValidationResponse preValidationResponse = new CaptchaPreValidationResponse();
 
@@ -116,7 +116,7 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
             httpServletRequestWrapper = new CaptchaHttpServletRequestWrapper((HttpServletRequest) servletRequest);
             preValidationResponse.setWrappedHttpServletRequest(httpServletRequestWrapper);
         } catch (IOException e) {
-            log.error("Error occurred while wrapping ServletRequest.", e);
+            log.error("包装ServletRequest时发生错误。", e);
             return preValidationResponse;
         }
 
@@ -146,7 +146,7 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
             UserRecoveryDataStore userRecoveryDataStore = JDBCRecoveryDataStore.getInstance();
             try {
                 UserRecoveryData userRecoveryData = userRecoveryDataStore.load(requestObject.get("key").getAsString());
-                if(userRecoveryData != null) {
+                if (userRecoveryData != null) {
                     user = userRecoveryData.getUser();
                 }
             } catch (IdentityRecoveryException e) {
@@ -165,22 +165,19 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
 
         Property[] connectorConfigs;
         try {
-            connectorConfigs = identityGovernanceService.getConfiguration(new String[]{
-                            RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE,
-                            RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS},
-                    user.getTenantDomain());
+            connectorConfigs = identityGovernanceService
+                    .getConfiguration(new String[] { RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE,
+                            RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS }, user.getTenantDomain());
         } catch (IdentityGovernanceException e) {
-            throw new CaptchaServerException("Unable to retrieve connector configs.", e);
+            throw new CaptchaServerException("无法检索连接器配置。", e);
         }
 
         String connectorEnabled = null;
         String maxAttemptsStr = null;
         for (Property connectorConfig : connectorConfigs) {
-            if ((RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE)
-                    .equals(connectorConfig.getName())) {
+            if ((RECOVERY_QUESTION_PASSWORD_RECAPTCHA_ENABLE).equals(connectorConfig.getName())) {
                 connectorEnabled = connectorConfig.getValue();
-            } else if ((RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS)
-                    .equals(connectorConfig.getName())) {
+            } else if ((RECOVERY_QUESTION_PASSWORD_RECAPTCHA_MAX_FAILED_ATTEMPTS).equals(connectorConfig.getName())) {
                 maxAttemptsStr = connectorConfig.getValue();
             }
         }
@@ -190,8 +187,7 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
         }
 
         if (StringUtils.isBlank(maxAttemptsStr) || !NumberUtils.isNumber(maxAttemptsStr)) {
-            log.warn("Invalid configuration found in the PasswordRecoveryReCaptchaConnector for the tenant - " +
-                    user.getTenantDomain());
+            log.warn("在租户：的PasswordRecoveryReCaptchaConnector中找到的配置无效 " + user.getTenantDomain());
             return preValidationResponse;
         }
         int maxFailedAttempts = Integer.parseInt(maxAttemptsStr);
@@ -200,25 +196,25 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
         try {
             tenantId = IdentityTenantUtil.getTenantId(user.getTenantDomain());
         } catch (Exception e) {
-            //Invalid tenant
+            // Invalid tenant
             return preValidationResponse;
         }
 
         try {
-            if (CaptchaDataHolder.getInstance().getAccountLockService().isAccountLocked(user.getUserName(), user
-                    .getTenantDomain(), user.getUserStoreDomain())) {
+            if (CaptchaDataHolder.getInstance().getAccountLockService().isAccountLocked(user.getUserName(),
+                    user.getTenantDomain(), user.getUserStoreDomain())) {
                 return preValidationResponse;
             }
         } catch (AccountLockServiceException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error while validating if account is locked for user: " + user.getUserName() + " of user " +
-                        "store domain: " + user.getUserStoreDomain() + " and tenant domain: " +
-                        user.getTenantDomain());
+                log.debug("验证帐户是否已锁定时出错为租户: " + user.getTenantDomain() + " 的用户存储域: " + user.getUserStoreDomain()
+                        + " 的用户: " + user.getUserName());
             }
             return preValidationResponse;
         }
 
-        Map<String, String> claimValues = CaptchaUtil.getClaimValues(user, tenantId, new String[]{FAIL_ATTEMPTS_CLAIM});
+        Map<String, String> claimValues = CaptchaUtil.getClaimValues(user, tenantId,
+                new String[] { FAIL_ATTEMPTS_CLAIM });
 
         if (claimValues == null || claimValues.isEmpty()) {
             // Invalid user
@@ -254,16 +250,17 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
 
         String reCaptchaResponse = ((HttpServletRequest) servletRequest).getHeader("g-recaptcha-response");
         if (StringUtils.isBlank(reCaptchaResponse)) {
-            throw new CaptchaClientException("reCaptcha response is not available in the request.");
+            throw new CaptchaClientException("请求中没有reCaptcha响应。");
         }
 
         return CaptchaUtil.isValidCaptcha(reCaptchaResponse);
     }
 
     @Override
-    public CaptchaPostValidationResponse postValidate(ServletRequest servletRequest, ServletResponse servletResponse) throws CaptchaException {
+    public CaptchaPostValidationResponse postValidate(ServletRequest servletRequest, ServletResponse servletResponse)
+            throws CaptchaException {
 
-        //This validation will happens through a CXF Filter
+        // This validation will happens through a CXF Filter
         return null;
     }
 

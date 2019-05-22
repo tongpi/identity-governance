@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This module persists data in to user store as user's attribute
- * //TODO remove method when user is deleted
+ * This module persists data in to user store as user's attribute //TODO remove
+ * method when user is deleted
  */
 public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
 
@@ -59,43 +59,44 @@ public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
         super.store(newIdentityClaimDO, userStoreManager);
 
         if (userIdentityDTO.getUserName() == null) {
-            log.error("Error while persisting user data.  Null user name is provided.");
+            log.error("持久保存用户数据时出错。 提供空用户名。");
             return;
         }
         String username = UserCoreUtil.removeDomainFromName(userIdentityDTO.getUserName());
 
-            try {
-                // Check if the user store is read only. If it is read only and still uses user store based data
-                // store then log a warn.
-                if(!userStoreManager.isReadOnly()) {
-                    // Need to clone the map. If not iterative calls will refer the same map
-                    userStoreManager.setUserClaimValues(username, new HashMap<String,String>
-                            (userIdentityDTO.getUserIdentityDataMap()), null);
-                } else {
-                    // If the user store is read only and still uses UserStoreBasedIdentityDataStore, then log a warn
-                    log.warn("User store is read only. Changes to identities are only stored in memory, " +
-                            "and not updated in user store.");
-                    return;
-                }
-            } catch (UserStoreException e) {
-                if(!e.getMessage().startsWith(IdentityCoreConstants.USER_NOT_FOUND)){
-                    throw IdentityException.error("Error while persisting identity user data in to user store", e);
-                } else if (log.isDebugEnabled()){
-                    String message = null;
-                    if(userStoreManager instanceof AbstractUserStoreManager){
-                        String domain = ((AbstractUserStoreManager)userStoreManager).getRealmConfiguration()
-                                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
-                        if(domain != null){
-                            message = "User: " + username + " does not exist in " + domain;
-                        }
-                    }
-                    if(message == null) {
-                        message = "User: " + username + " does not exist";
-                    }
-                    log.debug(message);
-                    return;
-                }
+        try {
+            // Check if the user store is read only. If it is read only and still uses user
+            // store based data
+            // store then log a warn.
+            if (!userStoreManager.isReadOnly()) {
+                // Need to clone the map. If not iterative calls will refer the same map
+                userStoreManager.setUserClaimValues(username,
+                        new HashMap<String, String>(userIdentityDTO.getUserIdentityDataMap()), null);
+            } else {
+                // If the user store is read only and still uses
+                // UserStoreBasedIdentityDataStore, then log a warn
+                log.warn("用户存储是只读的。 对身份的更改仅存储在内存中，不会在用户存储中更新。");
+                return;
             }
+        } catch (UserStoreException e) {
+            if (!e.getMessage().startsWith(IdentityCoreConstants.USER_NOT_FOUND)) {
+                throw IdentityException.error("将身份用户数据持久化到用户存储时出错", e);
+            } else if (log.isDebugEnabled()) {
+                String message = null;
+                if (userStoreManager instanceof AbstractUserStoreManager) {
+                    String domain = ((AbstractUserStoreManager) userStoreManager).getRealmConfiguration()
+                            .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+                    if (domain != null) {
+                        message = "在" + domain + "用户: " + username + " 不存在";
+                    }
+                }
+                if (message == null) {
+                    message = "用户: " + username + " 不存在";
+                }
+                log.debug(message);
+                return;
+            }
+        }
     }
 
     /**
@@ -107,17 +108,17 @@ public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
         if (userIdentityDTO != null) {
             return userIdentityDTO;
         }
-        // check for thread local variable to avoid infinite recursive on this method ( load() )
+        // check for thread local variable to avoid infinite recursive on this method (
+        // load() )
         // which happen calling getUserClaimValues()
         if (TRUE_STRING.equals(userStoreInvoked.get())) {
             if (log.isDebugEnabled()) {
-                log.debug("UserStoreBasedIdentityDataStore.load() already been called in the stack." +
-                        "Hence returning without processing load() again.");
+                log.debug("已经在堆栈中调用了UserStoreBasedIdentityDataStore.load()。 因此返回时不再处理load()。");
             }
             return null;
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("Set flag to indicate method UserStoreBasedIdentityDataStore.load() been called");
+                log.debug("设置标志以指示方法UserStoreBasedIdentityDataStore.load()已被调用");
             }
             userStoreInvoked.set(TRUE_STRING);
         }
@@ -125,17 +126,15 @@ public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
         Map<String, String> userDataMap = new HashMap<String, String>();
         try {
             // reading all claims of the user
-            Claim[] claims =
-                    ((AbstractUserStoreManager) userStoreManager).getUserClaimValues(userName,
-                            null);
+            Claim[] claims = ((AbstractUserStoreManager) userStoreManager).getUserClaimValues(userName, null);
             // select the security questions and identity claims
             if (claims != null) {
                 for (Claim claim : claims) {
                     String claimUri = claim.getClaimUri();
-                    if (claimUri.contains(UserCoreConstants.ClaimTypeURIs.IDENTITY_CLAIM_URI) ||
-                            claimUri.contains(UserCoreConstants.ClaimTypeURIs.CHALLENGE_QUESTION_URI)) {
+                    if (claimUri.contains(UserCoreConstants.ClaimTypeURIs.IDENTITY_CLAIM_URI)
+                            || claimUri.contains(UserCoreConstants.ClaimTypeURIs.CHALLENGE_QUESTION_URI)) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Adding UserIdentityClaim : " + claimUri + " with the value : " + claim.getValue());
+                            log.debug("添加 UserIdentityClaim : " + claimUri + " 值为 : " + claim.getValue());
                         }
                         userDataMap.put(claimUri, claim.getValue());
                     }
@@ -145,19 +144,19 @@ public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
                 return null;
             }
         } catch (UserStoreException e) {
-            if(!e.getMessage().startsWith(IdentityCoreConstants.USER_NOT_FOUND)){
-                log.error("Error while reading identity user data from user store", e);
-            } else if (log.isDebugEnabled()){
+            if (!e.getMessage().startsWith(IdentityCoreConstants.USER_NOT_FOUND)) {
+                log.error("从用户存储中读取身份用户数据时出错", e);
+            } else if (log.isDebugEnabled()) {
                 String message = null;
-                if(userStoreManager instanceof AbstractUserStoreManager){
-                    String domain = ((AbstractUserStoreManager)userStoreManager).getRealmConfiguration()
+                if (userStoreManager instanceof AbstractUserStoreManager) {
+                    String domain = ((AbstractUserStoreManager) userStoreManager).getRealmConfiguration()
                             .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
-                    if(domain != null){
-                        message = "User: " + userName + " does not exist in " + domain;
+                    if (domain != null) {
+                        message = "在" + domain + "用户: " + userName + " 不存在";
                     }
                 }
-                if(message == null) {
-                    message = "User: " + userName + " does not exist";
+                if (message == null) {
+                    message = "用户: " + userName + " 不存在";
                 }
                 log.debug(message);
             }
@@ -165,7 +164,7 @@ public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
         } finally {
             // reset to initial value
             if (log.isDebugEnabled()) {
-                log.debug("Reset flag to indicate method UserStoreBasedIdentityDataStore.load() being completing");
+                log.debug("重置标志以指示正在完成的方法UserStoreBasedIdentityDataStore.load()");
             }
             userStoreInvoked.set(FALSE_STRING);
         }
@@ -174,13 +173,13 @@ public class UserStoreBasedIdentityDataStore extends InMemoryIdentityDataStore {
         int tenantId = CarbonContext.getThreadLocalCarbonContext().getTenantId();
         userIdentityDTO.setTenantId(tenantId);
         org.wso2.carbon.user.core.UserStoreManager store = (org.wso2.carbon.user.core.UserStoreManager) userStoreManager;
-        String domainName= store.getRealmConfiguration().getUserStoreProperty(
-                UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = store.getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
         try {
             super.store(userIdentityDTO, userStoreManager);
         } catch (IdentityException e) {
-            log.error("Error while reading user identity data", e);
+            log.error("读取用户身份数据时出错", e);
         }
         return userIdentityDTO;
     }

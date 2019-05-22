@@ -61,8 +61,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class will check whether the challenge questions are set for the user.
- * Also, It will force users to add answers to challenge questions if challenge questions are not
- * already answered
+ * Also, It will force users to add answers to challenge questions if challenge
+ * questions are not already answered
  **/
 
 public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthnHandler {
@@ -72,8 +72,7 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
     private static final String CHALLENGE_QUESTION_ANSWER_PREFIX = "A-";
 
     private static final Log log = LogFactory.getLog(PostAuthnMissingChallengeQuestionsHandler.class);
-    private static volatile PostAuthnMissingChallengeQuestionsHandler instance =
-            new PostAuthnMissingChallengeQuestionsHandler();
+    private static volatile PostAuthnMissingChallengeQuestionsHandler instance = new PostAuthnMissingChallengeQuestionsHandler();
 
     public static PostAuthnMissingChallengeQuestionsHandler getInstance() {
 
@@ -88,18 +87,17 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
 
     @Override
     public PostAuthnHandlerFlowStatus handle(HttpServletRequest httpServletRequest,
-                                             HttpServletResponse httpServletResponse,
-                                             AuthenticationContext authenticationContext)
+            HttpServletResponse httpServletResponse, AuthenticationContext authenticationContext)
             throws PostAuthenticationFailedException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Post authentication handling for missing security questions has started");
+            log.debug("已经开始对丢失的安全问题进行后验证处理");
         }
 
         if (authenticationContext == null || authenticationContext.getSequenceConfig() == null
                 || authenticationContext.getSequenceConfig().getAuthenticatedUser() == null) {
             if (log.isDebugEnabled()) {
-                log.debug("Authentication context or sequence config or authenticated user is null.");
+                log.debug("身份验证上下文或序列配置或经过身份验证的用户为空");
             }
             return PostAuthnHandlerFlowStatus.UNSUCCESS_COMPLETED;
         }
@@ -108,22 +106,24 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
                 IdentityRecoveryConstants.ConnectorConfig.FORCE_ADD_PW_RECOVERY_QUESTION);
 
         if (StringUtils.isBlank(forceChallengeQuestionConfig)) {
-            // Exit post authentication handler if the value for the resident IDP setting not found
+            // Exit post authentication handler if the value for the resident IDP setting
+            // not found
             if (log.isDebugEnabled()) {
-                log.debug("Resident IdP value not found for " + IdentityRecoveryConstants.ConnectorConfig
-                        .FORCE_ADD_PW_RECOVERY_QUESTION + " hence exiting from " +
-                        "PostAuthnMissingChallengeQuestionsHandler");
+                log.debug(IdentityRecoveryConstants.ConnectorConfig.FORCE_ADD_PW_RECOVERY_QUESTION
+                        + " 的常驻IdP值未发现因此从PostAuthnMissingChallengeQuestionsHandler退出");
+
             }
             return PostAuthnHandlerFlowStatus.UNSUCCESS_COMPLETED;
 
         } else if (Boolean.parseBoolean(forceChallengeQuestionConfig)) {
-            // Execute the post authentication handler logic if the relevant setting is enabled at resident IDP
+            // Execute the post authentication handler logic if the relevant setting is
+            // enabled at resident IDP
             AuthenticatedUser user = getAuthenticatedUser(authenticationContext);
-            // Return from PostAuthnMissingChallengeQuestionsHandler if no authenticated user found
+            // Return from PostAuthnMissingChallengeQuestionsHandler if no authenticated
+            // user found
             if (user == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("No authenticated user found. Hence returning without handling missing security" +
-                            " questions");
+                    log.debug("找不到经过身份验证的用户 因此返回时不处理丢失的安全问题");
                 }
                 return PostAuthnHandlerFlowStatus.UNSUCCESS_COMPLETED;
             }
@@ -140,8 +140,7 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
             if (challengeQuestionsRequested) {
                 return handleMissingChallengeQuestionResponse(httpServletRequest, user);
             } else {
-                return handleMissingChallengeQuestionRequest(httpServletResponse,
-                        authenticationContext, user);
+                return handleMissingChallengeQuestionRequest(httpServletResponse, authenticationContext, user);
             }
         }
         return PostAuthnHandlerFlowStatus.SUCCESS_COMPLETED;
@@ -158,10 +157,12 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
     }
 
     /**
-     * Checks for the Challenge Question Requested Parameter in the authentication context
+     * Checks for the Challenge Question Requested Parameter in the authentication
+     * context
      *
      * @param authenticationContext Authentication Context.
-     * @return Boolean value for the Challenge Question requested parameter of authenticationContext.
+     * @return Boolean value for the Challenge Question requested parameter of
+     *         authenticationContext.
      */
     @SuppressWarnings("unchecked")
     private boolean isChallengeQuestionRequested(AuthenticationContext authenticationContext) {
@@ -187,7 +188,8 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
      * Returns the property related to the key from the Resident IDP properties.
      *
      * @param tenantDomain Tenant Domain.
-     * @param key          Name of the resident IDP property to find in the Resident IDP
+     * @param key          Name of the resident IDP property to find in the Resident
+     *                     IDP
      * @return String value of the requested property.
      */
     private String getResidentIdpProperty(String tenantDomain, String key) {
@@ -203,8 +205,7 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
             }
             return StringUtils.EMPTY;
         } catch (IdentityProviderManagementException e) {
-            log.error("Resident IdP value not found. Error while retrieving resident IdP property " +
-                    "for force challenge question ", e);
+            log.error("未找到常驻IdP值。为强制挑战问题检索常驻IdP属性时出错", e);
             return StringUtils.EMPTY;
         }
     }
@@ -213,24 +214,23 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
      * Returns whether the user has already provided the challenge questions.
      *
      * @param user Authenticated User.
-     * @return boolean value indicating whether the user has already provided challenge questions.
+     * @return boolean value indicating whether the user has already provided
+     *         challenge questions.
      */
     private boolean isChallengeQuestionsProvided(AuthenticatedUser user) {
         try {
             String userName = UserCoreUtil.addDomainToName(user.getUserName(), user.getUserStoreDomain());
             int tenantId = Utils.getTenantId(user.getTenantDomain());
-            UserStoreManager userStoreManager =
-                    IdentityRecoveryServiceDataHolder.getInstance().getRealmService()
-                            .getTenantUserRealm(tenantId)
-                            .getUserStoreManager();
-            Map<String, String> claimsMap = userStoreManager
-                    .getUserClaimValues(userName, new String[]{IdentityRecoveryConstants.CHALLENGE_QUESTION_URI},
-                            UserCoreConstants.DEFAULT_PROFILE);
+            UserStoreManager userStoreManager = IdentityRecoveryServiceDataHolder.getInstance().getRealmService()
+                    .getTenantUserRealm(tenantId).getUserStoreManager();
+            Map<String, String> claimsMap = userStoreManager.getUserClaimValues(userName,
+                    new String[] { IdentityRecoveryConstants.CHALLENGE_QUESTION_URI },
+                    UserCoreConstants.DEFAULT_PROFILE);
             String claimValue = claimsMap.get(IdentityRecoveryConstants.CHALLENGE_QUESTION_URI);
             return StringUtils.isNotBlank(claimValue);
 
         } catch (IdentityException | UserStoreException e) {
-            log.error("Exception occurred while retrieving tenant ID for the user :" + user.getUserName(), e);
+            log.error("检索用户：" + user.getUserName() + "的租户ID时发生异常", e);
         }
         return false;
     }
@@ -247,7 +247,7 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
         try {
             return ChallengeQuestionManager.getInstance().getAllChallengeQuestions(tenantDomain);
         } catch (IdentityRecoveryServerException e) {
-            log.error("Identity recovery server error occurred for user:" + user.getUserName(), e);
+            log.error("用户：" + user.getUserName() + "出现身份恢复服务器错误", e);
             return null;
         }
     }
@@ -263,18 +263,19 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
         try {
             ChallengeQuestionManager.getInstance().setChallengesOfUser(user, userChallengeAnswers);
         } catch (IdentityRecoveryException e) {
-            log.error("Unable to save challenge question answers for user : " + user.getUserName(), e);
+            log.error("无法为用户：" + user.getUserName() + "保存质询问题答案", e);
         }
     }
 
     /**
-     * Returns an array of UserChallengeAnswer from constructed from the servlet request parameters
+     * Returns an array of UserChallengeAnswer from constructed from the servlet
+     * request parameters
      *
      * @param servletRequest HTTP Servlet Request.
      * @return challengeQuestionList.
      */
     private UserChallengeAnswer[] retrieveChallengeQuestionAnswers(HttpServletRequest servletRequest,
-                                                                   List<ChallengeQuestion> challengeQuestionsList) {
+            List<ChallengeQuestion> challengeQuestionsList) {
         Map<String, String> questionsMap = new HashMap<>();
         Map<String, String> answersMap = new HashMap<>();
         List<UserChallengeAnswer> questionsAndAnswers = new ArrayList<>();
@@ -302,8 +303,7 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
                     questionAndAnswer.setQuestion(question);
                     if (StringUtils.isEmpty(answersMap.get(questionKey))) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Answer not found for challenge question " + question + ", hence not adding " +
-                                    "challenge question");
+                            log.debug("未找到挑战问题：" + question + "的答案,因此不添加挑战问题");
                         }
                     } else {
                         questionAndAnswer.setAnswer(answersMap.get(questionKey));
@@ -328,8 +328,7 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
 
         if (CollectionUtils.isEmpty(challengeQuestionList)) {
             if (log.isDebugEnabled()) {
-                log.debug("Challenge questions not found for the user: " + user.getUserName() + " in tenant domain: "
-                        + user.getTenantDomain());
+                log.debug("在租户域：" + user.getTenantDomain() + "中用户：" + user.getUserName() + "的挑战问题未发现");
             }
             return null;
         } else {
@@ -338,70 +337,75 @@ public class PostAuthnMissingChallengeQuestionsHandler extends AbstractPostAuthn
                 String questionId = question.getQuestionId();
                 String questionString = question.getQuestion();
                 String questionLocale = question.getLocale();
-                challengeQuestionData.append(setId).append("|").append(questionId).append("|").append
-                        (questionString).append("|").append(questionLocale).append("&");
+                challengeQuestionData.append(setId).append("|").append(questionId).append("|").append(questionString)
+                        .append("|").append(questionLocale).append("&");
             }
         }
         return java.net.URLEncoder.encode(challengeQuestionData.toString(), StandardCharsets.UTF_8.name());
     }
 
     /**
-     * This handles the PostAuthentication Requests for PostAuthnMissingChallengeQuestionHandler
+     * This handles the PostAuthentication Requests for
+     * PostAuthnMissingChallengeQuestionHandler
      *
      * @param httpServletResponse   HTTP Servlet Response.
      * @param authenticationContext Authentication Context
      * @param user                  Authenticated User
-     * @return PostAuthnHandlerFlowStatus Flow status of the PostAuthentication Handler
+     * @return PostAuthnHandlerFlowStatus Flow status of the PostAuthentication
+     *         Handler
      */
-    private PostAuthnHandlerFlowStatus handleMissingChallengeQuestionRequest(
-            HttpServletResponse httpServletResponse, AuthenticationContext authenticationContext,
-            AuthenticatedUser user) {
+    private PostAuthnHandlerFlowStatus handleMissingChallengeQuestionRequest(HttpServletResponse httpServletResponse,
+            AuthenticationContext authenticationContext, AuthenticatedUser user) {
 
-        // If challenge questions are not requested redirect user to add challenge questions jsp page
+        // If challenge questions are not requested redirect user to add challenge
+        // questions jsp page
         String encodedData = null;
         try {
             encodedData = getUrlEncodedChallengeQuestionsString(user);
         } catch (UnsupportedEncodingException e) {
-            log.error("Error occurred while URL-encoding the challenge question data", e);
+            log.error("对挑战问题数据进行URL编码时发生错误", e);
         }
 
         if (StringUtils.isBlank(encodedData)) {
             if (log.isDebugEnabled()) {
-                log.debug("Unable to get challenge questions for user : " + user.getUserName() + " for " +
-                        "tenant domain : " + authenticationContext.getTenantDomain());
+                log.debug(
+                        "在租户域：" + authenticationContext.getTenantDomain() + "中用户: " + user.getUserName() + "不能获得挑战问题");
             }
             return PostAuthnHandlerFlowStatus.UNSUCCESS_COMPLETED;
         }
 
         try {
             // Redirect the user to fill the answers for challenge questions
-            httpServletResponse.sendRedirect
-                    (ConfigurationFacade.getInstance().getAuthenticationEndpointURL().replace("/login.do", ""
-                    ) + "/add-security-questions" + ".jsp?sessionDataKey=" +
-                            authenticationContext.getContextIdentifier() + "&data=" + encodedData);
+            httpServletResponse.sendRedirect(
+                    ConfigurationFacade.getInstance().getAuthenticationEndpointURL().replace("/login.do", "")
+                            + "/add-security-questions" + ".jsp?sessionDataKey="
+                            + authenticationContext.getContextIdentifier() + "&data=" + encodedData);
             setChallengeQuestionRequestedState(authenticationContext);
             return PostAuthnHandlerFlowStatus.INCOMPLETE;
 
         } catch (IOException e) {
-            log.error("Error occurred while redirecting to challenge questions page", e);
+            log.error("重定向到挑战问题页面时发生错误", e);
             return PostAuthnHandlerFlowStatus.UNSUCCESS_COMPLETED;
         }
     }
 
     /**
-     * This handles the PostAuthentication Response for PostAuthnMissingChallengeQuestionHandler
+     * This handles the PostAuthentication Response for
+     * PostAuthnMissingChallengeQuestionHandler
      *
      * @param httpServletRequest HTTP Servlet Request.
      * @param user               Authenticated User
-     * @return PostAuthnHandlerFlowStatus Flow status of the PostAuthentication Handler
+     * @return PostAuthnHandlerFlowStatus Flow status of the PostAuthentication
+     *         Handler
      */
-    private PostAuthnHandlerFlowStatus handleMissingChallengeQuestionResponse(
-            HttpServletRequest httpServletRequest, AuthenticatedUser user) {
+    private PostAuthnHandlerFlowStatus handleMissingChallengeQuestionResponse(HttpServletRequest httpServletRequest,
+            AuthenticatedUser user) {
 
-        // If user already redirected to add challenge questions add answers for challenge questions
+        // If user already redirected to add challenge questions add answers for
+        // challenge questions
         List<ChallengeQuestion> challengeQuestionList = getChallengeQuestions(user);
-        UserChallengeAnswer[] answersForChallengeQuestions = retrieveChallengeQuestionAnswers
-                (httpServletRequest, challengeQuestionList);
+        UserChallengeAnswer[] answersForChallengeQuestions = retrieveChallengeQuestionAnswers(httpServletRequest,
+                challengeQuestionList);
         setChallengeQuestionAnswers(user, answersForChallengeQuestions);
 
         return PostAuthnHandlerFlowStatus.SUCCESS_COMPLETED;

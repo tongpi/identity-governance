@@ -28,8 +28,10 @@ import org.wso2.carbon.identity.piicontroller.connector.ConsentMgtConfigImpl;
 /**
  * @scr.component name="IdentityPIIControllerServiceComponent" immediate="true"
  * @scr.reference name="IdentityGovernanceService"
- * interface="org.wso2.carbon.identity.governance.IdentityGovernanceService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityGovernanceService" unbind="unsetIdentityGovernanceService"
+ *                interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityGovernanceService"
+ *                unbind="unsetIdentityGovernanceService"
  */
 public class IdentityPIIControllerServiceComponent {
 
@@ -41,25 +43,24 @@ public class IdentityPIIControllerServiceComponent {
         try {
             BundleContext bundleContext = context.getBundleContext();
             ConsentMgtConfigImpl consentMgtConfig = new ConsentMgtConfigImpl(identityGovernanceService);
-            bundleContext.registerService(IdentityConnectorConfig.class.getName(), consentMgtConfig,
-                    null);
+            bundleContext.registerService(IdentityConnectorConfig.class.getName(), consentMgtConfig, null);
             bundleContext.registerService(PIIController.class.getName(), consentMgtConfig, null);
         } catch (Throwable e) {
-            log.error("Error while activating pii controller component.", e);
+            log.error("激活pii控制器组件时出错。", e);
         }
     }
 
     protected void deactivate(ComponentContext context) {
 
         if (log.isDebugEnabled()) {
-            log.debug("PII controller bundle is de-activated");
+            log.debug("PII控制器包被取消激活");
         }
     }
 
     protected void unsetIdentityGovernanceService(IdentityGovernanceService idpManager) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Identity Governance service is unset from PII Controller");
+            log.debug("PII控制器未设置身份管理服务");
         }
         identityGovernanceService = null;
     }
@@ -67,7 +68,7 @@ public class IdentityPIIControllerServiceComponent {
     protected void setIdentityGovernanceService(IdentityGovernanceService identityGovernanceService) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Identity Governance service is set form PII Controller");
+            log.debug("从PII控制器中设置身份管理服务");
         }
         this.identityGovernanceService = identityGovernanceService;
     }

@@ -34,30 +34,29 @@ import org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockSe
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
- * @scr.component name="org.wso2.carbon.identity.captcha.internal.CaptchaComponent" immediate="true"
- * @scr.reference name="CaptchaConnectors"
- * interface="CaptchaConnector"
- * cardinality="0..n" policy="dynamic"
- * bind="setCaptchaConnector"
- * unbind="unsetCaptchaConnector"
+ * @scr.component name="org.wso2.carbon.identity.captcha.internal.CaptchaComponent"
+ *                immediate="true"
+ * @scr.reference name="CaptchaConnectors" interface="CaptchaConnector"
+ *                cardinality="0..n" policy="dynamic" bind="setCaptchaConnector"
+ *                unbind="unsetCaptchaConnector"
  * @scr.reference name="IdentityGovernanceConnectors"
- * interface="org.wso2.carbon.identity.governance.common.IdentityConnectorConfig"
- * cardinality="0..n" policy="dynamic"
- * bind="setIdentityGovernanceConnector"
- * unbind="unsetIdentityGovernanceConnector"
+ *                interface="org.wso2.carbon.identity.governance.common.IdentityConnectorConfig"
+ *                cardinality="0..n" policy="dynamic"
+ *                bind="setIdentityGovernanceConnector"
+ *                unbind="unsetIdentityGovernanceConnector"
  * @scr.reference name="IdentityGovernanceService"
- * interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
- * cardinality="1..1" policy="dynamic"
- * bind="setIdentityGovernanceService"
- * unbind="unsetIdentityGovernanceService"
+ *                interface="org.wso2.carbon.identity.governance.IdentityGovernanceService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityGovernanceService"
+ *                unbind="unsetIdentityGovernanceService"
  * @scr.reference name="RealmService"
- * interface="org.wso2.carbon.user.core.service.RealmService"
- * cardinality="1..1" policy="dynamic" bind="setRealmService"
- * unbind="unsetRealmService"
+ *                interface="org.wso2.carbon.user.core.service.RealmService"
+ *                cardinality="1..1" policy="dynamic" bind="setRealmService"
+ *                unbind="unsetRealmService"
  * @scr.reference name="AccountLockService"
- * interface="org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService"
- * cardinality="1..1" policy="dynamic" bind="setAccountLockService"
- * unbind="unsetAccountLockService"
+ *                interface="org.wso2.carbon.identity.handler.event.account.lock.service.AccountLockService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setAccountLockService" unbind="unsetAccountLockService"
  */
 public class CaptchaComponent {
 
@@ -70,8 +69,7 @@ public class CaptchaComponent {
 
             // Initialize and register SSOLoginReCaptchaConfig
             IdentityConnectorConfig connector = new SSOLoginReCaptchaConfig();
-            ((SSOLoginReCaptchaConfig) connector).init(CaptchaDataHolder.getInstance()
-                    .getIdentityGovernanceService());
+            ((SSOLoginReCaptchaConfig) connector).init(CaptchaDataHolder.getInstance().getIdentityGovernanceService());
             context.getBundleContext().registerService(IdentityConnectorConfig.class, connector, null);
             CaptchaDataHolder.getInstance().addCaptchaConnector((SSOLoginReCaptchaConfig) connector);
 
@@ -86,21 +84,21 @@ public class CaptchaComponent {
             CaptchaDataHolder.getInstance().addCaptchaConnector(captchaConnector);
 
             AuthenticationDataPublisher failedLoginAttemptValidator = new FailLoginAttemptValidator();
-            context.getBundleContext().registerService(AuthenticationDataPublisher.class, failedLoginAttemptValidator
-                    , null);
+            context.getBundleContext().registerService(AuthenticationDataPublisher.class, failedLoginAttemptValidator,
+                    null);
 
             if (log.isDebugEnabled()) {
-                log.debug("Captcha Component is activated");
+                log.debug("验证验证码组件");
             }
         } catch (Throwable e) {
-            log.error("Failed to start CaptchaComponent", e);
+            log.error("无法启动验证码组件", e);
         }
     }
 
     protected void deactivate(ComponentContext context) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Captcha Component is de-activated");
+            log.debug("验证码组件被取消激活");
         }
     }
 
@@ -116,8 +114,8 @@ public class CaptchaComponent {
 
     protected void setIdentityGovernanceConnector(IdentityConnectorConfig identityConnectorConfig) {
 
-        if (identityConnectorConfig instanceof CaptchaConnector && CaptchaDataHolder.getInstance()
-                .getCaptchaConnectors().contains(identityConnectorConfig)) {
+        if (identityConnectorConfig instanceof CaptchaConnector
+                && CaptchaDataHolder.getInstance().getCaptchaConnectors().contains(identityConnectorConfig)) {
             CaptchaDataHolder.getInstance().addCaptchaConnector((CaptchaConnector) identityConnectorConfig);
         }
     }

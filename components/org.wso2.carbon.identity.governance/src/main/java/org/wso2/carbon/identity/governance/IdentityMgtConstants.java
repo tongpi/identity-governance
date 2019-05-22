@@ -21,11 +21,13 @@ package org.wso2.carbon.identity.governance;
  */
 public class IdentityMgtConstants {
 
-    private IdentityMgtConstants(){}
+    private IdentityMgtConstants() {
+    }
 
     public class PropertyConfig {
 
-        private PropertyConfig(){}
+        private PropertyConfig() {
+        }
 
         public static final String CONFIG_FILE_NAME = "identity-mgt.properties";
         public static final String ACCOUNT_LOCK_ENABLE = "Account.Lock.Enable";
@@ -41,16 +43,17 @@ public class IdentityMgtConstants {
 
     public class Event {
 
-        private Event(){}
+        private Event() {
+        }
 
         public static final String PRE_AUTHENTICATION = "PRE_AUTHENTICATION";
 
     }
 
-
     public class EventProperty {
 
-        private EventProperty(){}
+        private EventProperty() {
+        }
 
         public static final String MODULE = "module";
         public static final String USER_NAME = "userName";
@@ -61,7 +64,8 @@ public class IdentityMgtConstants {
 
     public class ErrorMessage {
 
-        private ErrorMessage(){}
+        private ErrorMessage() {
+        }
 
         public static final String FAILURE = "Failure";
         public static final String FAILED_AUTHENTICATION = "Authentication Failed.";
@@ -69,14 +73,14 @@ public class IdentityMgtConstants {
 
     }
 
-
     public class Claim {
 
-        private Claim(){}
+        private Claim() {
+        }
 
-        public static final String FAIL_LOGIN_ATTEMPTS = "http://wso2.org/claims/identity/failedLoginAttempts";
-        public static final String UNLOCKING_TIME = "http://wso2.org/claims/identity/unlockTime";
-        public static final String ACCOUNT_LOCK = "http://wso2.org/claims/identity/accountLocked";
+        public static final String FAIL_LOGIN_ATTEMPTS = "http://is.cd.mtn:9443/claims/identity/failedLoginAttempts";
+        public static final String UNLOCKING_TIME = "http://is.cd.mtn:9443/claims/identity/unlockTime";
+        public static final String ACCOUNT_LOCK = "http://is.cd.mtn:9443/claims/identity/accountLocked";
 
     }
 }

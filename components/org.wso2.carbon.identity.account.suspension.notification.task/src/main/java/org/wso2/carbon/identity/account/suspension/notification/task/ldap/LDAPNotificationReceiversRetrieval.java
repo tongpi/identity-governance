@@ -58,8 +58,8 @@ public class LDAPNotificationReceiversRetrieval implements NotificationReceivers
     }
 
     @Override
-    public List<NotificationReceiver> getNotificationReceivers(long lookupMin, long lookupMax,
-            long delayForSuspension, String tenantDomain) throws AccountSuspensionNotificationException {
+    public List<NotificationReceiver> getNotificationReceivers(long lookupMin, long lookupMax, long delayForSuspension,
+            String tenantDomain) throws AccountSuspensionNotificationException {
 
         List<NotificationReceiver> users = new ArrayList<NotificationReceiver>();
 
@@ -68,29 +68,33 @@ public class LDAPNotificationReceiversRetrieval implements NotificationReceivers
             RealmService realmService = NotificationTaskDataHolder.getInstance().getRealmService();
 
             try {
-                ClaimManager claimManager = (ClaimManager) realmService.getTenantUserRealm(IdentityTenantUtil.
-                        getTenantId(tenantDomain)).getClaimManager();
-                String userStoreDomain = realmConfiguration.getUserStoreProperty(UserCoreConstants.RealmConfig.
-                        PROPERTY_DOMAIN_NAME);
+                ClaimManager claimManager = (ClaimManager) realmService
+                        .getTenantUserRealm(IdentityTenantUtil.getTenantId(tenantDomain)).getClaimManager();
+                String userStoreDomain = realmConfiguration
+                        .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
                 if (StringUtils.isBlank(userStoreDomain)) {
                     userStoreDomain = IdentityUtil.getPrimaryDomainName();
                 }
 
-                String usernameMapAttribute = claimManager.getAttributeName(userStoreDomain, NotificationConstants.USERNAME_CLAIM);
-                String firstNameMapAttribute  = claimManager.getAttributeName(userStoreDomain, NotificationConstants.FIRST_NAME_CLAIM);
-                String emailMapAttribute = claimManager.getAttributeName(userStoreDomain, NotificationConstants.EMAIL_CLAIM);
-                String lastLoginTimeAttribute = claimManager.getAttributeName(userStoreDomain, NotificationConstants.LAST_LOGIN_TIME);
+                String usernameMapAttribute = claimManager.getAttributeName(userStoreDomain,
+                        NotificationConstants.USERNAME_CLAIM);
+                String firstNameMapAttribute = claimManager.getAttributeName(userStoreDomain,
+                        NotificationConstants.FIRST_NAME_CLAIM);
+                String emailMapAttribute = claimManager.getAttributeName(userStoreDomain,
+                        NotificationConstants.EMAIL_CLAIM);
+                String lastLoginTimeAttribute = claimManager.getAttributeName(userStoreDomain,
+                        NotificationConstants.LAST_LOGIN_TIME);
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Retrieving ldap user list for lookupMin: " + lookupMin + " - lookupMax: " + lookupMax);
+                    log.debug("检索ldap用户列表对lookupMin: " + lookupMin + " - lookupMax: " + lookupMax);
                 }
 
                 LDAPConnectionContext ldapConnectionContext = new LDAPConnectionContext(realmConfiguration);
                 DirContext ctx = ldapConnectionContext.getContext();
 
-                //carLicense is the mapped LDAP attribute for LastLoginTime claim
-                String searchFilter = "(&("+lastLoginTimeAttribute+">=" + lookupMin + ")("+lastLoginTimeAttribute+"<="
-                        + lookupMax + "))";
+                // carLicense is the mapped LDAP attribute for LastLoginTime claim
+                String searchFilter = "(&(" + lastLoginTimeAttribute + ">=" + lookupMin + ")(" + lastLoginTimeAttribute
+                        + "<=" + lookupMax + "))";
 
                 SearchControls searchControls = new SearchControls();
                 searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -98,7 +102,7 @@ public class LDAPNotificationReceiversRetrieval implements NotificationReceivers
                 NamingEnumeration<SearchResult> results = ctx.search(ldapSearchBase, searchFilter, searchControls);
 
                 if (log.isDebugEnabled()) {
-                    log.debug("LDAP user list retrieved.");
+                    log.debug("检索到LDAP用户列表。");
                 }
 
                 while (results.hasMoreElements()) {
@@ -110,23 +114,22 @@ public class LDAPNotificationReceiversRetrieval implements NotificationReceivers
                     receiver.setFirstName((String) result.getAttributes().get(firstNameMapAttribute).get());
                     receiver.setUserStoreDomain(userStoreDomain);
 
-                    long lastLoginTime = Long.parseLong(result.getAttributes().get(lastLoginTimeAttribute).get().
-                            toString());
+                    long lastLoginTime = Long
+                            .parseLong(result.getAttributes().get(lastLoginTimeAttribute).get().toString());
                     long expireDate = lastLoginTime + TimeUnit.DAYS.toMillis(delayForSuspension);
                     receiver.setExpireDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date(expireDate)));
 
                     if (log.isDebugEnabled()) {
-                        log.debug("Expire date was set to: " + receiver.getExpireDate());
+                        log.debug("过期日期设置为: " + receiver.getExpireDate());
                     }
                     users.add(receiver);
                 }
             } catch (NamingException e) {
-                throw new AccountSuspensionNotificationException("Failed to filter users from LDAP user store.", e);
+                throw new AccountSuspensionNotificationException("无法从LDAP用户存储中过滤用户。", e);
             } catch (UserStoreException e) {
-                throw new AccountSuspensionNotificationException("Failed to load LDAP connection context.", e);
+                throw new AccountSuspensionNotificationException("无法加载LDAP连接上下文。", e);
             } catch (org.wso2.carbon.user.api.UserStoreException e) {
-                throw new AccountSuspensionNotificationException("Error occurred while getting tenant user realm for "
-                        + "tenant:" + tenantDomain, e);
+                throw new AccountSuspensionNotificationException("从租户：" + tenantDomain + "获取租户用户领域时发生错误", e);
             }
         }
         return users;

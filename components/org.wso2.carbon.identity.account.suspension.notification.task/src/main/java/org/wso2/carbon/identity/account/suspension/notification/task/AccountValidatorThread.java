@@ -56,7 +56,7 @@ public class AccountValidatorThread implements Runnable {
     public void run() {
 
         if (log.isDebugEnabled()) {
-            log.debug("Idle account suspension task started.");
+            log.debug("空闲帐户暂停任务已启动。");
         }
 
         RealmService realmService = NotificationTaskDataHolder.getInstance().getRealmService();
@@ -66,7 +66,7 @@ public class AccountValidatorThread implements Runnable {
         try {
             tenants = (Tenant[]) realmService.getTenantManager().getAllTenants();
         } catch (UserStoreException e) {
-            log.error("Error occurred while retrieving tenants", e);
+            log.error("检索租户时出错", e);
         }
 
         handleTask(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
@@ -80,7 +80,7 @@ public class AccountValidatorThread implements Runnable {
     private void handleTask(String tenantDomain) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Handling idle account suspension task for tenant: " + tenantDomain);
+            log.debug("处理租户: " + tenantDomain + "的闲置帐户暂停任务");
         }
 
         Property[] identityProperties;
@@ -110,13 +110,12 @@ public class AccountValidatorThread implements Runnable {
                     }
                 }
 
-                if (NotificationConstants.SUSPENSION_NOTIFICATION_ACCOUNT_DISABLE_DELAY.
-                        equals(identityProperty.getName())) {
+                if (NotificationConstants.SUSPENSION_NOTIFICATION_ACCOUNT_DISABLE_DELAY
+                        .equals(identityProperty.getName())) {
                     try {
                         suspensionDelay = Long.parseLong(identityProperty.getValue());
                     } catch (NumberFormatException e) {
-                        log.error("Error occurred while reading account suspension delay for tenant: " + tenantDomain,
-                                e);
+                        log.error("在为租户：" + tenantDomain + "读取帐户暂停延迟时发生错误 ", e);
                     }
                 }
 
@@ -129,8 +128,7 @@ public class AccountValidatorThread implements Runnable {
                             try {
                                 notificationDelays[i] = Long.parseLong(parts[i]);
                             } catch (NumberFormatException e) {
-                                log.error("Error occurred while reading account suspension notification delays for "
-                                        + "tenant: " + tenantDomain, e);
+                                log.error("在为租户：" + tenantDomain + "读取帐户暂停通知延迟时出错", e);
                             }
                         }
                     }
@@ -139,9 +137,9 @@ public class AccountValidatorThread implements Runnable {
 
             if (log.isDebugEnabled()) {
                 if (isEnabled) {
-                    log.debug("Account suspension task is enabled for : " + tenantDomain);
+                    log.debug(tenantDomain + "的帐户暂停任务已启用");
                 } else {
-                    log.debug("Account suspension task is not enabled for : " + tenantDomain);
+                    log.debug(tenantDomain + "的帐户暂停任务已禁用");
                 }
             }
 
@@ -154,9 +152,9 @@ public class AccountValidatorThread implements Runnable {
             lockAccounts(tenantDomain, suspensionDelay);
 
         } catch (IdentityGovernanceException e) {
-            log.error("Error occurred while loading governance configuration for tenants", e);
+            log.error("加载租户的管理配置时发生错误", e);
         } catch (IdentityException e) {
-            log.error("Unable to disable user accounts", e);
+            log.error("无法禁用用户账户", e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }
@@ -172,13 +170,14 @@ public class AccountValidatorThread implements Runnable {
             try {
                 receivers = NotificationReceiversRetrievalManager.getReceivers(delay, tenantDomain, suspensionDelay);
             } catch (AccountSuspensionNotificationException e) {
-                log.error("Error occurred while retrieving notification receivers", e);
+                log.error("检索通知接收器时发生错误", e);
             }
             if (CollectionUtils.isNotEmpty(receivers)) {
                 for (NotificationReceiver receiver : receivers) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Sending notification to: " + IdentityUtil.addDomainToName(receiver.getUsername(),
-                                receiver.getUserStoreDomain()) + "@" + tenantDomain);
+                        log.debug("发送通知到: "
+                                + IdentityUtil.addDomainToName(receiver.getUsername(), receiver.getUserStoreDomain())
+                                + "@" + tenantDomain);
                     }
                     util.sendEmail(receiver);
                 }
@@ -198,13 +197,14 @@ public class AccountValidatorThread implements Runnable {
                     suspensionDelay);
 
         } catch (AccountSuspensionNotificationException e) {
-            throw IdentityException.error("Error occurred while retrieving users for account disable", e);
+            throw IdentityException.error("检索用户帐户禁用时发生错误", e);
         }
         if (receivers.size() > 0) {
             for (NotificationReceiver receiver : receivers) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Locking idle account: " + IdentityUtil.addDomainToName(receiver.getUsername(),
-                            receiver.getUserStoreDomain()) + "@" + tenantDomain);
+                    log.debug("锁定空闲帐户: "
+                            + IdentityUtil.addDomainToName(receiver.getUsername(), receiver.getUserStoreDomain()) + "@"
+                            + tenantDomain);
                 }
                 RealmService realmService = NotificationTaskDataHolder.getInstance().getRealmService();
                 int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
@@ -213,27 +213,27 @@ public class AccountValidatorThread implements Runnable {
                 try {
                     userRealm = (UserRealm) realmService.getTenantUserRealm(tenantId);
                 } catch (UserStoreException e) {
-                    throw new IdentityException("Failed retrieve the user realm for tenant: " + tenantDomain, e);
+                    throw new IdentityException("无法检索租户:" + tenantDomain + "的用户领域 ", e);
                 }
 
                 UserStoreManager userStoreManager;
                 try {
                     userStoreManager = userRealm.getUserStoreManager();
                 } catch (org.wso2.carbon.user.core.UserStoreException e) {
-                    throw new IdentityException("Failed retrieve the user store manager for tenant: " + tenantDomain,
-                            e);
+                    throw new IdentityException("无法检索租户：" + tenantDomain + "的用户存储管理器", e);
                 }
 
                 Map<String, String> updatedClaims = new HashMap<>();
                 updatedClaims.put(NotificationConstants.ACCOUNT_LOCKED_CLAIM, Boolean.TRUE.toString());
                 updatedClaims.put(NotificationConstants.PASSWORD_RESET_FAIL_ATTEMPTS_CLAIM, "0");
                 try {
-                    userStoreManager.setUserClaimValues(IdentityUtil.addDomainToName(receiver.getUsername(),
-                            receiver.getUserStoreDomain()), updatedClaims, UserCoreConstants.DEFAULT_PROFILE);
+                    userStoreManager.setUserClaimValues(
+                            IdentityUtil.addDomainToName(receiver.getUsername(), receiver.getUserStoreDomain()),
+                            updatedClaims, UserCoreConstants.DEFAULT_PROFILE);
                 } catch (org.wso2.carbon.user.core.UserStoreException e) {
-                    throw new IdentityException("Failed to update claim values for user: " + IdentityUtil
-                            .addDomainToName(receiver.getUsername(), receiver.getUserStoreDomain()) + " in tenant: " +
-                            tenantDomain);
+                    throw new IdentityException("无法为租户：" + tenantDomain + "更新用户: "
+                            + IdentityUtil.addDomainToName(receiver.getUsername(), receiver.getUserStoreDomain())
+                            + " 的声明值");
                 }
             }
         }

@@ -57,36 +57,37 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
     }
 
     public String getFriendlyName() {
-        return "User Email Verification";
+        return "用户电子邮件验证";
     }
 
     @Override
     public void handleEvent(Event event) throws IdentityEventException {
 
         Map<String, Object> eventProperties = event.getEventProperties();
-        UserStoreManager userStoreManager = (UserStoreManager) eventProperties.get(IdentityEventConstants.EventProperty.USER_STORE_MANAGER);
+        UserStoreManager userStoreManager = (UserStoreManager) eventProperties
+                .get(IdentityEventConstants.EventProperty.USER_STORE_MANAGER);
         User user = getUser(eventProperties, userStoreManager);
 
         boolean enable = Boolean.parseBoolean(Utils.getConnectorConfig(
                 IdentityRecoveryConstants.ConnectorConfig.ENABLE_EMIL_VERIFICATION, user.getTenantDomain()));
 
         if (!enable) {
-            //Email Verification feature is disabled
+            // Email Verification feature is disabled
             if (log.isDebugEnabled()) {
-                log.debug("Email verification Handler is disabled in tenant: " + user.getTenantDomain());
+                log.debug("租户：" + user.getTenantDomain() + "中禁用了电子邮件验证处理程序");
             }
             return;
         }
 
         String[] roleList = (String[]) eventProperties.get(IdentityEventConstants.EventProperty.ROLE_LIST);
 
-        Map<String, String> claims = (Map<String, String>) eventProperties.get(IdentityEventConstants.EventProperty
-                .USER_CLAIMS);
+        Map<String, String> claims = (Map<String, String>) eventProperties
+                .get(IdentityEventConstants.EventProperty.USER_CLAIMS);
 
         if (roleList != null) {
             List<String> roles = Arrays.asList(roleList);
             if (roles.contains(IdentityRecoveryConstants.SELF_SIGNUP_ROLE)) {
-                //This is a self signup request. Will be handled in self signup handler
+                // This is a self signup request. Will be handled in self signup handler
                 return;
             }
         }
@@ -94,7 +95,7 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
         if (IdentityEventConstants.Event.PRE_ADD_USER.equals(event.getEventName())) {
             Utils.clearEmailVerifyTemporaryClaim();
             if (claims == null || claims.isEmpty()) {
-                //Not required to handle in this handler
+                // Not required to handle in this handler
                 return;
             } else if (claims.get(IdentityRecoveryConstants.VERIFY_EMAIL_CLIAM) != null) {
                 Claim claim = new Claim();
@@ -112,34 +113,36 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
 
             } else {
                 return;
-                //Not required to handle in this handler
+                // Not required to handle in this handler
             }
         }
 
         if (IdentityEventConstants.Event.POST_ADD_USER.equals(event.getEventName())) {
 
-            boolean isAccountLockOnCreation = Boolean.parseBoolean(Utils.getConnectorConfig
-                    (IdentityRecoveryConstants.ConnectorConfig.EMAIL_ACCOUNT_LOCK_ON_CREATION, user.getTenantDomain()));
-            boolean isNotificationInternallyManage = Boolean.parseBoolean(Utils.getConnectorConfig
-                    (IdentityRecoveryConstants.ConnectorConfig.EMAIL_VERIFICATION_NOTIFICATION_INTERNALLY_MANAGE,
-                            user.getTenantDomain()));
+            boolean isAccountLockOnCreation = Boolean.parseBoolean(Utils.getConnectorConfig(
+                    IdentityRecoveryConstants.ConnectorConfig.EMAIL_ACCOUNT_LOCK_ON_CREATION, user.getTenantDomain()));
+            boolean isNotificationInternallyManage = Boolean.parseBoolean(Utils.getConnectorConfig(
+                    IdentityRecoveryConstants.ConnectorConfig.EMAIL_VERIFICATION_NOTIFICATION_INTERNALLY_MANAGE,
+                    user.getTenantDomain()));
 
             Claim claim = Utils.getEmailVerifyTemporaryClaim();
             if (claim == null) {
                 return;
-                //Not required to handle in this handler
+                // Not required to handle in this handler
             } else if (IdentityRecoveryConstants.VERIFY_EMAIL_CLIAM.equals(claim.getClaimUri())) {
                 if (isNotificationInternallyManage) {
-                    initNotification(user, RecoveryScenarios.SELF_SIGN_UP, RecoverySteps.CONFIRM_SIGN_UP, IdentityRecoveryConstants.NOTIFICATION_TYPE_EMAIL_CONFIRM.toString());
+                    initNotification(user, RecoveryScenarios.SELF_SIGN_UP, RecoverySteps.CONFIRM_SIGN_UP,
+                            IdentityRecoveryConstants.NOTIFICATION_TYPE_EMAIL_CONFIRM.toString());
                 }
 
-                //Need to lock user account
+                // Need to lock user account
                 if (isAccountLockOnCreation) {
                     lockAccount(user, userStoreManager);
                 }
             } else if (IdentityRecoveryConstants.ASK_PASSWORD_CLAIM.equals(claim.getClaimUri())) {
                 if (isNotificationInternallyManage) {
-                    initNotification(user, RecoveryScenarios.ASK_PASSWORD, RecoverySteps.UPDATE_PASSWORD, IdentityRecoveryConstants.NOTIFICATION_TYPE_ASK_PASSWORD.toString());
+                    initNotification(user, RecoveryScenarios.ASK_PASSWORD, RecoverySteps.UPDATE_PASSWORD,
+                            IdentityRecoveryConstants.NOTIFICATION_TYPE_ASK_PASSWORD.toString());
                 }
             }
         }
@@ -158,17 +161,19 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
     public void lockAccount(User user, UserStoreManager userStoreManager) throws IdentityEventException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Locking user account:" + user.getUserName());
+            log.debug("锁定用户：" + user.getUserName() + "的帐户");
         }
         setUserClaim(IdentityRecoveryConstants.ACCOUNT_LOCKED_CLAIM, Boolean.TRUE.toString(), userStoreManager, user);
     }
 
-    protected void initNotification(User user, Enum recoveryScenario, Enum recoveryStep, String notificationType) throws IdentityEventException {
-            String secretKey = UUIDGenerator.generateUUID();
-            initNotification(user, recoveryScenario, recoveryStep, notificationType, secretKey);
+    protected void initNotification(User user, Enum recoveryScenario, Enum recoveryStep, String notificationType)
+            throws IdentityEventException {
+        String secretKey = UUIDGenerator.generateUUID();
+        initNotification(user, recoveryScenario, recoveryStep, notificationType, secretKey);
     }
 
-    protected void initNotification(User user, Enum recoveryScenario, Enum recoveryStep,String notificationType, String secretKey) throws IdentityEventException {
+    protected void initNotification(User user, Enum recoveryScenario, Enum recoveryStep, String notificationType,
+            String secretKey) throws IdentityEventException {
         UserRecoveryDataStore userRecoveryDataStore = JDBCRecoveryDataStore.getInstance();
 
         try {
@@ -178,11 +183,12 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
             userRecoveryDataStore.store(recoveryDataDO);
             triggerNotification(user, notificationType, secretKey, Utils.getArbitraryProperties());
         } catch (IdentityRecoveryException e) {
-            throw new IdentityEventException("Error while sending  notification ", e);
+            throw new IdentityEventException("发送通知时出错", e);
         }
     }
 
-    protected void setRecoveryData(User user, Enum recoveryScenario, Enum recoveryStep, String secretKey) throws IdentityEventException {
+    protected void setRecoveryData(User user, Enum recoveryScenario, Enum recoveryStep, String secretKey)
+            throws IdentityEventException {
         UserRecoveryDataStore userRecoveryDataStore = JDBCRecoveryDataStore.getInstance();
 
         try {
@@ -191,7 +197,7 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
 
             userRecoveryDataStore.store(recoveryDataDO);
         } catch (IdentityRecoveryException e) {
-            throw new IdentityEventException("Error while setting recovery data for user ", e);
+            throw new IdentityEventException("为用户设置恢复数据时出错", e);
         }
     }
 
@@ -201,27 +207,28 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
         try {
             recoveryData = userRecoveryDataStore.loadWithoutCodeExpiryValidation(user);
         } catch (IdentityRecoveryException e) {
-            throw new IdentityEventException("Error while loading recovery data for user ", e);
+            throw new IdentityEventException("加载用户恢复数据时出错 ", e);
         }
         return recoveryData;
     }
 
-    protected void setUserClaim(String claimName, String claimValue, UserStoreManager userStoreManager, User user) throws IdentityEventException {
+    protected void setUserClaim(String claimName, String claimValue, UserStoreManager userStoreManager, User user)
+            throws IdentityEventException {
         HashMap<String, String> userClaims = new HashMap<>();
         userClaims.put(claimName, claimValue);
         try {
             userStoreManager.setUserClaimValues(user.getUserName(), userClaims, null);
         } catch (UserStoreException e) {
-            throw new IdentityEventException("Error while setting user claim value :" + user.getUserName(), e);
+            throw new IdentityEventException("设置用户：" + user.getUserName() + "声明值时出错", e);
         }
 
     }
 
-    protected void triggerNotification(User user, String type, String code, Property[] props) throws
-            IdentityRecoveryException {
+    protected void triggerNotification(User user, String type, String code, Property[] props)
+            throws IdentityRecoveryException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Sending : " + type + " notification to user : " + user.toString());
+            log.debug("发送 : " + type + " 通知给用户: " + user.toString());
         }
 
         String eventName = IdentityEventConstants.Event.TRIGGER_NOTIFICATION;
@@ -244,16 +251,17 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
         try {
             IdentityRecoveryServiceDataHolder.getInstance().getIdentityEventService().handleEvent(identityMgtEvent);
         } catch (IdentityEventException e) {
-            throw Utils.handleServerException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_TRIGGER_NOTIFICATION, user
-                    .getUserName(), e);
+            throw Utils.handleServerException(IdentityRecoveryConstants.ErrorMessages.ERROR_CODE_TRIGGER_NOTIFICATION,
+                    user.getUserName(), e);
         }
     }
 
-    protected User getUser(Map eventProperties, UserStoreManager userStoreManager){
+    protected User getUser(Map eventProperties, UserStoreManager userStoreManager) {
 
         String userName = (String) eventProperties.get(IdentityEventConstants.EventProperty.USER_NAME);
         String tenantDomain = (String) eventProperties.get(IdentityEventConstants.EventProperty.TENANT_DOMAIN);
-        String domainName = userStoreManager.getRealmConfiguration().getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
+        String domainName = userStoreManager.getRealmConfiguration()
+                .getUserStoreProperty(UserCoreConstants.RealmConfig.PROPERTY_DOMAIN_NAME);
 
         User user = new User();
         user.setUserName(userName);
@@ -261,6 +269,5 @@ public class UserEmailVerificationHandler extends AbstractEventHandler {
         user.setUserStoreDomain(domainName);
         return user;
     }
-
 
 }

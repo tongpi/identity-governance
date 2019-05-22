@@ -65,8 +65,7 @@ public class NotificationReceiversRetrievalUtil {
             } while (realmConfiguration != null);
 
         } catch (UserStoreException e) {
-            throw new AccountSuspensionNotificationException("获取启用通知的用户存储时出错",
-                    e);
+            throw new AccountSuspensionNotificationException("获取启用通知的用户存储时出错", e);
         }
 
         return userStoreSet;
@@ -92,16 +91,15 @@ public class NotificationReceiversRetrievalUtil {
                         .buildCountRetriever(realmConfiguration);
             }
             if (notificationReceiversRetrieval == null) {
-                throw new AccountSuspensionNotificationException("Could not create an instance of class: " +
-                        retrieverType + " for the domain: " + domain);
+                throw new AccountSuspensionNotificationException("为域名：" + domain + "无法创建类" + retrieverType + "的实例");
             }
 
         }
         return notificationReceiversRetrieval;
     }
 
-    public static Map<String, RealmConfiguration> getUserStoreList(String tenantDomain) throws
-            AccountSuspensionNotificationException {
+    public static Map<String, RealmConfiguration> getUserStoreList(String tenantDomain)
+            throws AccountSuspensionNotificationException {
         String domain;
         RealmConfiguration realmConfiguration;
         Map<String, RealmConfiguration> userStoreList = new HashMap<>();
@@ -129,8 +127,7 @@ public class NotificationReceiversRetrievalUtil {
             } while (realmConfiguration != null);
 
         } catch (UserStoreException e) {
-            throw new AccountSuspensionNotificationException(
-                    "为通知功能列出用户存储时出错", e);
+            throw new AccountSuspensionNotificationException("为通知功能列出用户存储时出错", e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }
@@ -144,7 +141,7 @@ public class NotificationReceiversRetrievalUtil {
             return false;
         }
 
-        //Primary User store cannot be disabled
+        // Primary User store cannot be disabled
 
         if (!isPrimaryUserStore) {
             if (Boolean.valueOf(

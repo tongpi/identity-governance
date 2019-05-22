@@ -72,8 +72,8 @@ public class SelfSignUpReCaptchaConnector extends AbstractReCaptchaConnector {
 
         String path = ((HttpServletRequest) servletRequest).getRequestURI();
 
-        if (StringUtils.isBlank(path) || (!CaptchaUtil.isPathAvailable(path, SELF_REGISTRATION_INITIATE_URL) &&
-                !CaptchaUtil.isPathAvailable(path, SELF_REGISTRATION_URL))) {
+        if (StringUtils.isBlank(path) || (!CaptchaUtil.isPathAvailable(path, SELF_REGISTRATION_INITIATE_URL)
+                && !CaptchaUtil.isPathAvailable(path, SELF_REGISTRATION_URL))) {
             return false;
         }
 
@@ -83,7 +83,7 @@ public class SelfSignUpReCaptchaConnector extends AbstractReCaptchaConnector {
         } catch (Exception e) {
             // Can happen due to invalid tenant/ invalid configuration
             if (log.isDebugEnabled()) {
-                log.debug("Unable to load connector configuration.", e);
+                log.debug("无法加载连接器配置。", e);
             }
             return false;
         }
@@ -129,7 +129,7 @@ public class SelfSignUpReCaptchaConnector extends AbstractReCaptchaConnector {
 
         String reCaptchaResponse = ((HttpServletRequest) servletRequest).getHeader("g-recaptcha-response");
         if (StringUtils.isBlank(reCaptchaResponse)) {
-            throw new CaptchaClientException("reCaptcha response is not available in the request.");
+            throw new CaptchaClientException("请求中没有重复验证码响应。");
         }
 
         return CaptchaUtil.isValidCaptcha(reCaptchaResponse);
@@ -139,7 +139,7 @@ public class SelfSignUpReCaptchaConnector extends AbstractReCaptchaConnector {
     public CaptchaPostValidationResponse postValidate(ServletRequest servletRequest, ServletResponse servletResponse)
             throws CaptchaException {
 
-        //No validation at this stage.
+        // No validation at this stage.
         return null;
     }
 
@@ -155,7 +155,7 @@ public class SelfSignUpReCaptchaConnector extends AbstractReCaptchaConnector {
         }
 
         Property[] connectorConfigs;
-        connectorConfigs = identityGovernanceService.getConfiguration(new String[]{PROPERTY_ENABLE_RECAPTCHA},
+        connectorConfigs = identityGovernanceService.getConfiguration(new String[] { PROPERTY_ENABLE_RECAPTCHA },
                 tenantDomain);
 
         return connectorConfigs;

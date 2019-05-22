@@ -35,22 +35,26 @@ import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 /**
- * @scr.component name="org.wso2.carbon.identity.governance.internal.IdentityMgtServiceComponent" immediate="true"
+ * @scr.component name="org.wso2.carbon.identity.governance.internal.IdentityMgtServiceComponent"
+ *                immediate="true"
  * @scr.reference name="EventMgtService"
- * interface="org.wso2.carbon.identity.event.services.IdentityEventService" cardinality="1..1"
- * policy="dynamic" bind="setIdentityEventService" unbind="unsetIdentityEventService"
+ *                interface="org.wso2.carbon.identity.event.services.IdentityEventService"
+ *                cardinality="1..1" policy="dynamic"
+ *                bind="setIdentityEventService"
+ *                unbind="unsetIdentityEventService"
  * @scr.reference name="idp.mgt.event.listener.service"
- * interface="org.wso2.carbon.identity.governance.common.IdentityConnectorConfig"
- * cardinality="0..n" policy="dynamic"
- * bind="setIdentityGovernanceConnector"
- * unbind="unsetIdentityGovernanceConnector"
+ *                interface="org.wso2.carbon.identity.governance.common.IdentityConnectorConfig"
+ *                cardinality="0..n" policy="dynamic"
+ *                bind="setIdentityGovernanceConnector"
+ *                unbind="unsetIdentityGovernanceConnector"
  * @scr.reference name="IdentityProviderManager"
- * interface="org.wso2.carbon.idp.mgt.IdpManager" cardinality="1..1"
- * policy="dynamic" bind="setIdpManager" unbind="unsetIdpManager"
+ *                interface="org.wso2.carbon.idp.mgt.IdpManager"
+ *                cardinality="1..1" policy="dynamic" bind="setIdpManager"
+ *                unbind="unsetIdpManager"
  * @scr.reference name="RealmService"
- * interface="org.wso2.carbon.user.core.service.RealmService"
- * cardinality="1..1" policy="dynamic" bind="setRealmService"
- * unbind="unsetRealmService"
+ *                interface="org.wso2.carbon.user.core.service.RealmService"
+ *                cardinality="1..1" policy="dynamic" bind="setRealmService"
+ *                unbind="unsetRealmService"
  */
 public class IdentityMgtServiceComponent {
 
@@ -61,27 +65,26 @@ public class IdentityMgtServiceComponent {
 
         try {
             listener = new IdentityMgtEventListener();
-            context.getBundleContext().registerService(UserOperationEventListener.class,
-                    listener, null);
+            context.getBundleContext().registerService(UserOperationEventListener.class, listener, null);
             context.getBundleContext().registerService(UserOperationEventListener.class,
                     new IdentityStoreEventListener(), null);
             IdentityGovernanceServiceImpl identityGovernanceService = new IdentityGovernanceServiceImpl();
-            context.getBundleContext().registerService(IdentityGovernanceService.class, identityGovernanceService, null);
+            context.getBundleContext().registerService(IdentityGovernanceService.class, identityGovernanceService,
+                    null);
             IdentityMgtServiceDataHolder.getInstance().setIdentityGovernanceService(identityGovernanceService);
             context.getBundleContext().registerService(TenantMgtListener.class.getName(),
                     new TenantCreationEventListener(), null);
             if (log.isDebugEnabled()) {
-                log.debug("Identity Management Listener is enabled");
+                log.debug("身份管理监听器已启用");
             }
         } catch (Exception e) {
-            log.error("Error while activating identity governance component.", e);
+            log.error("激活身份管理组件时出错。", e);
         }
     }
 
-
     protected void deactivate(ComponentContext context) {
         if (log.isDebugEnabled()) {
-            log.debug("Identity Management bundle is de-activated");
+            log.debug("身份管理包已取消激活");
         }
     }
 
@@ -100,10 +103,10 @@ public class IdentityMgtServiceComponent {
     protected void setIdentityGovernanceConnector(IdentityConnectorConfig identityConnectorConfig) {
         IdentityMgtServiceDataHolder.getInstance().addIdentityGovernanceConnector(identityConnectorConfig);
         try {
-            IdentityGovernanceUtil.saveConnectorDefaultProperties(identityConnectorConfig, MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+            IdentityGovernanceUtil.saveConnectorDefaultProperties(identityConnectorConfig,
+                    MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
         } catch (IdentityGovernanceException e) {
-            log.error("Error while saving super tenant configurations for " + identityConnectorConfig.getName() +
-                    ".", e);
+            log.error("为" + identityConnectorConfig.getName() + "保存超级租户配置时出错。", e);
         }
     }
 
@@ -114,15 +117,16 @@ public class IdentityMgtServiceComponent {
     protected void setIdpManager(IdpManager idpManager) {
         IdentityMgtServiceDataHolder.getInstance().setIdpManager(idpManager);
     }
+
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
-            log.debug("Setting the Realm Service");
+            log.debug("设置领域服务");
         }
         IdentityMgtServiceDataHolder.getInstance().setRealmService(realmService);
     }
 
     protected void unsetRealmService(RealmService realmService) {
-        log.debug("UnSetting the Realm Service");
+        log.debug("取消设置领域服务");
         IdentityMgtServiceDataHolder.getInstance().setRealmService(null);
     }
 
