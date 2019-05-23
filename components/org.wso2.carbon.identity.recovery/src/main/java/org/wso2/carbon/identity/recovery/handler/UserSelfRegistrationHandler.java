@@ -57,7 +57,7 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
     }
 
     public String getFriendlyName() {
-        return "用户自主注册";
+        return "用户自注册";
     }
 
     @Override
@@ -124,7 +124,7 @@ public class UserSelfRegistrationHandler extends AbstractEventHandler {
                             secretKey, Utils.getArbitraryProperties());
                 }
             } catch (IdentityRecoveryException e) {
-                throw new IdentityEventException("发送自主注册通知时出错", e);
+                throw new IdentityEventException("发送自注册通知时出错", e);
             }
             if (isAccountLockOnCreation) {
                 HashMap<String, String> userClaims = new HashMap<>();

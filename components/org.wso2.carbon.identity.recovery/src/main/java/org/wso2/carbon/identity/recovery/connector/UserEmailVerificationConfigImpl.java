@@ -34,7 +34,7 @@ public class UserEmailVerificationConfigImpl implements IdentityConnectorConfig 
 
         private static String connectorName = "user-email-verification";
         private static final String CATEGORY = "账号管理策略";
-        private static final String FRIENDLY_NAME = "User Onboarding";
+        private static final String FRIENDLY_NAME = "非用户自注册";
         private static final String FRIENDLY_NAME_URL = "User Onboarding";
         private static final String CATEGORY_URL = "Account Management Policies";
         private static final String LIST_PURPOSE_PROPERTY_KEY = "_url_listPurposeJITProvisioning";

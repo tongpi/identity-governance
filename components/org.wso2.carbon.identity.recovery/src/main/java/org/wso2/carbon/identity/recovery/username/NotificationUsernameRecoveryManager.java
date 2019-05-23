@@ -292,7 +292,7 @@ public class NotificationUsernameRecoveryManager {
             }
 
         } catch (Exception e) {
-            String msg = "Error retrieving the user store manager for the tenant";
+            String msg = "检索租户的用户存储管理器时出错";
             throw new IdentityRecoveryException(msg, e);
         }
         try {
@@ -301,7 +301,7 @@ public class NotificationUsernameRecoveryManager {
             }
             return userList;
         } catch (Exception e) {
-            String msg = "Unable to retrieve the claim for the given tenant";
+            String msg = "无法检索给定租户的声明";
             throw new IdentityRecoveryException(msg, e);
         }
     }
