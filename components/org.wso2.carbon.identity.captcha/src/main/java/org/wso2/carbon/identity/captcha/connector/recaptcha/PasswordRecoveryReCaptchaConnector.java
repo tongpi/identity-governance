@@ -63,9 +63,9 @@ public class PasswordRecoveryReCaptchaConnector extends AbstractReCaptchaConnect
 
     private static final Log log = LogFactory.getLog(PasswordRecoveryReCaptchaConnector.class);
 
-    private static final String FAIL_ATTEMPTS_CLAIM = "http://is.cd.mtn:9443/claims/identity/failedPasswordRecoveryAttempts";
+    private static final String FAIL_ATTEMPTS_CLAIM = "http://wso2.org/claims/identity/failedPasswordRecoveryAttempts";
 
-    private static final String ACCOUNT_LOCKED_CLAIM = "http://is.cd.mtn:9443/claims/identity/accountLocked";
+    private static final String ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
 
     private static final String ACCOUNT_SECURITY_QUESTION_URL = "/api/identity/recovery/v0.9/security-question";
 
