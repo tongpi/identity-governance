@@ -78,9 +78,9 @@ public class IdentityMgtConstants {
         private Claim() {
         }
 
-        public static final String FAIL_LOGIN_ATTEMPTS = "http://is.cd.mtn:9443/claims/identity/failedLoginAttempts";
-        public static final String UNLOCKING_TIME = "http://is.cd.mtn:9443/claims/identity/unlockTime";
-        public static final String ACCOUNT_LOCK = "http://is.cd.mtn:9443/claims/identity/accountLocked";
+        public static final String FAIL_LOGIN_ATTEMPTS = "http://wso2.org/claims/identity/failedLoginAttempts";
+        public static final String UNLOCKING_TIME = "http://wso2.org/claims/identity/unlockTime";
+        public static final String ACCOUNT_LOCK = "http://wso2.org/claims/identity/accountLocked";
 
     }
 }
