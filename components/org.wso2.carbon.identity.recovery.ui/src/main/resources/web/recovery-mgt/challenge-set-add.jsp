@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
@@ -80,21 +80,21 @@
 
 
             if (setName == "") {
-                CARBON.showWarningDialog('Please provide the question set id');
+                CARBON.showWarningDialog('请提供问题集 id');
                 location.href = '#';
             } else if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('请输入有效的安全问题', null, null);
                 location.href = '#';
             } else if (questionId == null || questionId == "") {
-                CARBON.showWarningDialog('Please enter a valid question id', null, null);
+                CARBON.showWarningDialog('请输入有效的问题 id', null, null);
                 location.href = '#';
             } else if (sel == 0) {
-                CARBON.showWarningDialog('Please select a locale for the question', null, null);
+                CARBON.showWarningDialog('请选择问题的区域设置', null, null);
                 location.href = '#';
             } else {
-                if (!doValidateInput(document.getElementById("setName"), "Provided Question Set ID is invalid. Only {1} allowed.")) {
+                if (!doValidateInput(document.getElementById("setName"), "提供的问题集ID无效. 只有 {1} 被允许.")) {
                     location.href = '#';
-                } else if (!doValidateInput(document.getElementById("questionId0"), "Provided Question ID  is invalid. Only {1} allowed.")) {
+                } else if (!doValidateInput(document.getElementById("questionId0"), "提供的问题ID无效. 只有 {1} 被允许.")) {
                     location.href = '#';
                 } else {
                     $("#questionForm").submit();
@@ -172,8 +172,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" class="buttonRow">
-                                        <button onclick="addRow()" type="button" class="button">Add</button>
-                                        <button onclick="cancelForm()" type="button" class="button">Cancel</button>
+                                        <button onclick="addRow()" type="button" class="button">添加</button>
+                                        <button onclick="cancelForm()" type="button" class="button">取消</button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -185,4 +185,3 @@
         </form>
     </div>
 </fmt:bundle>
-

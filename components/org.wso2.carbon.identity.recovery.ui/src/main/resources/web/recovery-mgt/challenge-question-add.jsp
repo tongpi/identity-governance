@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
@@ -188,7 +188,7 @@
             var question = document.getElementById(questionId).innerText;
 
             if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('请输入有效的安全问题', null, null);
                 location.href = '#';
             } else {
                 location.href = 'challenge-question-add.jsp?updateRowId=' + encodeURIComponent(row) + '&setName=' +
@@ -209,21 +209,21 @@
             var localeMapping = $("input[name=localeMapping]:checked").val();
 
             if (setIndex == 0) {
-                CARBON.showWarningDialog('Please select a Question Set Id', null, null);
+                CARBON.showWarningDialog('请选择问题集 Id', null, null);
                 location.href = '#';
             } else if (questionId == null || questionId == "") {
-                CARBON.showWarningDialog('Please enter a valid question id', null, null);
+                CARBON.showWarningDialog('请输入有效的问题 id', null, null);
                 location.href = '#';
             } else if (localeIndex == 0) {
-                CARBON.showWarningDialog('Please select a valid locale for the question', null, null);
+                CARBON.showWarningDialog('请为问题选择有效的区域设置', null, null);
                 location.href = '#';
             } else if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('请输入有效的安全问题', null, null);
                 location.href = '#';
             }
             // validate questionId
             else {
-                if (!doValidateInput(document.getElementsByName("questionId0")[0], "Provided Question ID is invalid. Only {1} allowed.")) {
+                if (!doValidateInput(document.getElementsByName("questionId0")[0], "提供的问题ID无效. 只有 {1} 被允许.")) {
                     location.href = '#';
                 } else {
                     location.href = 'challenge-question-add.jsp?addRowId=' + encodeURIComponent(question) +
@@ -306,7 +306,7 @@
             var localeMapping = $("input[name=localeMapping]:checked").val();
 
             if (questionSetIndex == 0) {
-                CARBON.showWarningDialog('Please select a Question Set Id', null, null);
+                CARBON.showWarningDialog('请选择问题集 Id', null, null);
                 location.href = '#';
             } else {
                 var redirectTo = 'challenge-question-add.jsp?setName=' + encodeURIComponent(questionSetName)
@@ -351,7 +351,7 @@
                                     <td>
                                         <select id="setName0" name="setName0" onchange="onChangeSelect()"
                                                 class="leftCol-med">
-                                            <option value="selectID">--- Select Set Id ---</option>
+                                            <option value="selectID">--- 选择问题集 Id ---</option>
 
                                             <%
                                                 for (String setURI : challengeURIs) {
@@ -379,9 +379,9 @@
                                 </td>
                                 <td>
                                     <input type="radio" name="localeMapping" id="localeYes" value="yes"
-                                           onchange="getQuestionIDs()">Yes</input>
+                                           onchange="getQuestionIDs()">是</input>
                                     <input type="radio" name="localeMapping" id="localeNo" value="no"
-                                           onchange="getQuestionIDs()">No</input>
+                                           onchange="getQuestionIDs()">否</input>
 
                                     <% if (StringUtils.isNotBlank(localeMapping) && StringUtils.equalsIgnoreCase("yes", localeMapping)) {%>
                                     <script>
@@ -467,7 +467,7 @@
                                 <tr>
                                     <td>
                                         <button id="addButton" onclick="addRow()" type="button"
-                                                class="button">Add
+                                                class="button">添加
                                         </button>
                                     </td>
                                 </tr>
@@ -524,20 +524,20 @@
                                         <a onclick="updateRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Update
+                                            更新
                                         </a>
                                         <%
                                         } else { %>
                                         <a onclick="editRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Edit
+                                            编辑
                                         </a>
                                         <%}%>
                                         <a onclick="removeRow('<%=i%>')"
                                            style='background-image:url(images/delete.gif);' type="button"
                                            class="icon-link">
-                                            Delete
+                                            删除
                                         </a>
                                     </td>
                                 </tr>
@@ -555,8 +555,8 @@
                     </tr>
                     <tr>
                         <td class="buttonRow">
-                            <input type="submit" value="Finish" class="button"/>
-                            <input type="button" value="Cancel" onclick="cancelForm();" class="button"/>
+                            <input type="submit" value="完成" class="button"/>
+                            <input type="button" value="取消" onclick="cancelForm();" class="button"/>
                         </td>
                     </tr>
                     <input type="hidden" name="setName" id="setName"
@@ -615,4 +615,3 @@
         </form>
     </div>
 </fmt:bundle>
-

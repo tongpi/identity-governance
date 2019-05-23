@@ -14,7 +14,7 @@
   ~ limitations under the License.
   --%>
 
-
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
@@ -171,7 +171,7 @@
             var question = document.getElementById(questionId).innerText;
 
             if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('请输入有效的安全问题', null, null);
                 location.href = '#';
             } else {
                 location.href = 'challenges-mgt.jsp?updateRowId=' + encodeURIComponent(row) + '&setName=' +
@@ -252,20 +252,20 @@
                                         <a onclick="updateRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Update
+                                            更新
                                         </a>
                                         <%
                                         } else { %>
                                         <a onclick="editRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Edit
+                                            编辑
                                         </a>
                                         <%}%>
                                         <a onclick="removeRow('<%=i%>')"
                                            style='background-image:url(images/delete.gif);' type="button"
                                            class="icon-link">
-                                            Delete
+                                            删除
                                         </a>
                                     </td>
                                 </tr>
@@ -283,8 +283,8 @@
                     </tr>
                     <tr>
                         <td class="buttonRow">
-                            <input type="submit" value="Finish" class="button"/>
-                            <input type="button" value="Cancel" onclick="cancelForm();" class="button"/>
+                            <input type="submit" value="完成" class="button"/>
+                            <input type="button" value="取消" onclick="cancelForm();" class="button"/>
                         </td>
                     </tr>
                     <input type="hidden" name="setName" id="setName"
@@ -298,4 +298,3 @@
         </form>
     </div>
 </fmt:bundle>
-
