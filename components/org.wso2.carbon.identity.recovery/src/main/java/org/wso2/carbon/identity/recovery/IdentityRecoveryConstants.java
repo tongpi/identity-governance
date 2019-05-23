@@ -71,62 +71,62 @@ public class IdentityRecoveryConstants {
 
     public enum ErrorMessages {
 
-        ERROR_CODE_INVALID_CODE("18001", "Invalid Code '%s.'"),
-        ERROR_CODE_EXPIRED_CODE("18002", "Expired Code '%s.'"),
-        ERROR_CODE_INVALID_USER("18003", "Invalid User '%s.'"),
-        ERROR_CODE_UNEXPECTED("18013", "Unexpected error"),
-        ERROR_CODE_RECOVERY_NOTIFICATION_FAILURE("18015", "Error sending recovery notification"),
-        ERROR_CODE_INVALID_TENANT("18016", "Invalid tenant'%s.'"),
-        ERROR_CODE_CHALLENGE_QUESTION_NOT_FOUND("18017", "No challenge question found. %s"),
-        ERROR_CODE_INVALID_CREDENTIALS("17002", "Invalid Credentials"),
-        ERROR_CODE_LOCKED_ACCOUNT("17003", "User account is locked - '%s.'"),
-        ERROR_CODE_DISABLED_ACCOUNT("17004", "user account is disabled '%s.'"),
-        ERROR_CODE_REGISTRY_EXCEPTION_GET_CHALLENGE_QUESTIONS("20001", "Registry exception while getting challenge question"),
-        ERROR_CODE_REGISTRY_EXCEPTION_SET_CHALLENGE_QUESTIONS("20002", "Registry exception while setting challenge question"),
-        ERROR_CODE_GETTING_CHALLENGE_URIS("20003", "Error while getting challenge question URIs '%s.'"),
-        ERROR_CODE_GETTING_CHALLENGE_QUESTIONS("20004", "Error while getting challenge questions '%s.'"),
-        ERROR_CODE_GETTING_CHALLENGE_QUESTION("20005", "Error while getting challenge question '%s.'"),
-        ERROR_CODE_QUESTION_OF_USER("20006", "Error setting challenge quesitons of user '%s.'"),
-        ERROR_CODE_NO_HASHING_ALGO("20007", "Error while hashing the security answer"),
-        ERROR_CODE_INVALID_ANSWER_FOR_SECURITY_QUESTION("20008", "Invalid answer"),
-        ERROR_CODE_STORING_RECOVERY_DATA("20009", "Invalid answer for security question"),
-        ERROR_CODE_NEED_TO_ANSWER_MORE_SECURITY_QUESTION("20010", "Need to answer more security questions"),
-        ERROR_CODE_TRIGGER_NOTIFICATION("20011", "Error while trigger notification for user '%s.'"),
-        ERROR_CODE_NEED_TO_ANSWER_TO_REQUESTED_QUESTIONS("20012", "Need to answer to all requested security questions"),
-        ERROR_CODE_NO_VALID_USERNAME("20013", "No Valid username found for recovery"),
-        ERROR_CODE_NO_FIELD_FOUND_FOR_USER_RECOVERY("20014", "No fileds found for username recovery"),
-        ERROR_CODE_NO_USER_FOUND_FOR_RECOVERY("20015", "No valid user found"),
-        ERROR_CODE_ISSUE_IN_LOADING_RECOVERY_CONFIGS("20016", "Error loading recovery configs"),
-        ERROR_CODE_NOTIFICATION_BASED_PASSWORD_RECOVERY_NOT_ENABLE("20017", "Notification based password recovery is not enabled"),
-        ERROR_CODE_QUESTION_BASED_RECOVERY_NOT_ENABLE("20018", "Security questions based recovery is not enabled"),
-        ERROR_CODE_ADD_SELF_USER("20019", "Error while adding self signup user"),
-        ERROR_CODE_LOCK_USER_USER("20020", "Error while lock user"),
-        ERROR_CODE_DISABLE_SELF_SIGN_UP("20021", "Self sign up feature is disabled"),
-        ERROR_CODE_LOCK_USER_ACCOUNT("20022", "Error while lock user account"),
-        ERROR_CODE_UNLOCK_USER_USER("20023", "Error while unlock user"),
-        ERROR_CODE_OLD_CODE_NOT_FOUND("20024", "Old confirmation code not found"),
-        ERROR_CODE_FAILED_TO_LOAD_REALM_SERVICE("20025", "Failed to retrieve user realm from tenant id : %s"),
-        ERROR_CODE_FAILED_TO_LOAD_USER_STORE_MANAGER("20026", "Failed to retrieve user store manager."),
-        ERROR_CODE_FAILED_TO_LOAD_USER_CLAIMS("20027", "Error occurred while retrieving user claims"),
-        ERROR_CODE_FAILED_TO_LOAD_GOV_CONFIGS("20028", "Error occurred while retrieving account lock connector " +
-                "configuration"),
-        ERROR_CODE_HISTORY_VIOLATE("22001", "This password has been used in recent history. Please choose a different" +
-                " password"),
-        ERROR_CODE_MULTIPLE_QUESTION_NOT_ALLOWED("20029", "Multiple challenge question not allowed for this operation"),
-        ERROR_CODE_USER_ALREADY_EXISTS("20030", "User %s already exists in the system. Please use a different username."),
-        ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLE("20031", "Username recovery is not enabled"),
-        ERROR_CODE_MULTIPLE_USERS_MATCHING("20032", "Multiple users found"),
-        ERROR_CODE_ISSUE_IN_LOADING_SIGNUP_CONFIGS("20033", "Error loading signup configs"),
-        ERROR_CODE_FAILED_TO_UPDATE_USER_CLAIMS("20034", "Error occurred while updating user claims"),
-        ERROR_CODE_POLICY_VIOLATION("20035", "Password Policy Violate"),
-        ERROR_CODE_PROVIDED_CONFIRMATION_CODE_NOT_VALID("20036", "Provided confirmation code %s is not valid"),
-        ERROR_CODE_CONFIRMATION_CODE_NOT_PROVIDED("20037", "Confirmation code is not provided for user %s."),
-        ERROR_CODE_RECOVERY_SCENARIO_NOT_PROVIDED("20038", "Recovery Scenario is not provided for user %s."),
-        ERROR_CODE_RECOVERY_STEP_NOT_PROVIDED("20039", "Recovery Step is not provided for user %s."),
-        ERROR_CODE_NOTIFICATION_TYPE_NOT_PROVIDED("20040", "Notification Type is not provided for user %s."),
-        ERROR_CODE_FAILED_TO_CHECK_ACCOUNT_LOCK_STATUS("20041", "Error while validating account lock status of user: " +
+        ERROR_CODE_INVALID_CODE("18001", "无效码 '%s.'"),
+        ERROR_CODE_EXPIRED_CODE("18002", "码已过期 '%s.'"),
+        ERROR_CODE_INVALID_USER("18003", "非法用户 '%s.'"),
+        ERROR_CODE_UNEXPECTED("18013", "不可预知的错误"),
+        ERROR_CODE_RECOVERY_NOTIFICATION_FAILURE("18015", "发送恢复通知时出错"),
+        ERROR_CODE_INVALID_TENANT("18016", "非法的租户 '%s.'"),
+        ERROR_CODE_CHALLENGE_QUESTION_NOT_FOUND("18017", "找不到挑战问题. %s"),
+        ERROR_CODE_INVALID_CREDENTIALS("17002", "无效的凭据"),
+        ERROR_CODE_LOCKED_ACCOUNT("17003", "用户账号被锁定 - '%s.'"),
+        ERROR_CODE_DISABLED_ACCOUNT("17004", "用户账号被禁用 '%s.'"),
+        ERROR_CODE_REGISTRY_EXCEPTION_GET_CHALLENGE_QUESTIONS("20001", "获取挑战问题时出现注册表异常"),
+        ERROR_CODE_REGISTRY_EXCEPTION_SET_CHALLENGE_QUESTIONS("20002", "设置挑战问题时出现注册表异常"),
+        ERROR_CODE_GETTING_CHALLENGE_URIS("20003", "获取挑战问题时出错， URI： '%s.'"),
+        ERROR_CODE_GETTING_CHALLENGE_QUESTIONS("20004", "获取挑战问题时出错 '%s.'"),
+        ERROR_CODE_GETTING_CHALLENGE_QUESTION("20005", "获取挑战问题时出错 '%s.'"),
+        ERROR_CODE_QUESTION_OF_USER("20006", "获取挑战问题时出错，用户为： '%s.'"),
+        ERROR_CODE_NO_HASHING_ALGO("20007", "哈希安全答案时出错"),
+        ERROR_CODE_INVALID_ANSWER_FOR_SECURITY_QUESTION("20008", "答案无效"),
+        ERROR_CODE_STORING_RECOVERY_DATA("20009", "安全问题答案无效"),
+        ERROR_CODE_NEED_TO_ANSWER_MORE_SECURITY_QUESTION("20010", "需要回答更多的安全问题"),
+        ERROR_CODE_TRIGGER_NOTIFICATION("20011", "为用户触发通知时出错。用户为 '%s.'"),
+        ERROR_CODE_NEED_TO_ANSWER_TO_REQUESTED_QUESTIONS("20012", "需要回答所有要求的安全问题"),
+        ERROR_CODE_NO_VALID_USERNAME("20013", "找不到用于恢复的有效用户名"),
+        ERROR_CODE_NO_FIELD_FOUND_FOR_USER_RECOVERY("20014", "找不到用于用户名恢复的文件"),
+        ERROR_CODE_NO_USER_FOUND_FOR_RECOVERY("20015", "找不到有效用户"),
+        ERROR_CODE_ISSUE_IN_LOADING_RECOVERY_CONFIGS("20016", "加载恢复配置时出错"),
+        ERROR_CODE_NOTIFICATION_BASED_PASSWORD_RECOVERY_NOT_ENABLE("20017", "未启用基于通知的密码恢复"),
+        ERROR_CODE_QUESTION_BASED_RECOVERY_NOT_ENABLE("20018", "未启用基于安全问题的恢复"),
+        ERROR_CODE_ADD_SELF_USER("20019", "添加自注册用户时出错"),
+        ERROR_CODE_LOCK_USER_USER("20020", "锁定用户时出错"),
+        ERROR_CODE_DISABLE_SELF_SIGN_UP("20021", "已禁用自注册功能"),
+        ERROR_CODE_LOCK_USER_ACCOUNT("20022", "锁定用户账号时出错"),
+        ERROR_CODE_UNLOCK_USER_USER("20023", "解锁用户时出错"),
+        ERROR_CODE_OLD_CODE_NOT_FOUND("20024", "未找到旧确认码"),
+        ERROR_CODE_FAILED_TO_LOAD_REALM_SERVICE("20025", "无法从租户 id : %s检索用户领域"),
+        ERROR_CODE_FAILED_TO_LOAD_USER_STORE_MANAGER("20026", "检索用户存储管理器失败."),
+        ERROR_CODE_FAILED_TO_LOAD_USER_CLAIMS("20027", "检索用户声明时出错"),
+        ERROR_CODE_FAILED_TO_LOAD_GOV_CONFIGS("20028", "检索帐户锁定连接器配置时出错"),
+
+        ERROR_CODE_HISTORY_VIOLATE("22001", "此密码已在最近的历史记录中使用。请选择其他密码"),
+
+        ERROR_CODE_MULTIPLE_QUESTION_NOT_ALLOWED("20029", "此操作不允许有多个挑战问题"),
+        ERROR_CODE_USER_ALREADY_EXISTS("20030", "用户 %s 在系统中已存在。请使用其他用户名."),
+        ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLE("20031", "未启用用户名恢复"),
+        ERROR_CODE_MULTIPLE_USERS_MATCHING("20032", "找到多个用户"),
+        ERROR_CODE_ISSUE_IN_LOADING_SIGNUP_CONFIGS("20033", "加载注册配置时出错"),
+        ERROR_CODE_FAILED_TO_UPDATE_USER_CLAIMS("20034", "更新用户声明时出错"),
+        ERROR_CODE_POLICY_VIOLATION("20035", "违反了密码策略"),
+        ERROR_CODE_PROVIDED_CONFIRMATION_CODE_NOT_VALID("20036", "提供的确认码 %s 无效"),
+        ERROR_CODE_CONFIRMATION_CODE_NOT_PROVIDED("20037", "没有为用户 %s 提供确认码."),
+        ERROR_CODE_RECOVERY_SCENARIO_NOT_PROVIDED("20038", "没有为用户提供恢复方案 ."),
+        ERROR_CODE_RECOVERY_STEP_NOT_PROVIDED("20039", "没有为用户 %s 提供恢复步骤."),
+        ERROR_CODE_NOTIFICATION_TYPE_NOT_PROVIDED("20040", "没有为用户 %s 提供通知类型."),
+        ERROR_CODE_FAILED_TO_CHECK_ACCOUNT_LOCK_STATUS("20041", "验证用户的帐户锁定状态时出错: " +
                 "%s."),
-        ERROR_CODE_ADD_USER_CONSENT("20042", "Error while adding consent for user %s."),;
+        ERROR_CODE_ADD_USER_CONSENT("20042", "为用户 %s 添加同意时出错."),;
 
 
         private final String code;
@@ -230,19 +230,19 @@ public class IdentityRecoveryConstants {
         public static final String CHALLENGE_QUESTION_LOCALE = "locale";
 
         // TODO remove this
-        public static final String[] SECRET_QUESTIONS_SET01 = new String[]{"City where you were born ?",
-                "Father's middle name ?", "Favorite food ?", "Favorite vacation location ?"};
+        public static final String[] SECRET_QUESTIONS_SET01 = new String[]{"你出生的城市是什么?",
+                "您父亲的名字是什么?", "您最爱吃的美食是什么?", "最喜欢的度假地点是什么?"};
 
         // TODO remove this
-        public static final String[] SECRET_QUESTIONS_SET02 = new String[]{"Model of your first car ?",
-                "Name of the hospital where you were born ?", "Name of your first pet ?", "Favorite sport ?"};
+        public static final String[] SECRET_QUESTIONS_SET02 = new String[]{"你的第一辆汽车的品牌是什么?",
+                "出生的医院的名字是什么?", "第一只宠物的名字?", "最喜欢的运动是什么?"};
 
 
     }
 
     public static class Consent {
 
-        public static final String COLLECTION_METHOD_SELF_REGISTRATION = "Web Form - Self Registration";
+        public static final String COLLECTION_METHOD_SELF_REGISTRATION = "Web 表单 - 自注册";
         public static final String DEFAULT_JURISDICTION = "Global";
         public static final String LANGUAGE_ENGLISH = "en";
         public static final String CONSENT = "consent";
