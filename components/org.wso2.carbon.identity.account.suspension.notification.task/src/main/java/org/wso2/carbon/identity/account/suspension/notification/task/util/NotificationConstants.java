@@ -35,11 +35,11 @@ public class NotificationConstants {
                         + "= ? AND UM_USER_ATTRIBUTE.UM_ATTR_VALUE BETWEEN ? AND ? AND UM_USER_ATTRIBUTE.UM_TENANT_ID=? AND "
                         + "UM_USER.UM_TENANT_ID=?";
 
-        public final static String USERNAME_CLAIM = "http://is.cd.mtn:9443/claims/username";
-        public final static String FIRST_NAME_CLAIM = "http://is.cd.mtn:9443/claims/givenname";
-        public final static String EMAIL_CLAIM = "http://is.cd.mtn:9443/claims/emailaddress";
-        public final static String LAST_LOGIN_TIME = "http://is.cd.mtn:9443/claims/lastLoginTime";
+        public final static String USERNAME_CLAIM = "http://wso2.org/claims/username";
+        public final static String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
+        public final static String EMAIL_CLAIM = "http://wso2.org/claims/emailaddress";
+        public final static String LAST_LOGIN_TIME = "http://wso2.org/claims/lastLoginTime";
 
-        public static final String ACCOUNT_LOCKED_CLAIM = "http://is.cd.mtn:9443/claims/identity/accountLocked";
-        public static final String PASSWORD_RESET_FAIL_ATTEMPTS_CLAIM = "http://is.cd.mtn:9443/claims/identity/failedPasswordRecoveryAttempts";
+        public static final String ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
+        public static final String PASSWORD_RESET_FAIL_ATTEMPTS_CLAIM = "http://wso2.org/claims/identity/failedPasswordRecoveryAttempts";
 }

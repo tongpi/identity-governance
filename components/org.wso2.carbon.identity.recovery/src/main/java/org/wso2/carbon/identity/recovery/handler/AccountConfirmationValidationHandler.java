@@ -42,7 +42,7 @@ public class AccountConfirmationValidationHandler extends AbstractEventHandler {
 
     private static final Log log = LogFactory.getLog(AccountConfirmationValidationHandler.class);
 
-    public static final String ACCOUNT_LOCKED_CLAIM = "http://is.cd.mtn:9443/claims/identity/accountLocked";
+    public static final String ACCOUNT_LOCKED_CLAIM = "http://wso2.org/claims/identity/accountLocked";
 
     public String getName() {
         return "accountConfirmationValidation";
