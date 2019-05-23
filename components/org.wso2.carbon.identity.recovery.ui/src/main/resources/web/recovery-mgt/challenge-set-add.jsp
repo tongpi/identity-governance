@@ -80,21 +80,21 @@
 
 
             if (setName == "") {
-                CARBON.showWarningDialog('Please provide the question set id');
+                CARBON.showWarningDialog('<fmt:message key="Please.provide.the.question.set.id"/>');
                 location.href = '#';
             } else if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.enter.a.valid.security.question" />', null, null);
                 location.href = '#';
             } else if (questionId == null || questionId == "") {
-                CARBON.showWarningDialog('Please enter a valid question id', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.enter.a.valid.question.id" />', null, null);
                 location.href = '#';
             } else if (sel == 0) {
-                CARBON.showWarningDialog('Please select a locale for the question', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.select.a.locale.for.the.question" />', null, null);
                 location.href = '#';
             } else {
-                if (!doValidateInput(document.getElementById("setName"), "Provided Question Set ID is invalid. Only {1} allowed.")) {
+                if (!doValidateInput(document.getElementById("setName"), "<fmt:message key="Provided.Question.Set.ID.is.invalid.Only{1}.allowed" />")) {
                     location.href = '#';
-                } else if (!doValidateInput(document.getElementById("questionId0"), "Provided Question ID  is invalid. Only {1} allowed.")) {
+                } else if (!doValidateInput(document.getElementById("questionId0"), "<fmt:message key="Provided.Question.ID.is.invalid.Only{1}.allowed"/>")) {
                     location.href = '#';
                 } else {
                     $("#questionForm").submit();
@@ -172,8 +172,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" class="buttonRow">
-                                        <button onclick="addRow()" type="button" class="button">Add</button>
-                                        <button onclick="cancelForm()" type="button" class="button">Cancel</button>
+                                        <button onclick="addRow()" type="button" class="button"><fmt:message key="Add" /></button>
+                                        <button onclick="cancelForm()" type="button" class="button"><fmt:message key="Cancel" /></button>
                                     </td>
                                 </tr>
                                 </tbody>
