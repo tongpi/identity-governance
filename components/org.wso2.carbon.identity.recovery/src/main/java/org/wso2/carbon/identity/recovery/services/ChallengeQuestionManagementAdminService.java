@@ -82,7 +82,7 @@ public class ChallengeQuestionManagementAdminService {
     public ChallengeQuestion[] getChallengeQuestionsForUser(User user) throws IdentityRecoveryException {
         if (user == null) {
             log.error("提供的用户对象为null。");
-            throw new IdentityRecoveryClientException("User object provided is null.");
+            throw new IdentityRecoveryClientException("提供的用户对象为null。");
         }
 
         String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
@@ -91,7 +91,7 @@ public class ChallengeQuestionManagementAdminService {
             challengeQuestionList = questionManager.getAllChallengeQuestionsForUser(tenantDomain, user);
             return challengeQuestionList.toArray(new ChallengeQuestion[challengeQuestionList.size()]);
         } catch (IdentityRecoveryException e) {
-            String errorMgs = "Error loading challenge questions for user : %s@%s.";
+            String errorMgs = "用户 : %s@%s 加载挑战问题时出错";
             log.error(String.format(errorMgs, user.getUserName(), tenantDomain), e);
             throw new IdentityRecoveryException(String.format(errorMgs, user.getUserName(), tenantDomain), e);
         }
@@ -114,8 +114,8 @@ public class ChallengeQuestionManagementAdminService {
             challengeQuestionList = questionManager.getAllChallengeQuestions(tenantDomain, locale);
             return challengeQuestionList.toArray(new ChallengeQuestion[challengeQuestionList.size()]);
         } catch (IdentityRecoveryException e) {
-            String errorMgs = String.format("Error loading challenge questions for tenant %s in %s locale.",
-                    tenantDomain, locale);
+            String errorMgs = String.format("在%s区域设置中为租户%s加载质询问题时出错。",
+                    locale, tenantDomain);
             log.error(errorMgs, e);
             throw new IdentityRecoveryException(errorMgs, e);
         }
@@ -134,7 +134,7 @@ public class ChallengeQuestionManagementAdminService {
         try {
             questionManager.addChallengeQuestions(challengeQuestions, tenantDomain);
         } catch (IdentityRecoveryException e) {
-            String errorMsg = "Error setting challenge questions for tenant domain %s.";
+            String errorMsg = "租户域 %s 设置挑战问题时出错。";
             log.error(String.format(errorMsg, tenantDomain), e);
             throw new IdentityRecoveryException(String.format(errorMsg, tenantDomain), e);
         }
@@ -153,7 +153,7 @@ public class ChallengeQuestionManagementAdminService {
         try {
             questionManager.deleteChallengeQuestions(challengeQuestions, tenantDomain);
         } catch (IdentityRecoveryException e) {
-            String errorMsg = "Error deleting challenge questions in tenant domain %s.";
+            String errorMsg = "租户域 %s 删除挑战问题时出错。";
             log.error(String.format(errorMsg, tenantDomain), e);
             throw new IdentityRecoveryException(String.format(errorMsg, tenantDomain), e);
         }
@@ -170,13 +170,13 @@ public class ChallengeQuestionManagementAdminService {
             throws IdentityRecoveryException {
         if (user == null) {
             log.error("User object provided is null.");
-            throw new IdentityRecoveryClientException("User object provided is null.");
+            throw new IdentityRecoveryClientException("提供的用户对象为null。");
         }
 
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(user.getUserName());
 
         if (ArrayUtils.isEmpty(userChallengeAnswers)) {
-            String errorMsg = "No challenge question answers provided by the user " + tenantAwareUserName;
+            String errorMsg = "用户" + tenantAwareUserName + "没有提供挑战问题答案";
             log.error(errorMsg);
             throw new IdentityRecoveryClientException(errorMsg);
         }
@@ -189,8 +189,8 @@ public class ChallengeQuestionManagementAdminService {
             boolean isAuthorized = isUserAuthorized(tenantAwareUserName, tenantDomain);
             if (!isAuthorized) {
                 throw new IdentityRecoveryClientException(
-                        "Unauthorized access!! Possible elevation of privilege attack. " + "User " + loggedInName
-                                + " trying to change challenge questions for user " + tenantAwareUserName);
+                        "未经授权的访问！！可能的特权提升攻击。用户" + loggedInName
+                                + " 尝试更改用户" + tenantAwareUserName + "的挑战问题");
             }
         } else if (tenantAwareUserName == null) {
             tenantAwareUserName = loggedInName;
@@ -200,7 +200,7 @@ public class ChallengeQuestionManagementAdminService {
             questionManager.setChallengesOfUser(user, userChallengeAnswers);
 
         } catch (IdentityException e) {
-            String errorMessage = "Error while persisting user challenges for user : " + tenantAwareUserName;
+            String errorMessage = "在为用户" + tenantAwareUserName + "持续存在用户质询时出错";
             log.error(errorMessage, e);
             throw new IdentityRecoveryException(errorMessage, e);
         }
@@ -216,7 +216,7 @@ public class ChallengeQuestionManagementAdminService {
     public UserChallengeAnswer[] getUserChallengeAnswers(User user) throws IdentityRecoveryException {
         if (user == null) {
             log.error("User object provided is null.");
-            throw new IdentityRecoveryClientException("User object provided is null.");
+            throw new IdentityRecoveryClientException("提供的用户对象为null。");
         }
 
         String tenantAwareUserName = MultitenantUtils.getTenantAwareUsername(user.getUserName());
@@ -228,8 +228,8 @@ public class ChallengeQuestionManagementAdminService {
             boolean isAuthorized = isUserAuthorized(tenantAwareUserName, tenantDomain);
             if (!isAuthorized) {
                 throw new IdentityRecoveryClientException(
-                        "Unauthorized access!! Possible violation of confidentiality. " + "User " + loggedInName
-                                + " trying to get challenge questions for user " + tenantAwareUserName);
+                        "未经授权的访问!! 可能违反保密规定。 " + "用户 " + loggedInName
+                                + " 尝试获取用户" + tenantAwareUserName + "的挑战问题");
             }
         } else if (tenantAwareUserName == null) {
             tenantAwareUserName = loggedInName;
@@ -238,7 +238,7 @@ public class ChallengeQuestionManagementAdminService {
         try {
             return questionManager.getChallengeAnswersOfUser(user);
         } catch (IdentityRecoveryException e) {
-            String msg = "Error retrieving user challenge answers for " + tenantAwareUserName;
+            String msg = "为" + tenantAwareUserName + "检索用户质询答案时出错 ";
             log.error(msg, e);
             throw new IdentityRecoveryException(msg, e);
         }
@@ -258,8 +258,7 @@ public class ChallengeQuestionManagementAdminService {
                     CarbonConstants.UI_PERMISSION_ACTION);
 
         } catch (UserStoreException e) {
-            throw new IdentityRecoveryServerException("Error occurred while checking access level for " + "user "
-                    + tenantAwareUserName + " in tenant " + tenantDomain, e);
+            throw new IdentityRecoveryServerException("检查租户" + tenantDomain + "的用户" + tenantAwareUserName + "的访问级别时出错", e);
         }
 
         return isAuthorized;
@@ -271,7 +270,7 @@ public class ChallengeQuestionManagementAdminService {
 
         if (!StringUtils.equals(loggedInTenant, tenantDomain)) {
             String errorMsg = String.format(
-                    "Unauthorized Access. User %s@%s trying to retrieve challenge questions " + "of %s tenant",
+                    "未经授权的访问。用户 %s@%s 尝试检索 %s 租户的挑战问题",
                     loggedInUser, loggedInTenant, tenantDomain);
             throw new IdentityRecoveryClientException(errorMsg);
         }

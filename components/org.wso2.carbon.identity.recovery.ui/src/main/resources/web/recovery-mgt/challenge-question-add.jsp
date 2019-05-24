@@ -16,6 +16,7 @@
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
+<%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="org.apache.axis2.context.ConfigurationContext" %>
 <%@page import="org.apache.commons.lang.ArrayUtils" %>
 
@@ -188,7 +189,7 @@
             var question = document.getElementById(questionId).innerText;
 
             if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.enter.a.valid.security.question"/>', null, null);
                 location.href = '#';
             } else {
                 location.href = 'challenge-question-add.jsp?updateRowId=' + encodeURIComponent(row) + '&setName=' +
@@ -209,21 +210,21 @@
             var localeMapping = $("input[name=localeMapping]:checked").val();
 
             if (setIndex == 0) {
-                CARBON.showWarningDialog('Please select a Question Set Id', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.select.a.Question.Set.Id"/>', null, null);
                 location.href = '#';
             } else if (questionId == null || questionId == "") {
-                CARBON.showWarningDialog('Please enter a valid question id', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.enter.a.valid.question.id"/>', null, null);
                 location.href = '#';
             } else if (localeIndex == 0) {
-                CARBON.showWarningDialog('Please select a valid locale for the question', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.select.a.valid.locale.for.the.question"/>', null, null);
                 location.href = '#';
             } else if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('<fmt:message key="confirm.delete.challenge.question"/>', null, null);
                 location.href = '#';
             }
             // validate questionId
             else {
-                if (!doValidateInput(document.getElementsByName("questionId0")[0], "Provided Question ID is invalid. Only {1} allowed.")) {
+                if (!doValidateInput(document.getElementsByName("questionId0")[0], <fmt:message key="Provided.Question.ID.is.invalid.Only{1}.allowed"/> + "。")) {
                     location.href = '#';
                 } else {
                     location.href = 'challenge-question-add.jsp?addRowId=' + encodeURIComponent(question) +
@@ -306,7 +307,7 @@
             var localeMapping = $("input[name=localeMapping]:checked").val();
 
             if (questionSetIndex == 0) {
-                CARBON.showWarningDialog('Please select a Question Set Id', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.select.a.Question.Set.Id"/>', null, null);
                 location.href = '#';
             } else {
                 var redirectTo = 'challenge-question-add.jsp?setName=' + encodeURIComponent(questionSetName)
@@ -351,7 +352,7 @@
                                     <td>
                                         <select id="setName0" name="setName0" onchange="onChangeSelect()"
                                                 class="leftCol-med">
-                                            <option value="selectID">--- Select Set Id ---</option>
+                                            <option value="selectID">--- <fmt:message key="Select.Set.Id"> ---</option>
 
                                             <%
                                                 for (String setURI : challengeURIs) {
@@ -379,9 +380,9 @@
                                 </td>
                                 <td>
                                     <input type="radio" name="localeMapping" id="localeYes" value="yes"
-                                           onchange="getQuestionIDs()">Yes</input>
+                                           onchange="getQuestionIDs()"><fmt:message key="Yes"/></input>
                                     <input type="radio" name="localeMapping" id="localeNo" value="no"
-                                           onchange="getQuestionIDs()">No</input>
+                                           onchange="getQuestionIDs()"><fmt:message key="No"/></input>
 
                                     <% if (StringUtils.isNotBlank(localeMapping) && StringUtils.equalsIgnoreCase("yes", localeMapping)) {%>
                                     <script>
@@ -467,7 +468,7 @@
                                 <tr>
                                     <td>
                                         <button id="addButton" onclick="addRow()" type="button"
-                                                class="button">Add
+                                                class="button"><fmt:message key="Add"/>
                                         </button>
                                     </td>
                                 </tr>
@@ -524,20 +525,20 @@
                                         <a onclick="updateRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Update
+                                            <ftm:message key="Update"/>
                                         </a>
                                         <%
                                         } else { %>
                                         <a onclick="editRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Edit
+                                            <fmt:message key="Edit"/>
                                         </a>
                                         <%}%>
                                         <a onclick="removeRow('<%=i%>')"
                                            style='background-image:url(images/delete.gif);' type="button"
                                            class="icon-link">
-                                            Delete
+                                            <fmt:message key="Delete"/>
                                         </a>
                                     </td>
                                 </tr>

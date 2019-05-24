@@ -253,7 +253,7 @@ public class UserSelfRegistrationManager {
             validateUserConsent(receiptInput, purposes);
             filterClaimsFromReceipt(receiptInput, claimsMap);
         } catch (ConsentManagementException e) {
-            throw new IdentityRecoveryServerException("Error while retrieving System purposes for self registration",
+            throw new IdentityRecoveryServerException("检索自注册的系统目的时出错",
                     e);
 
         }
@@ -267,7 +267,7 @@ public class UserSelfRegistrationManager {
         try {
             consentUtilityService.validateReceiptPIIs(receiptInput, purposes);
         } catch (ConsentUtilityServiceException e) {
-            throw new IdentityRecoveryServerException("Receipt validation failed against purposes", e);
+            throw new IdentityRecoveryServerException("收据验证不符合目的", e);
         }
 
     }
@@ -281,7 +281,7 @@ public class UserSelfRegistrationManager {
             Set<String> filteredKeys = consentUtilityService.filterPIIsFromReceipt(claims.keySet(), receiptInput);
             claims.keySet().retainAll(filteredKeys);
         } catch (ConsentUtilityServiceException e) {
-            throw new IdentityRecoveryServerException("Receipt validation failed against purposes", e);
+            throw new IdentityRecoveryServerException("收据验证不符合目的", e);
         }
     }
 
@@ -441,7 +441,7 @@ public class UserSelfRegistrationManager {
                 log.debug("Error while getting user realm for user " + tenantDomain);
             }
             // In a case of a non existing tenant.
-            throw new IdentityRecoveryException("Error while retrieving user realm for tenant : " + tenantDomain, e);
+            throw new IdentityRecoveryException("检索租户：" + tenantDomain + "的用户领域时出错", e);
         }
         return isValidTenant;
     }
@@ -464,7 +464,7 @@ public class UserSelfRegistrationManager {
                 isUsernameAlreadyTaken = userRealm.getUserStoreManager().isExistingUser(tenantAwareUsername);
             }
         } catch (CarbonException | org.wso2.carbon.user.core.UserStoreException e) {
-            throw new IdentityRecoveryException("Error while retrieving user realm for tenant : " + tenantDomain, e);
+            throw new IdentityRecoveryException("检索租户：" + tenantDomain + "的用户领域时出错", e);
         }
         return isUsernameAlreadyTaken;
     }
@@ -497,8 +497,7 @@ public class UserSelfRegistrationManager {
                 }
             }
         } catch (IdentityGovernanceException e) {
-            throw new IdentityRecoveryException("Error while retrieving resident identity provider for tenant : "
-                    + tenantDomain, e);
+            throw new IdentityRecoveryException("检索租户：" + tenantDomain + "的常驻身份提供程序时出错", e);
         }
         return propertyValue;
     }
@@ -538,7 +537,7 @@ public class UserSelfRegistrationManager {
         ConsentManager consentManager = IdentityRecoveryServiceDataHolder.getInstance().getConsentManager();
 
         if (receiptInput.getServices().size() < 0) {
-            throw new IdentityRecoveryServerException("A service should be available in a receipt");
+            throw new IdentityRecoveryServerException("收据中应提供服务");
         }
         // There should be a one receipt
         ReceiptServiceInput receiptServiceInput = receiptInput.getServices().get(0);
@@ -546,8 +545,7 @@ public class UserSelfRegistrationManager {
         try {
             setIDPData(tenantDomain, receiptServiceInput);
         } catch (IdentityProviderManagementException e) {
-            throw new ConsentManagementException("Error while retrieving identity provider data", "Error while " +
-                    "setting IDP data", e);
+            throw new ConsentManagementException("检索身份提供者数据时出错", "设置IDP数据时出错", e);
         }
         receiptInput.setTenantDomain(tenantDomain);
         consentManager.addConsent(receiptInput);
@@ -639,7 +637,7 @@ public class UserSelfRegistrationManager {
                         userDomain);
             }
             // In a case of a non existing tenant.
-            throw new IdentityRecoveryException("Error while retrieving user store configuration for: " + userDomain, e);
+            throw new IdentityRecoveryException("检索" + userDomain + "的用户存储配置时出错", e);
         }
         return isValidUsername;
     }

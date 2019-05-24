@@ -171,7 +171,7 @@
             var question = document.getElementById(questionId).innerText;
 
             if (question == null || question == "") {
-                CARBON.showWarningDialog('Please enter a valid security question', null, null);
+                CARBON.showWarningDialog('<fmt:message key="Please.enter.a.valid.security.question" />', null, null);
                 location.href = '#';
             } else {
                 location.href = 'challenges-mgt.jsp?updateRowId=' + encodeURIComponent(row) + '&setName=' +
@@ -252,20 +252,20 @@
                                         <a onclick="updateRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Update
+                                            <fmt:message key="Update" />
                                         </a>
                                         <%
                                         } else { %>
                                         <a onclick="editRow('<%=i%>')"
                                            style='background-image:url(images/edit.gif);'
                                            type="button" class="icon-link">
-                                            Edit
+                                            <fmt:message key="Edit" />
                                         </a>
                                         <%}%>
                                         <a onclick="removeRow('<%=i%>')"
                                            style='background-image:url(images/delete.gif);' type="button"
                                            class="icon-link">
-                                            Delete
+                                            <fmt:message key="Delete" />
                                         </a>
                                     </td>
                                 </tr>

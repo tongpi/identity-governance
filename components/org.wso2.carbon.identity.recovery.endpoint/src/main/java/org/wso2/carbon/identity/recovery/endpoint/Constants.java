@@ -15,17 +15,16 @@ public final class Constants {
 
 
     //default error messages
-    public static final String STATUS_FORBIDDEN_MESSAGE_DEFAULT = "Forbidden";
-    public static final String STATUS_NOT_FOUND_MESSAGE_DEFAULT = "Not Found";
-    public static final String STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT = "Internal server error";
-    public static final String STATUS_METHOD_NOT_ALLOWED_MESSAGE_DEFAULT = "Method Not Allowed";
-    public static final String STATUS_BAD_REQUEST_MESSAGE_DEFAULT = "Bad Request";
-    public static final String STATUS_CONFLICT_MESSAGE_RESOURCE_ALREADY_EXISTS = "Resource Already Exists";
-    public static final String STATUS_CONFLICT_MESSAGE_DEFAULT = "Conflict";
+    public static final String STATUS_FORBIDDEN_MESSAGE_DEFAULT = "被禁止";
+    public static final String STATUS_NOT_FOUND_MESSAGE_DEFAULT = "未发现";
+    public static final String STATUS_INTERNAL_SERVER_ERROR_MESSAGE_DEFAULT = "内部服务器错误";
+    public static final String STATUS_METHOD_NOT_ALLOWED_MESSAGE_DEFAULT = "方法不允许";
+    public static final String STATUS_BAD_REQUEST_MESSAGE_DEFAULT = "错误请求";
+    public static final String STATUS_CONFLICT_MESSAGE_RESOURCE_ALREADY_EXISTS = "资源已经存在";
+    public static final String STATUS_CONFLICT_MESSAGE_DEFAULT = "冲突";
     public static final String TENANT_NAME_FROM_CONTEXT = "TenantNameFromContext";
 
-    public static final String STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT = "The server encountered "
-            + "an internal error. Please contact administrator.";
+    public static final String STATUS_INTERNAL_SERVER_ERROR_DESCRIPTION_DEFAULT = "服务器遇到内部错误。请与管理员联系。";
 
     public static final String ERROR_CODE_NO_USER_FOUND_FOR_RECOVERY = "20015";
     public static final String ERROR_CODE_MULTIPLE_USERS_MATCHING = "20015";

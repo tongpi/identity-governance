@@ -34,7 +34,7 @@ public class SelfRegistrationConfigImpl implements IdentityConnectorConfig {
 
         private static String connectorName = "self-sign-up";
         private static final String CATEGORY = "账号管理策略";
-        private static final String FRIENDLY_NAME = "用户自主注册";
+        private static final String FRIENDLY_NAME = "用户自注册";
         private static final String CATEGORY_URL = "Account Management Policies";
         private static final String FRIENDLY_NAME_URL = "User Self Registration";
         private static final String LIST_PURPOSE_PROPERTY_KEY = "_url_listPurposeSelfSignUp";
@@ -73,31 +73,31 @@ public class SelfRegistrationConfigImpl implements IdentityConnectorConfig {
         @Override
         public Map<String, String> getPropertyNameMapping() {
                 Map<String, String> nameMapping = new HashMap<>();
-                nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_SELF_SIGNUP, "启用自主注册");
+                nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_SELF_SIGNUP, "启用自注册");
                 nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.ACCOUNT_LOCK_ON_CREATION, "在创建时启用帐户锁定");
                 nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.SIGN_UP_NOTIFICATION_INTERNALLY_MANAGE,
                                 "内部通知管理");
                 nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.SELF_REGISTRATION_RE_CAPTCHA, "启用验证码服务");
                 nameMapping.put(IdentityRecoveryConstants.ConnectorConfig.SELF_REGISTRATION_VERIFICATION_CODE_EXPIRY_TIME,
                                 "用户自注册验证码过期时间");
-                nameMapping.put(LIST_PURPOSE_PROPERTY_KEY, "管理自主注册的目的");
+                nameMapping.put(LIST_PURPOSE_PROPERTY_KEY, "管理自注册的目的");
                 return nameMapping;
         }
 
         @Override
         public Map<String, String> getPropertyDescriptionMapping() {
                 Map<String, String> descriptionMapping = new HashMap<>();
-                descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_SELF_SIGNUP, "启用自主注册");
+                descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.ENABLE_SELF_SIGNUP, "启用自注册");
                 descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.ACCOUNT_LOCK_ON_CREATION,
                                 "在用户注册期间锁定用户帐户");
                 descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.SIGN_UP_NOTIFICATION_INTERNALLY_MANAGE,
                                 "如果客户端应用程序处理通知发送设置为false");
                 descriptionMapping.put(IdentityRecoveryConstants.ConnectorConfig.SELF_REGISTRATION_RE_CAPTCHA,
-                                "在自主注册期间启用验证码验证");
+                                "在自注册期间启用验证码验证");
                 descriptionMapping.put(
                                 IdentityRecoveryConstants.ConnectorConfig.SELF_REGISTRATION_VERIFICATION_CODE_EXPIRY_TIME,
                                 "设置用户自行注册验证邮件有效的分钟数。（负值为永久有效）");
-                descriptionMapping.put(LIST_PURPOSE_PROPERTY_KEY, "单击这里管理自主注册的目的");
+                descriptionMapping.put(LIST_PURPOSE_PROPERTY_KEY, "单击这里管理自注册的目的");
                 return descriptionMapping;
         }
 

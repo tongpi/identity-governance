@@ -278,7 +278,7 @@ public class Utils {
             connectorConfigs = identityGovernanceService.getConfiguration(new String[]{key,}, tenantDomain);
             return connectorConfigs[0].getValue();
         } catch (IdentityGovernanceException e) {
-            throw new IdentityEventException("Error while getting connector configurations", e);
+            throw new IdentityEventException("获取连接器配置时出错", e);
         }
     }
 

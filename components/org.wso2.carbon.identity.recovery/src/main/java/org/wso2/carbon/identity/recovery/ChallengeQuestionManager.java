@@ -284,7 +284,7 @@ public class ChallengeQuestionManager {
             }
         } catch (IdentityRuntimeException e) {
             log.error("Error deleting challenge quesitons in " + tenantDomain);
-            throw new IdentityRecoveryException("Error when deleting challenge questions.", e);
+            throw new IdentityRecoveryException("删除挑战问题时出错。", e);
         }
     }
 
@@ -825,7 +825,7 @@ public class ChallengeQuestionManager {
         if (StringUtils.isBlank(setId) || StringUtils.isBlank(questionId) || StringUtils.isBlank(questionText) ||
                 StringUtils.isBlank(questionLocale)) {
             throw new IdentityRecoveryClientException
-                    ("Invalid Challenge Question. Attributes of Challenge question to be set cannot be empty.");
+                    ("无效的挑战问题。 要设置的挑战问题的属性不能为空。");
         }
 
 
