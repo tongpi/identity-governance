@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://wso2.org/projects/carbon/taglibs/carbontags.jar" prefix="carbon" %>
 <%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -352,7 +352,7 @@
                                     <td>
                                         <select id="setName0" name="setName0" onchange="onChangeSelect()"
                                                 class="leftCol-med">
-                                            <option value="selectID">--- <fmt:message key="Select.Set.Id"> ---</option>
+                                            <option value="selectID">--- <fmt:message key="Select.Set.Id"/> ---</option>
 
                                             <%
                                                 for (String setURI : challengeURIs) {
@@ -556,8 +556,8 @@
                     </tr>
                     <tr>
                         <td class="buttonRow">
-                            <input type="submit" value="Finish" class="button"/>
-                            <input type="button" value="Cancel" onclick="cancelForm();" class="button"/>
+                            <input type="submit" value="<fmt:message key="Done"/>" class="button"/>
+                            <input type="button" value="<fmt:message key="Cancel"/>" onclick="cancelForm();" class="button"/>
                         </td>
                     </tr>
                     <input type="hidden" name="setName" id="setName"
@@ -616,4 +616,3 @@
         </form>
     </div>
 </fmt:bundle>
-
