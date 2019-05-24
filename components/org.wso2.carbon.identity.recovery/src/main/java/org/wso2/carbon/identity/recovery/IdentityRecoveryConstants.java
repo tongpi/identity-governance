@@ -72,32 +72,7 @@ public class IdentityRecoveryConstants {
     public enum ErrorMessages {
 
         ERROR_CODE_INVALID_CODE("18001", "无效码 '%s.'"),
-<<<<<<< HEAD
-        ERROR_CODE_EXPIRED_CODE("18002", "过期码 '%s.'"),
-        ERROR_CODE_INVALID_USER("18003", "无效的用户 '%s.'"),
-        ERROR_CODE_UNEXPECTED("18013", "意外的错误"),
-        ERROR_CODE_RECOVERY_NOTIFICATION_FAILURE("18015", "发送恢复通知时出错"),
-        ERROR_CODE_INVALID_TENANT("18016", "无效的租户的 %s。'"),
-        ERROR_CODE_CHALLENGE_QUESTION_NOT_FOUND("18017", "没有发现挑战问题。 %s"),
-        ERROR_CODE_INVALID_CREDENTIALS("17002", "凭据无效"),
-        ERROR_CODE_LOCKED_ACCOUNT("17003", "用户帐户已被锁定 - '%s.'"),
-        ERROR_CODE_DISABLED_ACCOUNT("17004", "用户帐户已禁用 '%s.'"),
-        ERROR_CODE_REGISTRY_EXCEPTION_GET_CHALLENGE_QUESTIONS("20001", "获得挑战问题时的注册表异常"),
-        ERROR_CODE_REGISTRY_EXCEPTION_SET_CHALLENGE_QUESTIONS("20002", "设置挑战问题时的注册表异常"),
-        ERROR_CODE_GETTING_CHALLENGE_URIS("20003", "获取挑战问题URI时出错 '%s。'"),
-        ERROR_CODE_GETTING_CHALLENGE_QUESTIONS("20004", "获得挑战问题时出错 '%s.'"),
-        ERROR_CODE_GETTING_CHALLENGE_QUESTION("20005", "获得挑战问题时出错 '%s.'"),
-        ERROR_CODE_QUESTION_OF_USER("20006", "设置用户挑战问题时出错 '%s.'"),
-        ERROR_CODE_NO_HASHING_ALGO("20007", "散列安全答案时出错"),
-        ERROR_CODE_INVALID_ANSWER_FOR_SECURITY_QUESTION("20008", "答案无效"),
-        ERROR_CODE_STORING_RECOVERY_DATA("20009", "安全问题的答案无效"),
-        ERROR_CODE_NEED_TO_ANSWER_MORE_SECURITY_QUESTION("20010", "需要回答更多安全问题"),
-        ERROR_CODE_TRIGGER_NOTIFICATION("20011", "用户触发通知时出错 '%s.'"),
-        ERROR_CODE_NEED_TO_ANSWER_TO_REQUESTED_QUESTIONS("20012", "需要回答所有要求的安全问题"),
-        ERROR_CODE_NO_VALID_USERNAME("20013", "找不到用于恢复的有效用户名"),
-        ERROR_CODE_NO_FIELD_FOUND_FOR_USER_RECOVERY("20014", "找不到用于恢复用户名的字段"),
-        ERROR_CODE_NO_USER_FOUND_FOR_RECOVERY("20015", "找不到有效的用户"),
-=======
+
         ERROR_CODE_EXPIRED_CODE("18002", "码已过期 '%s.'"),
         ERROR_CODE_INVALID_USER("18003", "非法用户 '%s.'"),
         ERROR_CODE_UNEXPECTED("18013", "不可预知的错误"),
@@ -122,37 +97,12 @@ public class IdentityRecoveryConstants {
         ERROR_CODE_NO_VALID_USERNAME("20013", "找不到用于恢复的有效用户名"),
         ERROR_CODE_NO_FIELD_FOUND_FOR_USER_RECOVERY("20014", "找不到用于用户名恢复的文件"),
         ERROR_CODE_NO_USER_FOUND_FOR_RECOVERY("20015", "找不到有效用户"),
->>>>>>> 82b1072111f22e0b51cf6cc5c890919caf6f8692
         ERROR_CODE_ISSUE_IN_LOADING_RECOVERY_CONFIGS("20016", "加载恢复配置时出错"),
         ERROR_CODE_NOTIFICATION_BASED_PASSWORD_RECOVERY_NOT_ENABLE("20017", "未启用基于通知的密码恢复"),
         ERROR_CODE_QUESTION_BASED_RECOVERY_NOT_ENABLE("20018", "未启用基于安全问题的恢复"),
         ERROR_CODE_ADD_SELF_USER("20019", "添加自注册用户时出错"),
         ERROR_CODE_LOCK_USER_USER("20020", "锁定用户时出错"),
-<<<<<<< HEAD
-        ERROR_CODE_DISABLE_SELF_SIGN_UP("20021", "自注册功能已禁用"),
-        ERROR_CODE_LOCK_USER_ACCOUNT("20022", "锁定用户帐户时出错"),
-        ERROR_CODE_UNLOCK_USER_USER("20023", "解锁用户时出错"),
-        ERROR_CODE_OLD_CODE_NOT_FOUND("20024", "找不到旧的确认码"),
-        ERROR_CODE_FAILED_TO_LOAD_REALM_SERVICE("20025", "无法从租户ID: %s检索用户域"),
-        ERROR_CODE_FAILED_TO_LOAD_USER_STORE_MANAGER("20026", "无法检索用户存储管理器。"),
-        ERROR_CODE_FAILED_TO_LOAD_USER_CLAIMS("20027", "检索用户声明时出错"),
-        ERROR_CODE_FAILED_TO_LOAD_GOV_CONFIGS("20028", "检索帐户锁连接器配置时出错"),
-        ERROR_CODE_HISTORY_VIOLATE("22001", "此密码已在近期历史中使用。 请选择其他密码"),
-        ERROR_CODE_MULTIPLE_QUESTION_NOT_ALLOWED("20029", "此操作不允许多个挑战问题"),
-        ERROR_CODE_USER_ALREADY_EXISTS("20030", "用户%s已存在于系统中。 请使用其他用户名。"),
-        ERROR_CODE_USERNAME_RECOVERY_NOT_ENABLE("20031", "未启用用户名恢复"),
-        ERROR_CODE_MULTIPLE_USERS_MATCHING("20032", "找到了多个用户"),
-        ERROR_CODE_ISSUE_IN_LOADING_SIGNUP_CONFIGS("20033", "加载注册配置时出错"),
-        ERROR_CODE_FAILED_TO_UPDATE_USER_CLAIMS("20034", "更新用户声明时出错"),
-        ERROR_CODE_POLICY_VIOLATION("20035", "密码政策违规"),
-        ERROR_CODE_PROVIDED_CONFIRMATION_CODE_NOT_VALID("20036", "提供的确认码%s无效"),
-        ERROR_CODE_CONFIRMATION_CODE_NOT_PROVIDED("20037", "没有为用户%s提供确认代码。"),
-        ERROR_CODE_RECOVERY_SCENARIO_NOT_PROVIDED("20038", "没有为用户%s提供恢复方案。"),
-        ERROR_CODE_RECOVERY_STEP_NOT_PROVIDED("20039", "用户%s未提供恢复步骤。"),
-        ERROR_CODE_NOTIFICATION_TYPE_NOT_PROVIDED("20040", "用户%s未提供通知类型。"),
-        ERROR_CODE_FAILED_TO_CHECK_ACCOUNT_LOCK_STATUS("20041", "验证用户：%s的帐户锁定状态时出错。"),
-        ERROR_CODE_ADD_USER_CONSENT("20042", "添加用户%s的同意时出错。"),;
-=======
+
         ERROR_CODE_DISABLE_SELF_SIGN_UP("20021", "已禁用自注册功能"),
         ERROR_CODE_LOCK_USER_ACCOUNT("20022", "锁定用户账号时出错"),
         ERROR_CODE_UNLOCK_USER_USER("20023", "解锁用户时出错"),
@@ -179,7 +129,7 @@ public class IdentityRecoveryConstants {
         ERROR_CODE_FAILED_TO_CHECK_ACCOUNT_LOCK_STATUS("20041", "验证用户的帐户锁定状态时出错: " +
                 "%s."),
         ERROR_CODE_ADD_USER_CONSENT("20042", "为用户 %s 添加同意时出错."),;
->>>>>>> 82b1072111f22e0b51cf6cc5c890919caf6f8692
+
 
 
         private final String code;
