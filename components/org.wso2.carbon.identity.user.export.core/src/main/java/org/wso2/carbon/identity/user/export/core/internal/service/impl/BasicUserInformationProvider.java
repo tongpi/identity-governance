@@ -69,7 +69,7 @@ public class BasicUserInformationProvider extends AbstractUserInformationProvide
         try {
             userClaimValues = getUserStoreManager(tenantId, userStoreDomain).getUserClaimValues(username, null);
         } catch (UserStoreException e) {
-            throw new UserExportException("Error while retrieving the user information.", e);
+            throw new UserExportException("检索用户信息时出错。", e);
         }
 
         if (userClaimValues != null) {
@@ -121,7 +121,7 @@ public class BasicUserInformationProvider extends AbstractUserInformationProvide
             userStoreManager = getUserRealm(tenantDomain).getUserStoreManager().getSecondaryUserStoreManager
                     (userStoreDomain);
         } catch (UserStoreException e) {
-            throw new UserExportException("Error while retrieving the user store manager.", e);
+            throw new UserExportException("检索用户存储管理器时出错。", e);
         }
         if (log.isDebugEnabled()) {
             log.debug("Retrieved user store manager for tenant id: " + tenantId);
@@ -135,8 +135,9 @@ public class BasicUserInformationProvider extends AbstractUserInformationProvide
         try {
             realm = AnonymousSessionUtil.getRealmByTenantDomain(registryService, realmService, tenantDomain);
         } catch (CarbonException e) {
-            throw new UserExportException(
-                    "Error occurred while retrieving the Realm for " + tenantDomain + " to handle claims", e);
+           /*throw new UserExportException(
+                    "Error occurred while retrieving the Realm for 当检索域" + tenantDomain + " to handle claims", e);*/
+            throw new UserExportException("当检索域" + tenantDomain + "用于处理声明时出错", e);
         }
         return realm;
     }

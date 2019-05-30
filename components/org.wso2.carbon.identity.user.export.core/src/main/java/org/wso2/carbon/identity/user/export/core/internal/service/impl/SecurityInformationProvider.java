@@ -59,7 +59,7 @@ public class SecurityInformationProvider extends BasicUserInformationProvider {
             challengeQuestionClaimValue = userStoreManager.getUserClaimValue(username, CHALLENGE_QUESTION_URIS_CLAIM,
                     null);
         } catch (UserStoreException e) {
-            throw new UserExportException("Error while retrieving the user information.", e);
+            throw new UserExportException("检索用户信息时出错。", e);
         }
 
         if (challengeQuestionClaimValue != null) {
@@ -72,7 +72,7 @@ public class SecurityInformationProvider extends BasicUserInformationProvider {
                             challengeQuestionUris.toArray(new
                                     String[challengeQuestionUris.size()]), null);
                 } catch (UserStoreException e) {
-                    throw new UserExportException("Error while retrieving the user information.", e);
+                    throw new UserExportException("检索用户信息时出错。", e);
                 }
 
                 String challengeQuestionSeparator = challengeQuestionSeparator();
