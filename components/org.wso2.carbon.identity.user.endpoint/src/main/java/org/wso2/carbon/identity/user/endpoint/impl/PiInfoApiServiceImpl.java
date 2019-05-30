@@ -51,7 +51,7 @@ public class PiInfoApiServiceImpl extends PiInfoApiService {
         } catch (UserStoreException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid tenant domain provided in username.")
+                    .entity("用户名中提供的租户域无效.")
                     .build();
         } catch (UserExportException e) {
             return Response
