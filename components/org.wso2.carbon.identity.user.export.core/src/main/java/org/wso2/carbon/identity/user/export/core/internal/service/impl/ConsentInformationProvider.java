@@ -83,10 +83,12 @@ public class ConsentInformationProvider extends AbstractUserInformationProvider 
                 return new UserInformationDTO(receipts);
             }
         } catch (UserStoreException e) {
-            throw new UserExportException("Error while retrieving tenant domain from tenant id: " + tenantId, e);
+            throw new UserExportException("租户" + tenantId + "检索租户域时出错", e);
         } catch (ConsentManagementException e) {
-            throw new UserExportException("Error while retrieving consent receipts for user: " + UserCoreUtil
-                    .addDomainToName(username, userStoreDomain) + " in tenant id: " + tenantId, e);
+/*            throw new UserExportException("Error while retrieving consent receipts for user:" + UserCoreUtil
+                    .addDomainToName(username, userStoreDomain) + " in tenant id: " + tenantId, e);*/
+            throw new UserExportException("检索用户" + UserCoreUtil
+                    .addDomainToName(username, userStoreDomain) + "ID：" + tenantId + "同意收据时出错", e);
         }
         return new UserInformationDTO();
     }
