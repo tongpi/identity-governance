@@ -201,7 +201,7 @@ public class Utils {
                     .getOSGiService(UserInformationService.class, null);
         } catch (NullPointerException e) {
             // Catching NPE since getOSGiService can throw NPE if the UserInformationService is not registered properly.
-            throw new UserExportException("Error while retrieving UserInformationService.", e);
+            throw new UserExportException("检索UserInformationService时出错.", e);
         }
     }
 
@@ -212,7 +212,7 @@ public class Utils {
                     .getOSGiService(RealmService.class, null);
         } catch (NullPointerException e) {
             // Catching NPE since getOSGiService can throw NPE if the RealmService is not registered properly.
-            throw new UserExportException("Error while retrieving RealmService.", e);
+            throw new UserExportException("检索RealmService时出错.", e);
         }
     }
 

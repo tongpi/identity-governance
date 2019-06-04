@@ -90,8 +90,8 @@ public class ValidateUsernameApiServiceImpl extends ValidateUsernameApiService {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Error while checking username validity for user " + user.getUsername(), e);
             }
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error while checking user " +
-                    "existence").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("检查用户时出错:" +
+                    "存在").build();
         }
     }
 
